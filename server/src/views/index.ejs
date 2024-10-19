@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<style>
+    body {
+        text-align: center;
+    }
+    h1{
+        color: green;
+    }
+</style>
+
+<body>
+    <h1>
+        <%= message %>
+    </h1>
+    <hr>
+
+    <h2>Server Up Time : <%= uptime %></h2>
+    <h3 id="timeDisplay"></h3>
+    <h3>Status : Ok</h3>
+</body>
+
+
+<script>
+    const updateTimeDisplay = () => {
+        const now = new Date(); // Get the current date and time
+        document.getElementById('timeDisplay').textContent = now.toLocaleString(); // Update the display
+    };
+    setInterval(updateTimeDisplay, 1000);
+</script>
+
+</html>

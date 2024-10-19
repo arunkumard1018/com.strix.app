@@ -1,44 +1,47 @@
-import express, { Router } from "express";
-import userModel from "../model/users";
+import express, { Request, Response } from "express";
 import { createUser } from "../service/users";
 
-const userRouter = express.Router();
 
-userRouter.get("/", (req, res) => {
-    res.json({ message: '/users/ GET Resource' })
-})
+const usersRouter = express.Router();
 
-userRouter.get("/:id", (req, res) => {
-    const { id } = req.params;
-    res.json({ message: `/users/: ${id} GET Resource` })
-})
+usersRouter.route("/:id")
+    .get((req: Request, res: Response) => {
+        const { id } = req.params;
+        res.json({ message: `/users/${id} GET REQUEST` })
+    })
+    .put((req: Request, res: Response) => {
+        const { id } = req.params;
+        res.json({ message: `/users/${id} PUT REQUEST` })
+    })
+    .delete((req: Request, res: Response) => {
+        const { id } = req.params;
+        res.json({ message: `/users/${id} DELETE REQUEST` })
+    })
 
-userRouter.post("/", (req, res) => {
-    res.json({ message: '/users/ POST Resource' })
-})
+usersRouter.route("/")
+    .get((req: Request, res: Response) => {
+        res.json({ message: '/users GET REQUEST' })
+    })
+    .post((req: Request, res: Response) => {
+        res.json({ message: '/users POST REQUEST' })
+    })
 
-userRouter.put("/:id", (req, res) => {
-    res.json({ message: '/users/:id PATCH Resource' })
-})
-
-
-userRouter.post("/create/:email", async (req, res) => {
-    const {email} = req.params || "email.com"
+usersRouter.post("/create/:email", async (req, res) => {
+    const { email } = req.params || "email.com"
     const userData = {
         name: "Aruna",
         email: email,
         password: "Password"
     }
-   
     try {
         const result = await createUser(userData);
         console.log("Result :", result);
         res.status(201).json(result)
-    } catch (error : any) {
+    } catch (error: any) {
         console.log(error.message)
-        res.status(500).json({message:error.message})
+        res.status(500).json({ message: error.message })
     }
 })
 
 
-export default userRouter;
+export default usersRouter;
