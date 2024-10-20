@@ -4,20 +4,24 @@ import mongoose from "mongoose";
 import { logReqRes } from './middlewares';
 import apiRouter from './routes/info';
 import usersRouter from "./routes/users";
+import {authRouter} from "./routes/auth";
+
 dotenv.config()
 
 
 const app = express();
-const PORT = process.env.SERVER_PORT
+const PORT = process.env.SERVER_PORT || 8001
 
 
 app.use(logReqRes("logs.txt"))
-
+/* Middleware to Parse Json Data */
+app.use(express.json());
 
 app.set('view engine', 'ejs');
 app.set('views', './src/views');
 
 app.use("/", apiRouter)
+app.use("/api/auth",authRouter)
 app.use("/api/users", usersRouter)
 
 

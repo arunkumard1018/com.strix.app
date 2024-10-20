@@ -1,39 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
+<!-- Include the header partial -->
+<%- include('partials/head') %>
 
-<style>
-    body {
-        text-align: center;
-    }
-    h1{
-        color: green;
-    }
-</style>
+    <body>
+        <%- include('partials/nav') %>
+            <div class="container">
+                <h1 class="mt-5">Welcome Strix Invoice Rest Services</h1>
+                <p>This is a Strix Invoice app Rest Services!</p>
+            </div>
 
-<body>
-    <h1>
-        <%= message %>
-    </h1>
-    <hr>
+            <div class="container fs-4">
+                <p>Server Up Time : <%= uptime %>.</p>
+                <p>Status : <span class="text-success fw-bold">OK</span></p>
+                <p>App Version : <%= version %></p>
+            </div>
+            <hr>
+            <div class="container">
+                <h2>Server Details :</h2>
+                <ul>
+                    <li>OS : <%= os %></li>
+                    <li>Processor : <%= processor %></li>
+                </ul>
+            </div>
 
-    <h2>Server Up Time : <%= uptime %></h2>
-    <h3 id="timeDisplay"></h3>
-    <h3>Status : Ok</h3>
-</body>
-
-
-<script>
-    const updateTimeDisplay = () => {
-        const now = new Date(); // Get the current date and time
-        document.getElementById('timeDisplay').textContent = now.toLocaleString(); // Update the display
-    };
-    setInterval(updateTimeDisplay, 1000);
-</script>
+            <%- include('partials/footer') %>
+                <%- include('partials/scripts') %>
+    </body>
 
 </html>
