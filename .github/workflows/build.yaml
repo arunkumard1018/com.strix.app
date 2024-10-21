@@ -30,6 +30,4 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_KEY }}
           script: |
-            pwd
-            ls
             touch deployement.txt
