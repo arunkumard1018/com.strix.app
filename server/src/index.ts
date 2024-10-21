@@ -24,6 +24,7 @@ app.use("/", apiRouter)
 app.use("/api/auth",authRouter)
 app.use("/api/users", usersRouter)
 
+console.log("Conecting To Mongo DB Server")
 
 mongoose.connect(process.env.MONGO_URL!)
     .then(() => {

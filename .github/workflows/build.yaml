@@ -32,5 +32,9 @@ jobs:
           script: |
             cd ${{ secrets.TARGET_DIR }}/server
             npm install
-            npm build
+            npm run build
+            
+            echo "SERVER_PORT=${{ secrets.SERVER_PORT }}" > .env
+            echo "SECRET_URL=${{ secrets.MONGO_URL }}" >> .env
+            pm2 restart
             touch deployement.txt
