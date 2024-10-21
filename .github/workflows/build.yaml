@@ -31,24 +31,21 @@ jobs:
       working-directory: ./server
       run: | 
         echo "VERSION=$(jq -r .version package.json)" >> $GITHUB_ENV
-        echo "Working DIRS"
-        ls
-        echo "PRESENT PWD"
-        pwd
-        VERSION=$(jq -r .version server/package.json)
-        echo "App Version"
+        echo "Application version"
+        VERSION=$(jq -r .version package.json)
         echo $VERSION
+
 
 # trnsfering files to ec2 
 
-    # - name: Deploy server to EC2
-    #   env:
-    #     EC2_HOST: ${{ secrets.EC2_HOST }}
-    #     EC2_USER: ${{ secrets.EC2_USER }}
-    #     EC2_KEY: ${{ secrets.EC2_KEY }}
+    - name: Deploy server to EC2
+      env:
+        EC2_HOST: ${{ secrets.EC2_HOST }}
+        EC2_USER: ${{ secrets.EC2_USER }}
+        EC2_KEY: ${{ secrets.EC2_KEY }}
 
-    #   run: |
-    #     scp -i $EC2_KEY -r ./server $EC2_USER@$EC2_HOST:/home/ubuntu/nodejs-app
+      run: |
+        scp -i $EC2_KEY -r ./server $EC2_USER@$EC2_HOST:/home/ubuntu/nodejs-app
 # ssh -i $EC2_KEY $EC2_USER@$EC2_HOST "cd /home/ubuntu/nodejs-app/server && npm install && pm2 restart all"
 
     # - name: Upload server build to S3
