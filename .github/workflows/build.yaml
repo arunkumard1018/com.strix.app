@@ -36,4 +36,4 @@ jobs:
             echo "SERVER_PORT=${{ secrets.SERVER_PORT }}" > .env
             echo "MONGO_URL=${{ secrets.MONGO_URL }}" >> .env
             pm2 restart build/index.js
-            echo "Deployment updated on $(date '+%Y-%m-%d %H:%M:%S') by ${{ github.actor }}" >> deployment.txt
+            echo "Deployment updated on $(date '+%Y-%m-%d %H:%M:%S') by ${{ github.actor }}" >> ci-info.txt
