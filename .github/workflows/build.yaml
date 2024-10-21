@@ -34,7 +34,9 @@ jobs:
 
       # Step 4: Compress the build directory (excluding node_modules)
       - name: Archive the build output
-        run: tar -czf app.tar.gz . --exclude=server/node_modules
+        run: |
+          cd server
+          tar --exclude='./node_modules' --exclude='../ui' -czf app.tar.gz .
 
       # Step 5: Deploy to the EC2 server
       - name: Deploy to EC2
