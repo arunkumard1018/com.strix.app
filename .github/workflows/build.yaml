@@ -7,43 +7,15 @@ on:
       - main
 
 jobs:
-  build:
-    name: Build and Deploy
+  deploy:
+    name: Deploy to EC2 on master branch push
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Checkout the code
-      - name: Checkout the code
+      - name: Checkout the files
         uses: actions/checkout@v2
 
-      # Step 2: Install Node.js
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-        
-      #Install Dependencies
-      - name: Install dependencies for server
-        working-directory: ./server
-        run: npm install
-
-      # Step 5: Build the project
-      - name: Build the project
-        working-directory: ./server
-        run: npm run build
-
-        # Step 6: Archive the build output while excluding node_modules and the ui folder
-      - name: Archive the build output
-        run: |
-          mkdir -p temp_app_dir
-          cp -r server/* temp_app_dir/
-          rm -rf temp_app_dir/node_modules
-          rm -rf ../ui
-          cd temp_app_dir
-          tar -czf app.tar.gz .
-
-      # Step 7: Deploy to EC2
-      - name: Deploy to EC2
+      - name: Deploy to Server 1
         uses: easingthemes/ssh-deploy@main
         env:
           SSH_PRIVATE_KEY: ${{ secrets.EC2_KEY }}
@@ -51,18 +23,13 @@ jobs:
           REMOTE_USER: ${{ secrets.EC2_USER }}
           TARGET: ${{ secrets.TARGET_DIR }}
 
-      # Step 6: Execute remote SSH commands to set up the server
-      - name: Execute SSH commands on EC2
+      - name: Executing remote ssh commands using ssh key
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_KEY }}
           script: |
-            cd ${{ secrets.TARGET_DIR }}
-            # tar -xzf app.tar.gz
             pwd
-            # npm install --production
-            # rm app.tar.gz
-            touch deployment.txt
-            # Restart your application here, e.g., using PM2 or another process manager
+            ls
+            touch deployement.txt
