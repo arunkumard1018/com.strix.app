@@ -32,9 +32,14 @@ jobs:
       run: | 
         echo "VERSION=$(jq -r .version package.json)" >> $GITHUB_ENV
         echo "Working DIRS"
-        echo ls
+        ls
+        echo "PRESENT PWD"
+        pwd
+        VERSION=$(jq -r .version server/package.json)
         echo "App Version"
-        echo $GITHUB_ENV
+        echo $VERSION
+
+# trnsfering files to ec2 
 
     # - name: Deploy server to EC2
     #   env:
