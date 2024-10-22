@@ -18,7 +18,7 @@ app.use(logReqRes("logs.txt"))
 app.use(express.json());
 
 app.set('view engine', 'ejs');
-app.set('views', './src/views');
+app.set('views', './views');
 
 app.use("/", apiRouter)
 app.use("/api/auth",authRouter)

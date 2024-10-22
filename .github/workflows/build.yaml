@@ -54,10 +54,8 @@ jobs:
           key: ${{ secrets.EC2_KEY }}
           script: |
             cd ${{ secrets.TARGET_DIR }}
-            # npm install
-            # npm run build
+            npm install --production
             echo "SERVER_PORT=${{ secrets.SERVER_PORT }}" > .env
             echo "MONGO_URL=${{ secrets.MONGO_URL }}" >> .env
-            echo pwd >> .env
-            # pm2 restart build/index.js
+            pm2 restart build/index.js
             echo "Deployment updated on $(date '+%Y-%m-%d %H:%M:%S') by ${{ github.actor }}" >> ci-info.txt
