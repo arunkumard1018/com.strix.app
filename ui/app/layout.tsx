@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { geistMono, inter } from "./fonts/fonts";
 import "./globals.css";
+import { cn } from "@/lib/utils";
 
 
 
@@ -18,7 +19,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${inter.className} ${geistMono.variable} antialiased`}
+        className={cn(inter.className,geistMono.variable,"antialiased")}
       >
         {children}
       </body>

@@ -13,7 +13,7 @@ export default function Home() {
           <HeroComponent />
         </section>
         <section><SecondaryHero /></section>
-        <section className="px-2  bg-custome-black md:h-screen py-10"><Features/></section>
+        <section className="px-2  bg-custome-black md:h-screen py-10 mt-10"><Features/></section>
       </main>
       <Footer />
     </div>
