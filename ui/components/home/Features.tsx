@@ -14,7 +14,7 @@ function Features() {
         <div className='flex flex-col items-center space-y-10 pt-10  mt-10 w-[80vw] mx-auto py-auto text-white '>
             <div>
                 <p className='text-center text-xl md:text-3xl font-medium'>Comprehensive solutions for all your invoicing needs, effortlessly covered</p>
-                <p className='py-2 text-center text-muted'>Create polished, professional quotes for your clients that can quickly be turned into invoices—faster than you can say, Let's go!</p>
+                <p className='py-2 text-center text-muted'>Create polished, professional quotes for your clients that can quickly be turned into invoices—faster than you can say, Let&apos;s go!</p>
             </div>
             <Tabs defaultValue="Studio" className="flex-col items-center justify-items-center space-y-5 w-full ">
                 <TabsList className='flex  bg-[#1b1d20] rounded-full font-bold'>
@@ -50,7 +50,7 @@ export const FeatuesTabsContent = ({ value, image }: { value: string, image: str
                     </div>
                 </div>
                 <div className='md:w-1/2 space-y-5 '>
-                    <p className=''><span className='text-custome-orange'>Our tool allows</span> you to add your company logo, adjust colors, choose fonts, and personalize the layout to fit your unique style. You can create invoices that include all the necessary details, such as the client's contact information, itemized list of services or products, applicable taxes, payment terms, and due dates..</p>
+                    <p className=''><span className='text-custome-orange'>Our tool allows</span> you to add your company logo, adjust colors, choose fonts, and personalize the layout to fit your unique style. You can create invoices that include all the necessary details, such as the client&apos;s contact information, itemized list of services or products, applicable taxes, payment terms, and due dates..</p>
                     <div className='flex items-center space-x-4'>
                         <Image src="/svg/list-marker.svg" alt='svg' width={25} height={25} className='invert-[2]' />
                         <p className='text-sm'>Unlike many other invoicing tools, our platform does not add watermarks,</p>

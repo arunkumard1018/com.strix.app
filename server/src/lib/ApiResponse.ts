@@ -3,10 +3,10 @@ export interface ApiResponse<T> {
     time:string;
     message: string;
     data?: T; // Optional, will be present on success
-    error?: string; // Optional, will be present on error
+    error?: T; // Optional, will be present on error
 }
 
-export const ResponseEntity = <T>(status: 'success' | 'error', message: string, data?: T, error?: string): ApiResponse<T> => {
+export const ResponseEntity = <T>(status: 'success' | 'error', message: string, data?: T, error?: T): ApiResponse<T> => {
     return {
         status,
         time : Date(),

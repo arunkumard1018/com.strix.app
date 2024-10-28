@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Include the header partial -->
+<%- include('partials/head') %>
+
+    <body>
+        <%- include('partials/nav') %>
+            <div class="container">
+                <h1 class="mt-5">Welcome Strix Invoice Rest Services</h1>
+                <p>This is a Strix Invoice app Rest Services!</p>
+            </div>
+
+            <div class="container fs-4">
+                <p>Server Up Time : <%= uptime %>.</p>
+                <p>Status : <span class="text-success fw-bold">OK</span></p>
+                <p>App Version : <%= version %>
+                </p>
+            </div>
+
+            <hr>
+            <div class="container mt-0">
+                <h1>Sign In</h1>
+
+                <div class="container-google">
+                    <div class="mt-5">Sign In Using Google</div>
+                    <div class="g-signin2 mt-4" data-onsuccess="onSignIn"></div>
+                    <div class="mt-4">
+                        <div class="signout btn btn-primary"  onclick="signOut();">Sign out</div>
+                    </div>
+                </div>
+            </div>
+
+            <%- include('partials/footer') %>
+                <%- include('partials/scripts') %>
+
+                    <script src="https://apis.google.com/js/platform.js" async defer></script>
+                    <script>
+                        function onSignIn(googleUser) {
+                            var profile = googleUser.getBasicProfile();
+                            console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
+                            console.log('Name: ' + profile.getName());
+                            console.log('Image URL: ' + profile.getImageUrl());
+                            console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
+                        }
+                    </script>
+
+                    <script>
+                        function signOut() {
+                            var auth2 = gapi.auth2.getAuthInstance();
+                            auth2.signOut().then(function () {
+                                console.log('User signed out.');
+                            });
+                        }
+                    </script>
+    </body>
+
+</html>

@@ -11,4 +11,4 @@ type CreateUser = Omit<User, 'createdAt' | 'updatedAt'>;
 // Users Model
 const userModel = mongoose.model<User>("users", userSchema);
 
-export  {User,userModel};
+export  {User,userModel,CreateUser};
