@@ -1,12 +1,12 @@
+import cors from "cors";
 import dotenv from 'dotenv';
 import express from "express";
 import mongoose from "mongoose";
 import { authMiddleWare, logReqRes } from './middlewares';
 import { authRouter } from "./routes/auth";
 import apiRouter from './routes/info';
-import usersRouter from "./routes/users";
-import passport from 'passport';
-import cors from "cors";
+import { businessRouter } from "./routes/business";
+import { usersRouter } from "./routes/users";
 dotenv.config()
 
 
@@ -25,17 +25,22 @@ app.set('views', './views');
 /**Authentication Middleware */
 app.use(cors({
     origin: 'http://localhost:3000',
-    methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allowed methods
-    allowedHeaders: ['Content-Type', 'Authorization'], // Add other headers you need
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
 }));
 
-app.use(passport.initialize());
 
-/** Api Routes */
+/** Authentication Middleware */
+app.use(authMiddleWare)
+
+/**Api Routes By Default All routes are Protected 
+ * Expect the Public Routes Configured in authMiddleWare
+ */
 app.use("/", apiRouter)
 app.use("/api/auth", authRouter)
-app.use("/api/users", authMiddleWare, usersRouter)
+app.use("/api/users/info",usersRouter)
+app.use("/api/users/business",businessRouter)
 
 
 console.log("Conecting To Mongo DB Server....")

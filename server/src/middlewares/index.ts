@@ -8,27 +8,34 @@ import { ResponseEntity } from "../lib/ApiResponse";
 const authMiddleWare = (req: Request, res: Response, next: NextFunction) => {
     try {
 
-        const token = req.headers['authorization']?.split(' ')[1];
-        if (!token) {
-            res.status(HttpStatusCode.UNAUTHORIZED)
-                .json(ResponseEntity("error", "No Token", undefined, "Missing authentication token"));
-            return;
+        const publicPaths = ['/', '/health', '/api/auth/authenticate', '/api/auth/register', '/api/auth/google']
+        const currentPath = req.url;
+        if (publicPaths.includes(currentPath)) {
+            next();
+        } else {
+            const token = req.headers['authorization']?.split(' ')[1];
+            if (!token) {
+                res.status(HttpStatusCode.UNAUTHORIZED)
+                    .json(ResponseEntity("error", "No Token", undefined, "Missing authentication token"));
+                return;
+            }
+            const secretKey = process.env.JWT_SECRET_KEY!;
+            Jwt.verify(token, secretKey, (error, decoded) => {
+                if (!error && decoded && typeof decoded !== 'string') {
+                    req.authContext = {
+                        userEmail: decoded.email,
+                        userId: decoded.id,
+                    }
+                    logger.info(`Successfully Authenticated User ${req.authContext.userId} : ${req.authContext.userEmail}`)
+                    next();
+                } else {
+                    const name = error?.name || "Authentication Error"
+                    const message = error?.message || "Error While Authentication"
+                    res.status(HttpStatusCode.UNAUTHORIZED).json(ResponseEntity("error", name, undefined, message));
+                    return;
+                }
+            })
         }
-        const secretKey = process.env.JWT_SECRET_KEY!;
-        Jwt.verify(token, secretKey, (err, decoded) => {
-            if (err) {
-                res.status(HttpStatusCode.UNAUTHORIZED).json(ResponseEntity("error", err.name,undefined,err.message));
-                return;
-            }
-            if (decoded && typeof decoded !== 'string') {
-                req.userId = decoded.id;
-                logger.info(`Successfully Authenticated User ${req.userId}`)
-                next();
-            } else {
-                res.status(HttpStatusCode.UNAUTHORIZED).json(ResponseEntity("error", "Un authorized"));
-                return;
-            }
-        })
     } catch (error) {
         const message = (error as Error).message;
         res.status(HttpStatusCode.UNAUTHORIZED).json(ResponseEntity("error", "Unauthorized", undefined, message));

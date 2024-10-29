@@ -11,11 +11,10 @@ const ServerInfo = {
 }
 
 appInfoRouter.get('/', (req: Request, res: Response) => {
-
     res.render('index', ServerInfo);
 });
 
-appInfoRouter.get("/api/health", (req: Request, res: Response) => {
+appInfoRouter.get("/health", (req: Request, res: Response) => {
     res.json({ status: 'OK', uptime: process.uptime() });
 })
 
