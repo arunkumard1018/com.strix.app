@@ -5,7 +5,6 @@ import { cn } from "@/lib/utils";
 
 
 
-
 export const metadata: Metadata = {
   title: "Strix Invoice",
   description: "Manage invoices, track payments, and generate reports—all in one place. StrixInvoice makes running your business simple, fast, and stress-free",
@@ -19,7 +18,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning >
       <body
-        className={cn(inter.className,geistMono.variable,"antialiased")} suppressHydrationWarning 
+        className={cn(inter.className, geistMono.variable, "antialiased")} suppressHydrationWarning
       >
         {children}
       </body>

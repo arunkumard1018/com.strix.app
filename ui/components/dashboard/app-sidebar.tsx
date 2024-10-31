@@ -1,39 +1,46 @@
 "use client"
 
-import {
-  AudioWaveform,
-  BookOpen,
-  Bot,
-  Command,
-  Frame,
-  GalleryVerticalEnd,
-  Map,
-  PieChart,
-  Settings2,
-  SquareTerminal,
-} from "lucide-react"
-import * as React from "react"
-
-import { NavMain } from "@/components/dashboard/nav-main"
-import { NavProjects } from "@/components/dashboard/nav-projects"
-import { NavUser } from "@/components/dashboard/nav-user"
-import { TeamSwitcher } from "@/components/dashboard/team-switcher"
+import { getUsersInfo } from "@/api/auth";
+import { logoff } from "@/app/actions";
+import { NavFeatures } from "@/components/dashboard/nav-features";
+import { NavMain } from "@/components/dashboard/nav-main";
+import { NavUser } from "@/components/dashboard/nav-user";
+import { BusinessSwitcher } from "@/components/dashboard/team-switcher";
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
-  SidebarRail,
-} from "@/components/ui/sidebar"
+  SidebarRail
+} from "@/components/ui/sidebar";
+import { clearUser, setUserData } from "@/store/slices/userSlice";
+import { RootState } from "@/store/store";
+import {
+  AudioWaveform,
+  BookOpen,
+  Box,
+  Building2,
+  Command,
+  FileText,
+  GalleryVerticalEnd,
+  Map,
+  PieChart,
+  Settings2,
+  SquareTerminal,
+  Users
+} from "lucide-react";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+// import statuc
 
 // This is sample data.
-const data = {
+export const data = {
   user: {
-    name: "shadcn",
+    name: "user",
     email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
+    picture: "undefined",
   },
-  teams: [
+  business: [
     {
       name: "Acme Inc",
       logo: GalleryVerticalEnd,
@@ -52,99 +59,44 @@ const data = {
   ],
   navMain: [
     {
-      title: "Playground",
+      title: "Dashboard",
       url: "#",
       icon: SquareTerminal,
-      isActive: true,
-      items: [
-        {
-          title: "History",
-          url: "#",
-        },
-        {
-          title: "Starred",
-          url: "#",
-        },
-        {
-          title: "Settings",
-          url: "#",
-        },
-      ],
     },
     {
-      title: "Models",
+      title: "Invoices",
       url: "#",
-      icon: Bot,
-      items: [
-        {
-          title: "Genesis",
-          url: "#",
-        },
-        {
-          title: "Explorer",
-          url: "#",
-        },
-        {
-          title: "Quantum",
-          url: "#",
-        },
-      ],
+      icon: FileText,
     },
     {
-      title: "Documentation",
+      title: "Business",
       url: "#",
-      icon: BookOpen,
-      items: [
-        {
-          title: "Introduction",
-          url: "#",
-        },
-        {
-          title: "Get Started",
-          url: "#",
-        },
-        {
-          title: "Tutorials",
-          url: "#",
-        },
-        {
-          title: "Changelog",
-          url: "#",
-        },
-      ],
+      icon: Building2,
+    },
+    {
+      title: "Customers",
+      url: "#",
+      icon: Users,
+    },
+    {
+      title: "Products",
+      url: "#",
+      icon: Box,
     },
     {
       title: "Settings",
       url: "#",
       icon: Settings2,
-      items: [
-        {
-          title: "General",
-          url: "#",
-        },
-        {
-          title: "Team",
-          url: "#",
-        },
-        {
-          title: "Billing",
-          url: "#",
-        },
-        {
-          title: "Limits",
-          url: "#",
-        },
-      ],
     },
   ],
-  projects: [
+  features: [
     {
-      name: "Design Engineering",
+      name: "Documentation",
       url: "#",
-      icon: Frame,
+      icon: BookOpen,
     },
     {
-      name: "Sales & Marketing",
+      name: "Report",
       url: "#",
       icon: PieChart,
     },
@@ -157,19 +109,30 @@ const data = {
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+
+  const dispatch = useDispatch();
+  const authContext = useSelector((state: RootState) => state.authContext);
+  
+  const doLogout = async () => {
+    await logoff();
+    dispatch(clearUser())
+    window.location.href = "/auth/login";
+  }
+
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
-        <TeamSwitcher teams={data.teams} />
+        <BusinessSwitcher business={data.business} />
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
-        <NavProjects projects={data.projects} />
+        <NavFeatures projects={data.features} />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser user={authContext.user} logout={doLogout} />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>
   )
 }
+

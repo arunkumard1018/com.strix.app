@@ -19,10 +19,10 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar"
 
-export function TeamSwitcher({
-  teams,
+export function BusinessSwitcher({
+  business: teams,
 }: {
-  teams: {
+  business: {
     name: string
     logo: React.ElementType
     plan: string

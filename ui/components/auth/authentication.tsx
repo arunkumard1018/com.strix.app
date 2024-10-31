@@ -17,10 +17,8 @@ function RegisterOrLoginPage({ type, path, handleGoogleSignIn}: RegisterOrLoginP
                 <div className=" w-[370px] md:w-[390px] shadow-xl border border-gray-800 rounded-md space-y-4 py-10">
                     <h2 className='text-2xl font-extrabold mb-10'>{type === "signUp" ? "Create an Account" : "Sign  In to Strix Invoice"}</h2>
                     <div onClick={handleGoogleSignIn}><RegisterBtn text={type === "signUp" ? "Sign Up With Google" : "Sign In With Google"} logo='/img/social/google.png' /></div>
-                    <div><RegisterBtn text={type === "signUp" ? "Sign Up With Apple" : "Sign In With Apple"} logo='/img/social/apple.png' className="invert-[2]" /></div>
                     <div><RegisterBtn href={`${path}/email`} text={type === "signUp" ? "Sign Up With Email" : "Sign In With Email"} logo='/img/social/email.png' className="invert-[2]" /></div>
                 </div>
-
                 <div className='text-gray-400 space-y-2'>
                     <p>{type === "signUp" ? "Already Have an Account?" : "Don't Have an Acount Yet?"}</p>
                     <Link href={type === "signUp" ? "/auth/login" : "/auth/register"}>

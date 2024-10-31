@@ -7,6 +7,7 @@ import { authRouter } from "./routes/auth";
 import apiRouter from './routes/info';
 import { businessRouter } from "./routes/business";
 import { usersRouter } from "./routes/users";
+import cookieParser from "cookie-parser";
 dotenv.config()
 
 
@@ -32,6 +33,7 @@ app.use(cors({
 
 
 /** Authentication Middleware */
+app.use(cookieParser());
 app.use(authMiddleWare)
 
 /**Api Routes By Default All routes are Protected 
@@ -39,9 +41,8 @@ app.use(authMiddleWare)
  */
 app.use("/", apiRouter)
 app.use("/api/auth", authRouter)
-app.use("/api/users/info",usersRouter)
+// app.use("/api/users/info/me",usersRouter)
 app.use("/api/users/business",businessRouter)
-
 
 console.log("Conecting To Mongo DB Server....")
 

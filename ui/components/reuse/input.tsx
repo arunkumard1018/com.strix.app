@@ -7,7 +7,7 @@ interface CustomInputProps extends FieldProps {
     additionalInfo?: string;
 }
 
-const CustomInput: React.FC<CustomInputProps> = ({ field, form, placeholder, additionalInfo }) => {
+const CustomInput: React.FC<CustomInputProps> = ({ field, form, placeholder, additionalInfo}) => {
     const hasError = form.touched[field.name] && form.errors[field.name];
     const isFieldActive = form.values[field.name] !== ''; // Field is active if it has a value
 
@@ -20,8 +20,8 @@ const CustomInput: React.FC<CustomInputProps> = ({ field, form, placeholder, add
                 <p className='text-[0.6rem] text-left text-gray-500'>{additionalInfo}</p>
             }
             <input
-                type="text"
                 id={field.name}
+                type={field.name === "password" ? "password" : "text"}
                 placeholder={placeholder}
                 {...field}
                 className={classNames(

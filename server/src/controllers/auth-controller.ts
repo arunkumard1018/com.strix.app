@@ -10,7 +10,7 @@ import { loginSchema, userSchema } from '../schemas/UserSchema';
 import { createUser, finduser, getUserWithBusinessDetails } from "../service/users";
 
 
-const generateJwtToken = (userId : Id, email : string) : string => {
+const generateJwtToken = (userId: Id, email: string): string => {
     const secreatKey = process.env.JWT_SECRET_KEY!;
     const tokenExpiry = process.env.JWT_TOKEN_EXPIRY!;
     const token = jsonwebtoken.sign({ id: userId, email: email }, secreatKey, { expiresIn: tokenExpiry });
@@ -38,11 +38,15 @@ const handleUserRegister = async (req: Request, res: Response) => {
         delete user.createdAt;
         delete user.updatedAt;
         delete user.__v;
-        
-        const token = generateJwtToken(user._id,user.email);
-        
+
+        const token = generateJwtToken(user._id, user.email);
+        res.cookie("token", token, {
+            httpOnly: true,
+            sameSite: "strict",
+            maxAge: 3 * 60 * 60 * 1000,
+        });
         res.status(HttpStatusCode.CREATED)
-            .json(ResponseEntity("success", "User Created Successfully", {token, user:user}));
+            .json(ResponseEntity("success", "User Created Successfully", { token, user: user }));
 
     } catch (error: unknown) {
         if ((error as any).code === 11000) {
@@ -74,14 +78,19 @@ const handleAuthentication = async (req: Request, res: Response) => {
                 .json(ResponseEntity("error", "Authentication Failed", undefined, "Invalid Email or Password"));
             return;
         }
-        const token = generateJwtToken(user._id,user.email);
+        const token = generateJwtToken(user._id, user.email);
         const userDeatils = await getUserWithBusinessDetails(user._id);
+        res.cookie("token", token, {
+            httpOnly: true,
+            sameSite: "strict",
+            maxAge: 3 * 60 * 60 * 1000,
+        });
         res.status(HttpStatusCode.OK).json(ResponseEntity('success', "Authentication Successfull", { token, user: userDeatils }))
 
     } catch (error) {
         const message = (error as Error).message;
         logger.error(message);
-        res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json(ResponseEntity("error", "Authentication Failed", undefined, message))
+        res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json(ResponseEntity("error", "Authentication Failed", message))
     }
 }
 
@@ -101,7 +110,7 @@ const handleOAuth2Google = async (req: Request, res: Response) => {
         );
         const { id, name, email, picture } = userResponse.data;
         var token;
-        var userDeatils : any;
+        var userDeatils: any;
         const user = await finduser(email);
         if (user) {
             userDeatils = await getUserWithBusinessDetails(user._id);
@@ -114,10 +123,14 @@ const handleOAuth2Google = async (req: Request, res: Response) => {
             delete userDeatils.createdAt;
             delete userDeatils.updatedAt;
             delete userDeatils.__v;
-            
-            token = generateJwtToken(user._id,user.email);
-        }
 
+            token = generateJwtToken(user._id, user.email);
+        }
+        res.cookie("token", token, {
+            httpOnly: true,
+            sameSite: "strict",
+            maxAge: 3 * 60 * 60 * 1000,
+        });
         res.status(HttpStatusCode.OK).json(ResponseEntity('success', "Authentication Successfull", { token, userDeatils }))
 
     } catch (error) {
@@ -126,6 +139,28 @@ const handleOAuth2Google = async (req: Request, res: Response) => {
     }
 }
 
+const handleUsersInfo = async (req: Request, res: Response) => {
+    try {
+        const userId = req.authContext.userId;
+        const userInfo = await getUserWithBusinessDetails(userId);
+        res.status(HttpStatusCode.OK).json(ResponseEntity("success", "Authenticated User Info", { user: userInfo }))
+    } catch (error) {
+        logger.error(error)
+        res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json(ResponseEntity("success", "Authenticated User Info", (error as Error).message))
+    }
+}
 
-export { handleAuthentication, handleOAuth2Google, handleUserRegister };
+const handleLogout = async (req: Request, res: Response) => {
+    res.clearCookie("token", {
+        httpOnly: true,
+        sameSite: "strict" // SameSite attribute for added security
+    });
+    res.status(HttpStatusCode.OK).json(ResponseEntity("success", "Logged out successfully"));
+}
 
+export { handleAuthentication, handleOAuth2Google, handleUserRegister, handleLogout, handleUsersInfo };
+
+
+/**
+ * const token = req.cokkies.token; undifined if token not present
+ */
