@@ -12,6 +12,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem
 } from "@/components/ui/sidebar"
+import Link from "next/link"
 
 export function NavMain({
   items,
@@ -39,11 +40,13 @@ export function NavMain({
             className="group/collapsible"
           >
             <SidebarMenuItem>
+              <Link href={item.url}>
                 <SidebarMenuButton tooltip={item.title}>
                   {item.icon && <item.icon />}
                   <span>{item.title}</span>
                   <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
                 </SidebarMenuButton>
+              </Link>
             </SidebarMenuItem>
           </Collapsible>
         ))}

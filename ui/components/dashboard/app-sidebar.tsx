@@ -1,6 +1,5 @@
 "use client"
 
-import { getUsersInfo } from "@/api/auth";
 import { logoff } from "@/app/actions";
 import { NavFeatures } from "@/components/dashboard/nav-features";
 import { NavMain } from "@/components/dashboard/nav-main";
@@ -23,13 +22,13 @@ import {
   Command,
   FileText,
   GalleryVerticalEnd,
+  LayoutDashboard,
   Map,
   PieChart,
   Settings2,
-  SquareTerminal,
   Users
 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 // import statuc
 
@@ -60,22 +59,22 @@ export const data = {
   navMain: [
     {
       title: "Dashboard",
-      url: "#",
-      icon: SquareTerminal,
+      url: "/dashboard",
+      icon: LayoutDashboard,
     },
     {
       title: "Invoices",
-      url: "#",
+      url: "/dashboard/invoices",
       icon: FileText,
     },
     {
       title: "Business",
-      url: "#",
+      url: "/dashboard/business",
       icon: Building2,
     },
     {
       title: "Customers",
-      url: "#",
+      url: "/dashboard/customers",
       icon: Users,
     },
     {
@@ -113,6 +112,15 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const dispatch = useDispatch();
   const authContext = useSelector((state: RootState) => state.authContext);
   
+  useEffect(() => {
+    if (typeof window !== undefined && authContext.user === undefined) {
+      const data = window.localStorage.getItem("userData");
+      if (data  && data !== undefined) {
+        dispatch(setUserData(JSON.parse(data)))
+      }
+    }
+  }, [authContext.user,dispatch])
+
   const doLogout = async () => {
     await logoff();
     dispatch(clearUser())

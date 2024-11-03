@@ -11,7 +11,7 @@ function Features() {
         setcurrentFeature(name);
     }
     return (
-        <div className='flex flex-col items-center space-y-10 pt-10  mt-10 w-[80vw] mx-auto py-auto text-white '>
+        <div className='flex flex-col items-center w-[80vw] mx-auto py-auto text-white h-full '>
             <div>
                 <p className='text-center text-xl md:text-3xl font-medium'>Comprehensive solutions for all your invoicing needs, effortlessly covered</p>
                 <p className='py-2 text-center text-muted'>Create polished, professional quotes for your clients that can quickly be turned into invoices—faster than you can say, Let&apos;s go!</p>

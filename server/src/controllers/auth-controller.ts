@@ -117,24 +117,27 @@ const handleOAuth2Google = async (req: Request, res: Response) => {
             token = generateJwtToken(user._id, user.email);
         } else {
             const userData = { name, email, googleId: id, picture };
-            const createdUser = await createUser(userData);
-            userDeatils = createdUser.toObject ? createdUser.toObject() : createdUser;
-            delete userDeatils.password;
-            delete userDeatils.createdAt;
-            delete userDeatils.updatedAt;
-            delete userDeatils.__v;
+            const createdUser = await createUser(userData)
 
-            token = generateJwtToken(user._id, user.email);
+            const userInfo: any = createdUser.toObject ? createdUser.toObject() : createdUser;
+            delete userInfo.password;
+            delete userInfo.createdAt;
+            delete userInfo.updatedAt;
+            delete userInfo.__v;
+            delete userInfo.googleId;
+
+            token = generateJwtToken(userInfo._id, email);
+            userDeatils = userInfo;
         }
         res.cookie("token", token, {
             httpOnly: true,
             sameSite: "strict",
             maxAge: 3 * 60 * 60 * 1000,
         });
-        res.status(HttpStatusCode.OK).json(ResponseEntity('success', "Authentication Successfull", { token, userDeatils }))
+        res.status(HttpStatusCode.OK).json(ResponseEntity('success', "Authentication Successfull", { token, user: userDeatils }))
 
     } catch (error) {
-        logger.error(error)
+        logger.error("GOOGLE AUTH ERROR", error)
         res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json((error as Error).message);
     }
 }

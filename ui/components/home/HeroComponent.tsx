@@ -9,7 +9,7 @@ function HeroComponent() {
         <div className='space-y-4 md:space-y-0 md:flex items-center md:justify-between mx-2 md:h-[90vh] '>
             <div className='md:h-[80vh] w-auto md:w-2/5 flex items-center '><HeroBoxReveal className='w-full' /></div>
             <div className='w-full md:w-3/5 h-[50vh] md:h-[80vh] relative'>
-                <div className=''><Image alt='' src="/img/hero-img.jpg" fill /></div>
+                <div className=''><Image alt='' src="/img/hero-img.jpg" fill priority/></div>
             </div>
         </div>
     )

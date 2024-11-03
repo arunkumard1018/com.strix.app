@@ -15,7 +15,7 @@ const getUserWithBusinessDetails = async (userId: Id) => {
          * include from the Business collection (name and _id).
          * This will return only the name and _id fields of each associated Business, excluding all other fields.
          */
-        return userModel.findById(userId, { password: 0, __v: 0, updatedAt: 0 })
+        return userModel.findById(userId, { password: 0, __v: 0, updatedAt: 0,createdAt:0 , googleId:0})
                 .populate('business', 'name _id');
 }
 

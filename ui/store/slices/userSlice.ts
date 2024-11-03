@@ -28,18 +28,26 @@ const userSlice = createSlice({
     reducers: {
         setUserData(state, action: PayloadAction<UserData>) {
             state.user = action.payload;
+            if(typeof window !== undefined){
+                console.log("SETING DATA",action.payload)
+                window.localStorage.removeItem("userData")
+                window.localStorage.setItem("userData",JSON.stringify(action.payload))
+            }
         },
 
-        resetBusinessList(state) {
+        resetBusinessList() {
             // state.business = [];
         },
 
-        addBusiness(state, action: PayloadAction<Business>) {
+        addBusiness() {
             // state.business.push(action.payload)
         },
 
         clearUser(state) {
             state.user = undefined;
+            if(typeof window !== undefined){
+                window.localStorage.removeItem("userData")
+            }
         },
     },
 });

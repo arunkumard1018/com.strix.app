@@ -7,6 +7,7 @@ import * as Yup from "yup";
 import CustomInput from '../reuse/input';
 import { useRouter } from 'next/navigation';
 import { RegisterBtn } from '../reuse/custom-btns';
+import { registerUser } from '@/api/auth';
 
 const SignInSchema = Yup.object().shape({
   name: Yup.string().required("Name Required"),
@@ -58,11 +59,15 @@ const UserRegisterForm = () => {
     <Formik
       initialValues={initialValues}
       validationSchema={SignInSchema}
-      onSubmit={(values) => {
-        console.log('Form data', values);
-        if (values.name === "Arun") {
-          router.push("/")
+      onSubmit={async (values) => {
+        try {
+          const { name, email, password } = values;
+          await registerUser(name, email, password);
+        } catch (error) {
+          console.log("ERROR WHILE REGISTERTING",error)
         }
+        router.push("/")
+
       }}
     >
       {({ handleSubmit }) => (
