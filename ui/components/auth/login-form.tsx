@@ -36,14 +36,14 @@ function LoginForm({ handleGoogleSignIn }: { handleGoogleSignIn: () => void }) {
     const dispatch = useDispatch();
     const doLogin = async (email: string, password: string) => {
         try {
-            const response : ApiResponse<AuthResponse>  = await authenticate(email, password);
+            const response: ApiResponse<AuthResponse> = await authenticate(email, password);
             if (response.result) {
                 dispatch(setUserData(response.result.user));
                 router.push("/dashboard");
             }
         } catch (error) {
             if (error instanceof AxiosError) {
-                if(!error.response) setErrorMessage("Unable to Process Request Please Try again after some times");
+                if (!error.response) setErrorMessage("Unable to Process Request Please Try again after some times");
                 else setErrorMessage(error.response.data.error);
             }
             setIsError(true);
@@ -99,11 +99,13 @@ const UserLoginForm = ({ doLogin }: { doLogin: (email: string, password: string)
                 <Form onSubmit={handleSubmit}>
                     <div className='flex flex-col items-center space-y-4'>
                         <Field
+                            label="Email"
                             name="email"
                             placeholder="John@gmail.com"
                             component={CustomInput}
                         />
                         <Field
+                            label="Password"
                             name="password"
                             type='password'
                             placeholder="Password"

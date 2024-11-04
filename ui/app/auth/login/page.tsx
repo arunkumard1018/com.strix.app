@@ -22,6 +22,7 @@ function Page() {
         }
       }
     } catch (error) {
+      /**Alert to Be Implemented */
       console.error("Error While Fetching Login Code", (error as Error).message)
     }
   }

@@ -1,13 +1,16 @@
 "use client"
+import { AuthResponse, registerUser } from '@/api/auth';
 import { bebas_font } from '@/app/fonts/fonts';
 import { cn } from '@/lib/utils';
+import { setUserData } from '@/store/slices/userSlice';
+import { ApiResponse } from '@/types/api-responses';
 import { Field, Form, Formik } from "formik";
 import Link from 'next/link';
-import * as Yup from "yup";
-import CustomInput from '../reuse/input';
 import { useRouter } from 'next/navigation';
+import { useDispatch } from 'react-redux';
+import * as Yup from "yup";
 import { RegisterBtn } from '../reuse/custom-btns';
-import { registerUser } from '@/api/auth';
+import CustomInput from '../reuse/input';
 
 const SignInSchema = Yup.object().shape({
   name: Yup.string().required("Name Required"),
@@ -24,6 +27,21 @@ const initialValues = {
 };
 
 function RegisterForm({ handleGoogleSignIn }: { handleGoogleSignIn: () => void }) {
+  const dispatch = useDispatch();
+  const router = useRouter();
+  const handleRegisterUser = async (name: string, email: string, password: string) => {
+    try {
+      const response: ApiResponse<AuthResponse> = await registerUser(name, email, password);
+      if (response.result) {
+        console.log("SETING RESPONSE CONTEXT")
+        dispatch(setUserData(response.result?.user));
+        router.push("/dashboard")
+      }
+    } catch (error) {
+      /** Registerartion Form Errors to Be Implemented  */
+      console.log("Error While Registering", (error as Error).message)
+    }
+  }
   return (
     <div className='bg-custome-black min-h-screen flex items-center justify-center md:pt-10'>
       <div className='  text-center text-white '>
@@ -33,7 +51,7 @@ function RegisterForm({ handleGoogleSignIn }: { handleGoogleSignIn: () => void }
             <h2 className='text-2xl font-extrabold '>{"Create An Account"}</h2>
 
             {/* Add the Registeration Form */}
-            <UserRegisterForm />
+            <UserRegisterForm handleRegisterUser={handleRegisterUser} />
             <div>OR</div>
             <div onClick={handleGoogleSignIn} className='flex items-center justify-center'>
               <RegisterBtn text={"Continue With Google"} logo='/img/social/google.png' />
@@ -52,38 +70,37 @@ function RegisterForm({ handleGoogleSignIn }: { handleGoogleSignIn: () => void }
   )
 }
 
-const UserRegisterForm = () => {
-  const router = useRouter();
-  console.log(router)
+interface RegFormProps {
+  handleRegisterUser: (name: string, email: string, password: string) => void
+}
+
+const UserRegisterForm = ({ handleRegisterUser }: RegFormProps) => {
   return (
     <Formik
       initialValues={initialValues}
       validationSchema={SignInSchema}
-      onSubmit={async (values) => {
-        try {
-          const { name, email, password } = values;
-          await registerUser(name, email, password);
-        } catch (error) {
-          console.log("ERROR WHILE REGISTERTING",error)
-        }
-        router.push("/")
-
+      onSubmit={(values) => {
+        const { name, email, password } = values;
+        handleRegisterUser(name, email, password);
       }}
     >
       {({ handleSubmit }) => (
         <Form onSubmit={handleSubmit}>
           <div className='flex flex-col items-center space-y-4'>
             <Field
+              label="Full Name"
               name="name"
               placeholder="John Doe"
               component={CustomInput}
             />
             <Field
+              label="email"
               name="email"
               placeholder="John@gmail.com"
               component={CustomInput}
             />
             <Field
+              label="Password"
               name="password"
               type="password"
               additionalInfo="The password must be more than seven characters long and contain at least one uppercase character"

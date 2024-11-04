@@ -22,12 +22,13 @@ const authenticateGoogleCode = async (code: string) => {
         throw error;
     }
 }
+
 const registerUser = async (name:string, email:string, password:string) => {
     try {
         const response = await axiosClient.post("/api/auth/register",{name,email,password});
-        console.log(response.data);
-    } catch (error) {
-        console.log(error);
+        return response.data;
+    } catch (error:unknown) {
+        throw error;
     }
 
 }

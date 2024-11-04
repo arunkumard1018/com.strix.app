@@ -1,10 +1,11 @@
 "use client"
 import NavHeader from "@/components/dashboard/app-header";
 import { AppSidebar } from "@/components/dashboard/app-sidebar";
+import OnboardingPage from "@/components/dashboard/onboarding";
 import { ThemeProvider } from "@/components/themes/theme-provider";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
-import { store } from "@/store/store";
-import { Provider } from 'react-redux';
+import { RootState, store } from "@/store/store";
+import { Provider, useSelector } from 'react-redux';
 
 export default function Layout({ children }: { children: React.ReactNode }): React.JSX.Element {
     return (
@@ -19,7 +20,7 @@ export default function Layout({ children }: { children: React.ReactNode }): Rea
 export function Dashboardlayout({ children }: { children: React.ReactNode }) {
     // const [loading, setLoading] = useState(false)
     // const dispatch = useDispatch();
-    // const authContext = useSelector((state: RootState) => state.authContext);
+    const authContext = useSelector((state: RootState) => state.authContext);
     // const loadUserData = async () => {
     //     setLoading(true)
     //     try {
@@ -42,6 +43,7 @@ export function Dashboardlayout({ children }: { children: React.ReactNode }) {
 
     return (
         <>
+            {authContext.user?.business.length === 0 ? <div><OnboardingPage/></div> :
                 <SidebarProvider>
                     <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
                         <AppSidebar />
@@ -51,6 +53,7 @@ export function Dashboardlayout({ children }: { children: React.ReactNode }) {
                         </SidebarInset>
                     </ThemeProvider>
                 </SidebarProvider>
+            }
         </>
     )
 }

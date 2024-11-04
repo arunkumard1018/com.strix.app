@@ -12,7 +12,7 @@ import {
   SidebarHeader,
   SidebarRail
 } from "@/components/ui/sidebar";
-import { clearUser, setUserData } from "@/store/slices/userSlice";
+import { addBusiness, clearUser, setUserData } from "@/store/slices/userSlice";
 import { RootState } from "@/store/store";
 import {
   AudioWaveform,
@@ -117,6 +117,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       const data = window.localStorage.getItem("userData");
       if (data  && data !== undefined) {
         dispatch(setUserData(JSON.parse(data)))
+        dispatch(addBusiness({_id:5442627,name:"Strix Invoice"}))
       }
     }
   }, [authContext.user,dispatch])
@@ -130,7 +131,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
-        <BusinessSwitcher business={data.business} />
+        <BusinessSwitcher />
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
