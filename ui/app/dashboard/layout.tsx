@@ -1,11 +1,13 @@
 "use client"
-import NavHeader from "@/components/dashboard/app-header";
-import { AppSidebar } from "@/components/dashboard/app-sidebar";
-import OnboardingPage from "@/components/dashboard/onboarding";
+import NavHeader from "@/components/dashboard/layout/app-header";
+import { AppSidebar } from "@/components/dashboard/layout/app-sidebar";
+import OnboardingPage from "@/components/dashboard/layout/onboarding";
 import { ThemeProvider } from "@/components/themes/theme-provider";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import { setActiveBusiness, setUserData } from "@/store/slices/userSlice";
 import { RootState, store } from "@/store/store";
-import { Provider, useSelector } from 'react-redux';
+import { useEffect } from "react";
+import { Provider, useDispatch, useSelector } from 'react-redux';
 
 export default function Layout({ children }: { children: React.ReactNode }): React.JSX.Element {
     return (
@@ -16,43 +18,37 @@ export default function Layout({ children }: { children: React.ReactNode }): Rea
 }
 
 
-
 export function Dashboardlayout({ children }: { children: React.ReactNode }) {
-    // const [loading, setLoading] = useState(false)
-    // const dispatch = useDispatch();
+    const dispatch = useDispatch();
     const authContext = useSelector((state: RootState) => state.authContext);
-    // const loadUserData = async () => {
-    //     setLoading(true)
-    //     try {
-    //         const response = await getUsersInfo()
-    //         console.log(response);
-    //         dispatch(setUserData(response.data.user))
-    //     } catch (error) {
-    //         console.log(error)
-    //     } finally {
-    //         setLoading(false);
-    //     }
-    // }
 
-    // useEffect(() => {
-    //     if (!authContext.user) {
-    //         loadUserData()
-    //     }
-    // }, [])
-
-
+    useEffect(() => {
+        if (typeof window !== undefined && authContext.user === undefined) {
+            const data = window.localStorage.getItem("userData");
+            if (data && data !== undefined) {
+                dispatch(setUserData(JSON.parse(data)))
+            }
+            const activeBusiness = window.localStorage.getItem("activeBusiness");
+            if (activeBusiness && activeBusiness != undefined) {
+                dispatch(setActiveBusiness(JSON.parse(activeBusiness)))
+            }
+        }
+    }, [authContext.user, dispatch])
+    console.log(authContext.activeBusiness._id)
     return (
         <>
-            {authContext.user?.business.length === 0 ? <div><OnboardingPage/></div> :
-                <SidebarProvider>
-                    <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-                        <AppSidebar />
-                        <SidebarInset>
-                            <NavHeader />
-                            <div className="mt-20">{children}</div>
-                        </SidebarInset>
-                    </ThemeProvider>
-                </SidebarProvider>
+            {authContext.user === undefined ? <div className="text-center mt-20">Loading...</div> :
+                authContext.user?.business === undefined || authContext.user?.business.length === 0 ? <div><OnboardingPage /></div> :
+                    <SidebarProvider>
+                        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+                            <AppSidebar />
+                            <SidebarInset>
+                                <NavHeader />
+                                <div className="mt-20">{children}</div>
+                            </SidebarInset>
+                        </ThemeProvider>
+                    </SidebarProvider>
+
             }
         </>
     )

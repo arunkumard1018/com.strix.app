@@ -9,7 +9,7 @@ const addressSchema = Joi.object({
     city: Joi.string().required().messages({
         "string.empty": "City is required",
     }),
-    zip: Joi.number().integer().required().messages({
+    postalCode: Joi.number().integer().required().messages({
         "number.base": "Zip must be a number",
         "any.required": "Zip is required",
     }),
@@ -27,6 +27,10 @@ const businessSchema = Joi.object({
         "string.email": "Please enter a valid email address",
     }),
     logo: Joi.string().optional(),
+    catagory: Joi.string().valid("Transport", "Retail", "Enterprise").required(),
+    GSTIN : Joi.string().optional(),
+    HSN : Joi.number().integer().optional(),
+    stateCode: Joi.number().integer().optional(),
     address: addressSchema
 });
 

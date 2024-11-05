@@ -1,7 +1,7 @@
 import { authenticate, AuthResponse } from '@/api/auth';
 import { bebas_font } from '@/app/fonts/fonts';
 import { cn } from '@/lib/utils';
-import { setUserData } from '@/store/slices/userSlice';
+import { setActiveBusiness, setUserData } from '@/store/slices/userSlice';
 import { ApiResponse } from '@/types/api-responses';
 import { AxiosError } from 'axios';
 import { Field, Form, Formik } from "formik";
@@ -39,12 +39,16 @@ function LoginForm({ handleGoogleSignIn }: { handleGoogleSignIn: () => void }) {
             const response: ApiResponse<AuthResponse> = await authenticate(email, password);
             if (response.result) {
                 dispatch(setUserData(response.result.user));
+                if(response.result.user.business.length !== 0){
+                    dispatch(setActiveBusiness(response.result.user.business[0]))
+                }
                 router.push("/dashboard");
             }
         } catch (error) {
             if (error instanceof AxiosError) {
                 if (!error.response) setErrorMessage("Unable to Process Request Please Try again after some times");
-                else setErrorMessage(error.response.data.error);
+                else if (error.status === 401) setErrorMessage(error.response.data.error);
+                else setErrorMessage(error.response.data.message)
             }
             setIsError(true);
         }
@@ -85,14 +89,19 @@ function LoginForm({ handleGoogleSignIn }: { handleGoogleSignIn: () => void }) {
 
 
 const UserLoginForm = ({ doLogin }: { doLogin: (email: string, password: string) => Promise<void> }) => {
-
+    const [loading, setLoading] = useState(false)
     return (
         <Formik
             initialValues={initialValues}
             validationSchema={SignInSchema}
             onSubmit={async (values) => {
-                const { email, password } = values;
-                await doLogin(email, password);
+                try {
+                    setLoading(true)
+                    const { email, password } = values;
+                    await doLogin(email, password);
+                } finally {
+                    setLoading(false)
+                }
             }}
         >
             {({ handleSubmit }) => (
@@ -112,10 +121,11 @@ const UserLoginForm = ({ doLogin }: { doLogin: (email: string, password: string)
                             component={CustomInput}
                         />
                         <button
+                            disabled={loading && true}
                             type="submit"
-                            className="mt-4 w-[320px] py-2 px-4 bg-[#7898ff] text-black rounded font-medium"
+                            className={cn("mt-4 w-[320px] py-2 px-4 bg-[#7898ff] text-black rounded font-medium",loading&&"bg-gray-600")}
                         >
-                            Login
+                            {!loading ? "Login" : "Logging In...."}
                         </button>
                     </div>
                 </Form>

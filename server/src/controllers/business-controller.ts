@@ -5,6 +5,7 @@ import { HttpStatusCode } from "../lib/status-codes";
 import { Business, CreateBusiness } from "../model/business";
 import { businessSchema } from "../schemas/businessShema";
 import { createBusiness, getAllBusinessForUser, getBusinessWithId, } from "../service/business";
+import mongoose from "mongoose";
 
 const handleAddBusiness = async (req: Request, res: Response) => {
     const userId = req.authContext.userId;
@@ -18,6 +19,7 @@ const handleAddBusiness = async (req: Request, res: Response) => {
         }
         const business: CreateBusiness = req.body;
         business.owner = userId;
+        business.logo = "https://raw.githubusercontent.com/arunkumard1018/com.strix/refs/heads/main/public/icons/nav-logo-text-black.png"
         const createdBusiness = await createBusiness(business);
         res.status(HttpStatusCode.CREATED).json(ResponseEntity("success", "Business Created", createdBusiness))
     } catch (error) {
@@ -40,11 +42,12 @@ const handleGetAllBusiness = async (req: Request, res: Response) => {
 
 const handleGetBusinessWithId = async (req: Request, res: Response) => {
     try {
-        const userId = req.authContext.userId;
+        const userId : mongoose.Types.ObjectId = req.authContext.userId;
         const { businessId } = req.params;
-        const business: Business | any = await getBusinessWithId(userId);
-        if (!business || business && !business.owner !== userId) {
-            res.status(HttpStatusCode.FORBIDDEN).json(ResponseEntity("error", "Access Denied", undefined, "Less Privilages"));
+        console.log(businessId, " USER ID ",userId)
+        const business: Business | any = await getBusinessWithId(businessId,userId);
+        if(!business){
+            res.status(HttpStatusCode.NOT_FOUND).json(ResponseEntity("error", "Resource Not Found", undefined, `Business with id ${businessId} not found.`));
             return;
         }
         // Convert Mongoose document to plain JavaScript object

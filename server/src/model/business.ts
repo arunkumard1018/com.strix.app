@@ -5,10 +5,18 @@ const businessSchema = new mongoose.Schema({
     owner: { type: mongoose.Schema.Types.ObjectId, ref: "users", required: true },
     email: { type: String },
     logo: { type: String },
+    catagory: { 
+        type: String, 
+        enum: ["Transport", "Retail", "Enterprise"],
+        required: true 
+    },
+    GSTIN :{type:String},
+    HSN :{type:Number},
+    stateCode : {type:Number},
     address: {
         street: { type: String },
         city: { type: String },
-        zip: { type: Number },
+        postalCode : { type: Number },
         state: { type: String }
     }
 

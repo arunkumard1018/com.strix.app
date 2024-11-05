@@ -30,11 +30,11 @@ const createBusiness = async (businessData: CreateBusiness) => {
 }
 
 const getAllBusinessForUser = async (usersId: Id) => {
-    return businessModel.find({ owner: usersId},{name:1,});
+    return businessModel.find({ owner: usersId},{address:0,owner:0,__v:0,createdAt:0,updatedAt:0});
 }
 
-const getBusinessWithId = async (businessId : Id) => {
-    return businessModel.findOne({_id:businessId},{__v:0,createdAt:0,updatedAt:0});
+const getBusinessWithId = async (businessId : Id, userId : Id) => {
+    return businessModel.findOne({_id:businessId,owner:userId},{__v:0,createdAt:0,updatedAt:0});
 }
 
 

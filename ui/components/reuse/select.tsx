@@ -37,7 +37,7 @@ const CustomSelect: React.FC<CustomInputProps> = ({ field, form, placeholder, se
                 )}>
                 <option value="" className='max-w-[320px]' >{placeholder}</option>
                 {selectOptions.map((item) => (
-                    <option key={item} value={item} className='max-w-[320px]'>
+                    <option key={item} value={item} className=''>
                         {item}
                     </option>
                 ))}
