@@ -44,7 +44,9 @@ export function Dashboardlayout({ children }: { children: React.ReactNode }) {
                             <AppSidebar />
                             <SidebarInset>
                                 <NavHeader />
-                                <div className="mt-20">{children}</div>
+                                <div className="mt-20">
+                                    {children}
+                                </div>
                             </SidebarInset>
                         </ThemeProvider>
                     </SidebarProvider>
