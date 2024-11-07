@@ -19,5 +19,3 @@ export default function Home() {
     </div>
   );
 }
-
-// mx-4 sm:mx-20 md:mx-48 lg:px-60

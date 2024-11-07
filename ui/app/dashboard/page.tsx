@@ -1,8 +1,8 @@
 "use client"
 
-import { LatestInvoicesTable, Transactions } from "@/components/dashboard/business/business-table"
 import { DashboardLineChart } from "@/components/dashboard/charts/dashboard-line-chart"
 import { Component } from "@/components/dashboard/charts/pie-chart"
+import { LatestInvoicesTable, Transactions } from "@/components/dashboard/page/latest-invoice"
 
 export default function Page() {
   return (

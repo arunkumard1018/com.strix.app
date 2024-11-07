@@ -25,22 +25,22 @@ const CustomSelect: React.FC<CustomInputProps> = ({ field, form, placeholder, se
                 id={field.name}
                 {...field}
                 className={classNames(
-                    'w-full py-2 px-2 border rounded-sm outline-none', // Base styles
+                    'w-full py-2 px-2 border  outline-none', // Base styles
                     {
                         // Default state styles
-                        'bg-custome-dark text-white border-gray-800': !hasError || isFieldActive,
+                        'bg-background  border-gray-800': !hasError || isFieldActive,
                         // Focus state styles
-                        'focus:border-blue-500 focus:bg-custome-dark focus:text-white': true,
+                        'focus:border-blue-500 focus:bg-background': true,
                         // Error state styles
-                        'bg-[#24161b] border-[#5e1f1d] text-[#7d141b]': hasError && !isFieldActive,
+                        'bg-background border-[#5e1f1d] text-[#7d141b]': hasError && !isFieldActive,
                     }
                 )}>
-                <option value="" className='max-w-[320px]' >{placeholder}</option>
-                {selectOptions.map((item) => (
-                    <option key={item} value={item} className=''>
-                        {item}
-                    </option>
-                ))}
+                    <option value="" className='max-w-[320px] rounded-none' >{placeholder}</option>
+                    {selectOptions.map((item) => (
+                        <option key={item} value={item} className='bg-background rounded-none'>
+                            {item}
+                        </option>
+                    ))}
             </select>
             <ErrorMessage name={field.name} component="span" className="text-[#fdafa8]" />
         </div>

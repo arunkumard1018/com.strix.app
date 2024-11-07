@@ -49,7 +49,12 @@ const userSlice = createSlice({
 
         addBusiness(state, action: PayloadAction<Business>) {
             state.user?.business.push(action.payload)
+            if (typeof window !== undefined) {
+                window.localStorage.removeItem("userData")
+                window.localStorage.setItem("userData", JSON.stringify(state.user))
+            }
         },
+
         setActiveBusiness(state, action:PayloadAction<Business>){
             state.activeBusiness = action.payload;
             if (typeof window !== undefined) {

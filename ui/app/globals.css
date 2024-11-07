@@ -86,8 +86,8 @@ input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,
 input:-webkit-autofill:active {
-    -webkit-box-shadow: 0 0 0 30px #13141b inset !important; /* Your custom dark background */
-    -webkit-text-fill-color: white !important; /* Custom white text color */
+    -webkit-box-shadow: 0 0 0 0px var(--background) inset !important; /* Your custom dark background */
+    -webkit-text-fill-color: var(--background)  !important; /* Custom white text color */
     /* Matching the border color with your custom background */
     border: 1px solid #1a1a1a; 
     border-radius: 0px ;

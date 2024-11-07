@@ -1,7 +1,8 @@
 
 function Page() {
   return (
-    <div className='px-10'>
+    <div className='px-10 text-center'>
+      List Of Business
     </div>
   )
 }

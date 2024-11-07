@@ -4,36 +4,35 @@ import classNames from 'classnames';
 
 interface CustomInputProps extends FieldProps {
     placeholder: string;
-    label : string;
     additionalInfo?: string;
 }
 
-const CustomInput: React.FC<CustomInputProps> = ({ field, form, placeholder, additionalInfo, label}) => {
+const CustomInputAuth: React.FC<CustomInputProps> = ({ field, form, placeholder, additionalInfo }) => {
     const hasError = form.touched[field.name] && form.errors[field.name];
-    const isFieldActive = form.values[field.name] !== ''; // Field is active if it has a value
+    const isFieldActive = form.values[field.name] !== '';
 
     return (
-        <div className="flex flex-col items-start justify-center w-[320px]  space-y-1 bg-background">
+        <div className="flex flex-col items-start justify-center w-[320px]  space-y-1">
             <label className="font-medium capitalize" htmlFor={field.name}>
-                {label}
+                {field.name}
             </label>
             {additionalInfo &&
                 <p className='text-[0.6rem] text-left text-gray-500'>{additionalInfo}</p>
             }
             <input
+                type="text"
                 id={field.name}
-                type={field.name === "password" ? "password" : "text"}
                 placeholder={placeholder}
                 {...field}
                 className={classNames(
-                    'w-full py-2 px-2 border outline-none', // Base styles
+                    'w-full py-2 px-2 border rounded-sm outline-none', // Base styles
                     {
                         // Default state styles
-                        'bg-background  border-gray-800': !hasError || isFieldActive,
+                        'bg-custome-dark text-white border-gray-800': !hasError || isFieldActive,
                         // Focus state styles
-                        'focus:border-blue-500 focus:bg-background ': true,
+                        'focus:border-blue-500 focus:bg-custome-dark focus:text-white': true,
                         // Error state styles
-                        'bg-background border-[#5e1f1d] text-[#7d141b]': hasError && !isFieldActive,
+                        'bg-[#24161b] border-[#5e1f1d] text-[#7d141b]': hasError && !isFieldActive,
                     }
                 )}
             />
@@ -42,4 +41,4 @@ const CustomInput: React.FC<CustomInputProps> = ({ field, form, placeholder, add
     );
 };
 
-export default CustomInput;
+export default CustomInputAuth;

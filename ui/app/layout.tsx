@@ -1,7 +1,7 @@
+import { cn } from "@/lib/utils";
 import type { Metadata } from "next";
 import { geistMono, inter } from "./fonts/fonts";
 import "./globals.css";
-import { cn } from "@/lib/utils";
 
 
 
@@ -20,7 +20,7 @@ export default function RootLayout({
       <body
         className={cn(inter.className, geistMono.variable, "antialiased")} suppressHydrationWarning
       >
-        {children}
+          {children}
       </body>
     </html>
   );

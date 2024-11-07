@@ -39,7 +39,7 @@ function LoginForm({ handleGoogleSignIn }: { handleGoogleSignIn: () => void }) {
             const response: ApiResponse<AuthResponse> = await authenticate(email, password);
             if (response.result) {
                 dispatch(setUserData(response.result.user));
-                if(response.result.user.business.length !== 0){
+                if (response.result.user.business.length !== 0) {
                     dispatch(setActiveBusiness(response.result.user.business[0]))
                 }
                 router.push("/dashboard");
@@ -58,7 +58,7 @@ function LoginForm({ handleGoogleSignIn }: { handleGoogleSignIn: () => void }) {
         <div className='bg-custome-black md:h-screen'>
             <div className='h-screen flex pt-20  md:pt-0 md:items-center justify-center text-center text-white '>
                 <div className='space-y-6 mx-2'>
-                    <h1 className={cn(bebas_font.className, "p-0 m-0 text-4xl text-red-400 tracking-widest")}>STRIX INVOICE</h1>
+                    <a href="/" className='cursor-pointer'><h1 className={cn(bebas_font.className, "p-0 m-0 text-4xl text-red-400 tracking-widest")}>STRIX INVOICE</h1></a>
                     {isError &&
                         <Alert variant="destructive">
                             <AlertCircle className="h-4 w-4" />
@@ -68,6 +68,7 @@ function LoginForm({ handleGoogleSignIn }: { handleGoogleSignIn: () => void }) {
                         </Alert>
                     }
                     <div className=" w-[370px] md:w-[390px] shadow-xl border border-gray-800 rounded-md space-y-4 py-10">
+
                         <h2 className='text-2xl font-extrabold mb-10'>{"Sign In"}</h2>
                         <UserLoginForm doLogin={doLogin} />
                         <div>OR</div>
@@ -123,7 +124,7 @@ const UserLoginForm = ({ doLogin }: { doLogin: (email: string, password: string)
                         <button
                             disabled={loading && true}
                             type="submit"
-                            className={cn("mt-4 w-[320px] py-2 px-4 bg-[#7898ff] text-black rounded font-medium",loading&&"bg-gray-600")}
+                            className={cn("mt-4 w-[320px] py-2 px-4 bg-[#7898ff] text-black rounded font-medium", loading && "bg-gray-600")}
                         >
                             {!loading ? "Login" : "Logging In...."}
                         </button>
