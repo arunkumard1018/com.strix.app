@@ -9,11 +9,11 @@ export default function Home() {
     <div className="">
       <NavBar />
       <main>
-        <section className="mt-32 md:mt-20  w-[80vw] mx-auto" >
-          <HeroComponent />
+        <section className="bg-white">
+          <div className="mt-32 md:mt-20  w-[80vw] mx-auto " ><HeroComponent /></div>
         </section>
         <section><SecondaryHero /></section>
-        <section className="px-2  bg-custome-black py-20 mt-10"><Features/></section>
+        <section className="px-2  bg-custome-black py-20 mt-10"><Features /></section>
       </main>
       <Footer />
     </div>

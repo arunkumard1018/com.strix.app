@@ -1,7 +1,6 @@
 "use client"
 
 import { ChevronsUpDown, Plus } from "lucide-react"
-import * as React from "react"
 
 import {
   DropdownMenu,
@@ -23,17 +22,19 @@ import Image from "next/image"
 import { useDispatch, useSelector } from "react-redux"
 import { setActiveBusiness } from "@/store/slices/userSlice"
 import Link from "next/link"
+import { useState } from "react"
 
 export function BusinessSwitcher() {
   const authContext = useSelector((state: RootState) => state.authContext);
+  const [isDropDownOpen, setisDropDownOpen] = useState(false)
   const { isMobile } = useSidebar()
   const dispatch = useDispatch()
-  const [activeTeam, setActiveTeam] = React.useState(authContext.activeBusiness)
+  const [activeTeam, setActiveTeam] = useState(authContext.activeBusiness)
   return (
     <SidebarMenu>
       <SidebarMenuItem>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
+        <DropdownMenu open={isDropDownOpen}>
+          <DropdownMenuTrigger asChild onClick={() => setisDropDownOpen(true)} >
             <SidebarMenuButton
               size="lg"
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
@@ -55,14 +56,14 @@ export function BusinessSwitcher() {
             align="start"
             side={isMobile ? "bottom" : "right"}
             sideOffset={4}
+            onClick={() => setisDropDownOpen(false)}
           >
             <DropdownMenuLabel className="text-xs text-muted-foreground">
               Teams
             </DropdownMenuLabel>
             {authContext.user?.business?.map((team, index) => (
-              <Link href={`/dashboard/business/add-business/${team._id}`} key={team._id}>
                 <DropdownMenuItem
-                  key={team.name}
+                  key={team._id}
                   onClick={() => {
                     setActiveTeam(team);
                     dispatch(setActiveBusiness(team))
@@ -75,7 +76,6 @@ export function BusinessSwitcher() {
                   {team.name}
                   <DropdownMenuShortcut>⌘{index + 1}</DropdownMenuShortcut>
                 </DropdownMenuItem>
-              </Link>
             ))}
             <DropdownMenuSeparator />
             <DropdownMenuItem className="gap-2 p-2">

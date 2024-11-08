@@ -40,7 +40,7 @@ function Page() {
             logo: response.result.logo,
         }
         dispatch(addBusiness(business))
-        router.push("/dashboard")
+        router.push("/dashboard/business")
     }
     } catch (error) {
       if (error instanceof AxiosError) {

@@ -13,3 +13,13 @@ export interface BusinessModel{
     logo:string;
     address : AddressModel;
 }
+export interface BusinessData{
+    _id:string;
+    name : string;
+    catagory : string;
+    GSTIN : string | undefined;
+    stateCode : number | undefined;
+    HSN : number | undefined;
+    logo:string;
+    address : AddressModel;
+}

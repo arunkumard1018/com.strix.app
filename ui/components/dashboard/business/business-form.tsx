@@ -1,6 +1,7 @@
 "use client"
 import CustomInput from '@/components/reuse/input';
 import CustomSelect from '@/components/reuse/select';
+import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { Field, Form, Formik } from "formik";
 import * as Yup from "yup";
@@ -33,10 +34,11 @@ const BusinessFormSchema = Yup.object().shape({
 interface OnBoardingFormProps {
     handleBusinessFormData: (values: BusinessFormData) => void;
     initialValues: BusinessFormData;
-    className ? :string; 
+    className ? :string;
+    type ?: "Update" | "Create"
 }
 
-export const BusinessForm = ({ handleBusinessFormData, initialValues,className }: OnBoardingFormProps) => {
+export const BusinessForm = ({ handleBusinessFormData, initialValues,className, type="Create" }: OnBoardingFormProps) => {
     return (
         <Formik
             initialValues={initialValues}
@@ -103,12 +105,12 @@ export const BusinessForm = ({ handleBusinessFormData, initialValues,className }
                             placeholder="577885"
                             component={CustomInput}
                         />
-                        <button
+                        <Button
                             type="submit"
-                            className="mt-4 w-[320px] py-2 px-4 bg-[#7898ff] text-black rounded font-medium"
+                            className="mt-4 w-[320px] py-2 px-4 bg-[#7898ff] text-white font-medium"
                         >
-                            Create Business
-                        </button>
+                            {`${type} Business`}
+                        </Button>
                     </div>
                 </Form>
             )}

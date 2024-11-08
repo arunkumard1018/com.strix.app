@@ -54,6 +54,21 @@ const userSlice = createSlice({
                 window.localStorage.setItem("userData", JSON.stringify(state.user))
             }
         },
+        updateBusinessList(state, action: PayloadAction<Business>) {
+            const updatedBusiness = action.payload;
+            if (state.user) {
+                const businessIndex = state.user.business.findIndex(b => b._id === updatedBusiness._id);
+                if (businessIndex !== -1) {
+                    state.user.business[businessIndex] = updatedBusiness;
+                    if (typeof window !== "undefined") {
+                        window.localStorage.setItem("userData", JSON.stringify(state.user));
+                    }
+                }
+                // if(state.activeBusiness._id === updatedBusiness._id){
+                //     setActiveBusiness(updatedBusiness)
+                // }
+            }
+        },
 
         setActiveBusiness(state, action:PayloadAction<Business>){
             state.activeBusiness = action.payload;
@@ -73,6 +88,6 @@ const userSlice = createSlice({
     },
 });
 
-export const { setUserData, clearUser, resetBusinessList, addBusiness, setActiveBusiness } = userSlice.actions;
+export const { setUserData, clearUser, resetBusinessList, addBusiness, setActiveBusiness,updateBusinessList } = userSlice.actions;
 export default userSlice.reducer;
 
