@@ -2,9 +2,10 @@ import mongoose, { InferSchemaType } from "mongoose";
 
 const businessSchema = new mongoose.Schema({
     name: { type: String, required: true },
-    owner: { type: mongoose.Schema.Types.ObjectId, ref: "users", required: true },
     email: { type: String },
+    phone:{type:Number, required:true},
     logo: { type: String },
+    invoicePrefix: {type:String},
     catagory: { 
         type: String, 
         enum: ["Transport", "Retail", "Enterprise"],
@@ -18,7 +19,10 @@ const businessSchema = new mongoose.Schema({
         city: { type: String },
         postalCode : { type: Number },
         state: { type: String }
-    }
+    },
+    owner: { type: mongoose.Schema.Types.ObjectId, ref: "users", required: true },
+
+    customers: [{ type: mongoose.Schema.Types.ObjectId, ref: "customers" }]
 
 }, { timestamps: true })
 

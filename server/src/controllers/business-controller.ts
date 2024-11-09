@@ -1,11 +1,11 @@
 import { Request, Response } from "express";
+import mongoose from "mongoose";
 import { ResponseEntity } from "../lib/ApiResponse";
 import logger from "../lib/logConfig";
 import { HttpStatusCode } from "../lib/status-codes";
 import { Business, CreateBusiness } from "../model/business";
 import { businessSchema } from "../schemas/businessShema";
-import { createBusiness, getAllBusinessForUser, getBusinessWithId, } from "../service/business";
-import mongoose from "mongoose";
+import { createBusiness, deleteBusinessWithID, getAllBusinessForUser, getBusinessWithId, updateBusiness, } from "../service/business";
 
 const handleAddBusiness = async (req: Request, res: Response) => {
     const userId = req.authContext.userId;
@@ -19,9 +19,29 @@ const handleAddBusiness = async (req: Request, res: Response) => {
         }
         const business: CreateBusiness = req.body;
         business.owner = userId;
-        business.logo = "https://raw.githubusercontent.com/arunkumard1018/com.strix/refs/heads/main/public/icons/nav-logo-text-black.png"
         const createdBusiness = await createBusiness(business);
         res.status(HttpStatusCode.CREATED).json(ResponseEntity("success", "Business Created", createdBusiness))
+    } catch (error) {
+        res.status(HttpStatusCode.INTERNAL_SERVER_ERROR)
+            .json(ResponseEntity("error", "Error While Creating Business", undefined, (error as Error).message));
+    }
+}
+
+const handleUpdateBusiness = async (req: Request, res: Response) => {
+    const userId = req.authContext.userId;
+    const { businessId }: Id = req.params;
+    try {
+        const { error } = businessSchema.validate(req.body, { abortEarly: false });
+        if (error) {
+            logger.error(error.stack)
+            res.status(HttpStatusCode.BAD_REQUEST)
+                .json(ResponseEntity("error", "Validation Error", undefined, error.message.split('.')));
+            return;
+        }
+        const business: CreateBusiness = req.body;
+        business.owner = userId;
+        const updatedBusiness = await updateBusiness(businessId, business);
+        res.status(HttpStatusCode.CREATED).json(ResponseEntity("success", "Business Updated", updateBusiness))
     } catch (error) {
         res.status(HttpStatusCode.INTERNAL_SERVER_ERROR)
             .json(ResponseEntity("error", "Error While Creating Business", undefined, (error as Error).message));
@@ -42,11 +62,10 @@ const handleGetAllBusiness = async (req: Request, res: Response) => {
 
 const handleGetBusinessWithId = async (req: Request, res: Response) => {
     try {
-        const userId : mongoose.Types.ObjectId = req.authContext.userId;
+        const userId: mongoose.Types.ObjectId = req.authContext.userId;
         const { businessId } = req.params;
-        console.log(businessId, " USER ID ",userId)
-        const business: Business | any = await getBusinessWithId(businessId,userId);
-        if(!business){
+        const business: Business | any = await getBusinessWithId(businessId, userId);
+        if (!business) {
             res.status(HttpStatusCode.NOT_FOUND).json(ResponseEntity("error", "Resource Not Found", undefined, `Business with id ${businessId} not found.`));
             return;
         }
@@ -63,5 +82,20 @@ const handleGetBusinessWithId = async (req: Request, res: Response) => {
     }
 }
 
-export { handleAddBusiness, handleGetAllBusiness, handleGetBusinessWithId };
+const handleDeleteBusiness = async (req: Request, res: Response) => {
+    const { businessId }: Id = req.params;
+    const userId: Id = req.authContext.userId;
+    try {
+        const response = await deleteBusinessWithID(businessId, userId);
+        if(response.deletedCount === 0) {
+            res.status(HttpStatusCode.NOT_FOUND).json(ResponseEntity("error", "Business Not Found", undefined,`Unable to Delete business with id ${businessId}`))
+        }
+        res.status(HttpStatusCode.OK).json(ResponseEntity("success", "Business Deleted", response))
+    } catch (error) {
+        const message = (error as Error).message;
+        logger.error(message);
+        res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json(ResponseEntity("error", "Error While Deleting Business", undefined, message))
+    }
+}
+export { handleAddBusiness, handleDeleteBusiness, handleGetAllBusiness, handleGetBusinessWithId, handleUpdateBusiness };
 

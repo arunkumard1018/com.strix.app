@@ -8,7 +8,7 @@ import { ResponseEntity } from "../lib/ApiResponse";
 const authMiddleWare = (req: Request, res: Response, next: NextFunction) => {
     try {
 
-        const publicPaths = ['/', '/health', '/api/auth/authenticate', '/api/auth/register', '/api/auth/google','/api/auth/logout']
+        const publicPaths = ['/', '/health', '/api/v1/auth/authenticate', '/api/v1/auth/register', '/api/v1/auth/google','/api/v1/auth/logout']
         const currentPath = req.url;
         if (publicPaths.includes(currentPath)) {
             next();
@@ -35,6 +35,7 @@ const authMiddleWare = (req: Request, res: Response, next: NextFunction) => {
                 } else {
                     const name = error?.name || "Authentication Error"
                     const message = error?.message || "Error While Authentication"
+                    res.clearCookie("token");
                     res.status(HttpStatusCode.UNAUTHORIZED).json(ResponseEntity("error", name, undefined, message));
                     return;
                 }

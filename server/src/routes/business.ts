@@ -1,5 +1,5 @@
 import express from "express";
-import { handleAddBusiness, handleGetAllBusiness, handleGetBusinessWithId, } from "../controllers/business-controller";
+import { handleAddBusiness, handleDeleteBusiness, handleGetAllBusiness, handleGetBusinessWithId, handleUpdateBusiness, } from "../controllers/business-controller";
 
 const businessRouter = express.Router();
 
@@ -9,5 +9,7 @@ businessRouter.route("/")
 
 businessRouter.route("/:businessId")
     .get(handleGetBusinessWithId)
+    .put(handleUpdateBusiness)
+    .delete(handleDeleteBusiness);
 
 export { businessRouter };

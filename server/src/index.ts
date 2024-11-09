@@ -1,13 +1,12 @@
+import cookieParser from "cookie-parser";
 import cors from "cors";
 import dotenv from 'dotenv';
 import express from "express";
 import mongoose from "mongoose";
 import { authMiddleWare, logReqRes } from './middlewares';
 import { authRouter } from "./routes/auth";
-import apiRouter from './routes/info';
 import { businessRouter } from "./routes/business";
-import { usersRouter } from "./routes/users";
-import cookieParser from "cookie-parser";
+import apiRouter from './routes/info';
 dotenv.config()
 
 
@@ -38,11 +37,14 @@ app.use(authMiddleWare)
 
 /**Api Routes By Default All routes are Protected 
  * Expect the Public Routes Configured in authMiddleWare
+ * Note : Changes in Route May Block the access for Public Routes due to All 
+ *        Rotes are Protected By Default Configure public Routes in auth Middleware also incase of Route Changes
  */
 app.use("/", apiRouter)
-app.use("/api/auth", authRouter)
-// app.use("/api/users/info/me",usersRouter)
-app.use("/api/users/business",businessRouter)
+app.use("/api/v1/auth", authRouter)
+app.use("/api/v1/users/business",businessRouter)
+app.use("/api/v1/business/customers")
+app.use("/api/v1/business/invoices")
 
 console.log("Conecting To Mongo DB Server....")
 
