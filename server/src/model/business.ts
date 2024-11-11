@@ -21,7 +21,6 @@ const businessSchema = new mongoose.Schema({
         state: { type: String }
     },
     owner: { type: mongoose.Schema.Types.ObjectId, ref: "users", required: true },
-
     customers: [{ type: mongoose.Schema.Types.ObjectId, ref: "customers" }]
 
 }, { timestamps: true })

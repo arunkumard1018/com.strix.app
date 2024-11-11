@@ -1,14 +1,16 @@
 import express from "express"
+import { handleCreateCustomer, handleDeleteCustomer, handlegetAllcustomers, handlegetCustomer, handleUpdateCustomer } from "../controllers/customers-controller";
 
-const customersRouter = express.Router();
+const customersRouter = express.Router({ mergeParams: true });
 
 customersRouter.route("/")
-    .get()
-    .post();
+    .get(handlegetAllcustomers)
+    .post(handleCreateCustomer);
     
 customersRouter.route("/:customersId")
-    .get()
-    .put()
-    .delete();
+    .get(handlegetCustomer)
+    .put(handleUpdateCustomer)
+    .delete(handleDeleteCustomer);
+
 
 export { customersRouter }

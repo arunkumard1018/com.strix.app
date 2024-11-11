@@ -13,7 +13,8 @@ const customersSchema = new mongoose.Schema({
         state: { type: String }
     },
     business: { type: mongoose.Schema.Types.ObjectId, ref: "business", required: true },
-    invoices: [{ type: mongoose.Schema.Types.ObjectId, ref: "invoices", required: true }],
+    user: { type: mongoose.Schema.Types.ObjectId, ref: "users", required: true },
+    invoices: [{ type: mongoose.Schema.Types.ObjectId, ref: "invoices"}],
 
 }, { timestamps: true })
 

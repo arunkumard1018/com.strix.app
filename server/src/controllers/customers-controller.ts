@@ -1,0 +1,71 @@
+import { Request, Response } from "express";
+import { customersSchema } from "../schemas/CustomersSchema";
+import logger from "../lib/logConfig";
+import { HttpStatusCode } from "../lib/status-codes";
+import { ResponseEntity } from "../lib/ApiResponse";
+import { CreateCustomers } from "../model/customers";
+import { createCustomer, deleteCustomer, getAllCustomersForBusiness } from "../service/customers";
+
+const handleCreateCustomer = async (req:Request, res:Response) => {
+    const userId: Id = req.authContext.userId;
+    const {businessId}:Id = req.params;
+    console.log(req.params,"BUSINESS ID")
+    try {
+        const { error } = customersSchema.validate(req.body, { abortEarly: false });
+        if (error) {
+            logger.error(error.stack)
+            res.status(HttpStatusCode.BAD_REQUEST)
+                .json(ResponseEntity("error", "Validation Error", undefined, error.message.split('.')));
+            return;
+        }
+        const customer: CreateCustomers = req.body;
+        customer.business = businessId;
+        customer.user = userId;
+        const createdCustomer = await createCustomer(userId,customer);
+        res.status(HttpStatusCode.CREATED).json(ResponseEntity("success","Customer Created Successfully!",createdCustomer));
+    } catch (error) {
+        const message = (error as Error).message;
+        logger.error(message)
+        res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json(ResponseEntity("error","Error while Creating Customer!",undefined, message));
+    }
+}
+
+const handleUpdateCustomer = (req:Request, res:Response) => {
+
+}
+
+const handlegetCustomer = (req:Request, res:Response) => {
+    try {
+        
+    } catch (error) {
+        
+    }
+}
+
+const handlegetAllcustomers = async (req:Request, res:Response) => {
+    const {businessId}:Id = req.params;
+    const userId = req.authContext.userId;
+    try {
+        const customers  = await getAllCustomersForBusiness(userId,businessId);
+        res.status(HttpStatusCode.OK).json(ResponseEntity("success","Customers Details",customers))
+    } catch (error) {
+        const message = (error as Error).message;
+        logger.error(message);
+        res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json(ResponseEntity("success","Customers Details",undefined,message))
+    }
+}
+
+const handleDeleteCustomer = async  (req:Request, res:Response) => {
+    const userId:Id = req.authContext.userId;
+    const {businessId , customersId}:Id = req.params;
+    console.log(userId,businessId,customersId);
+    try {
+        const deletedCustomersRes = await deleteCustomer(userId,customersId,businessId);
+        res.status(HttpStatusCode.OK).json(ResponseEntity("success","Customer Deleted Successfully!",deletedCustomersRes));
+    } catch (error) {
+        const message = (error as Error).message;
+        res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json(ResponseEntity("error","Unable to Delete Customer" ,undefined,message))
+    }
+}
+
+export {handleCreateCustomer, handleUpdateCustomer, handlegetCustomer, handlegetAllcustomers, handleDeleteCustomer}

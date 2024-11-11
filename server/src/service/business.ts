@@ -73,7 +73,7 @@ const deleteBusinessWithID = async (businessId : Id, userId: Id) => {
         await session.abortTransaction();
         throw error;
     } finally {
-        session.endSession();
+        await session.endSession();
     }
 };
 
