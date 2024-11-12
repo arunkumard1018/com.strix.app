@@ -1,3 +1,4 @@
+import { required } from "joi";
 import mongoose, { InferSchemaType } from "mongoose";
 
 // Define sub-schema for TransportInvoiceDetails
@@ -27,6 +28,7 @@ const invoiceSchema = new mongoose.Schema({
         HSN: { type: Number },
         stateCode: { type: Number },
         PAN: { type: String },
+        phone: {type:Number, required:true},
         address: {
             street: { type: String, required: true },
             city: { type: String, required: true },
@@ -40,7 +42,7 @@ const invoiceSchema = new mongoose.Schema({
         HSN: { type: Number },
         stateCode: { type: Number },
         PAN: { type: String },
-        phone: { type: Number },
+        phone: { type: Number , required:true},
         email: { type: String },
         address: {
             street: { type: String, required: true },
@@ -58,7 +60,7 @@ const invoiceSchema = new mongoose.Schema({
             validator: function (value: Array<TransportDetails | ProductDetails>) {
                 // Ensure only one type of structure is present in the array
                 return (
-                    value.every((item) => 'VehicleNo' in item) ||
+                    value.every((item) => 'vehicleNo' in item) ||
                     value.every((item) => 'sku' in item)
                 );
             },
@@ -71,12 +73,12 @@ const invoiceSchema = new mongoose.Schema({
     SGST: { type: Number },
     business: { type: mongoose.Schema.Types.ObjectId, ref: "business", required: true },
     customers: { type: mongoose.Schema.Types.ObjectId, ref: "customers", required: true },
+    user: { type: mongoose.Schema.Types.ObjectId, ref: "users", required: true },
 }, { timestamps: true })
 
 
 type Invoice = InferSchemaType<typeof invoiceSchema>;
 type CreateInvoice = Omit<Invoice, 'createdAt' | 'updatedAt'>;
-
-const InvoiceModel = mongoose.model<Invoice>("customers", invoiceSchema);
+const InvoiceModel = mongoose.model<Invoice>("invoices", invoiceSchema);
 
 export { CreateInvoice, Invoice, InvoiceModel };

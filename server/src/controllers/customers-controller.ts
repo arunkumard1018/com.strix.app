@@ -4,12 +4,11 @@ import logger from "../lib/logConfig";
 import { HttpStatusCode } from "../lib/status-codes";
 import { ResponseEntity } from "../lib/ApiResponse";
 import { CreateCustomers } from "../model/customers";
-import { createCustomer, deleteCustomer, getAllCustomersForBusiness } from "../service/customers";
+import { createCustomer, deleteCustomer, getAllCustomersForBusiness, getCustomer } from "../service/customers";
 
 const handleCreateCustomer = async (req:Request, res:Response) => {
     const userId: Id = req.authContext.userId;
     const {businessId}:Id = req.params;
-    console.log(req.params,"BUSINESS ID")
     try {
         const { error } = customersSchema.validate(req.body, { abortEarly: false });
         if (error) {
@@ -31,14 +30,22 @@ const handleCreateCustomer = async (req:Request, res:Response) => {
 }
 
 const handleUpdateCustomer = (req:Request, res:Response) => {
-
 }
 
-const handlegetCustomer = (req:Request, res:Response) => {
+const handlegetCustomer = async (req:Request, res:Response) => {
+    const {businessId,customersId} : Id= req.params;
+    const userId:Id = req.authContext.userId;
     try {
-        
+        const customerInfo = await getCustomer(userId,customersId);
+        if(!customerInfo){
+            res.status(HttpStatusCode.NOT_FOUND).json(ResponseEntity("error","Customers Details Not Found"))
+            return;
+        }
+        res.status(HttpStatusCode.OK).json(ResponseEntity("success","Customers Deails",customerInfo))
     } catch (error) {
-        
+        const message = (error as Error).message;
+        logger.error(message)
+        res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json(ResponseEntity("error","Error While Fetching Cutsomers Details",undefined, message));
     }
 }
 

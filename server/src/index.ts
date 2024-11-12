@@ -8,6 +8,7 @@ import { authRouter } from "./routes/auth";
 import { businessRouter } from "./routes/business";
 import apiRouter from './routes/info';
 import { customersRouter } from "./routes/customers";
+import { invoiceRoute } from "./routes/invoice";
 dotenv.config()
 
 
@@ -45,7 +46,7 @@ app.use("/", apiRouter)
 app.use("/api/v1/auth", authRouter)
 app.use("/api/v1/users/business",businessRouter)
 app.use("/api/v1/business/:businessId/customers",customersRouter)
-// app.use("/api/v1/business/invoices")
+app.use("/api/v1/business/:businessId/invoices",invoiceRoute)
 
 console.log("Conecting To Mongo DB Server....")
 

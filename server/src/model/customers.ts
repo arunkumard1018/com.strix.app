@@ -14,8 +14,6 @@ const customersSchema = new mongoose.Schema({
     },
     business: { type: mongoose.Schema.Types.ObjectId, ref: "business", required: true },
     user: { type: mongoose.Schema.Types.ObjectId, ref: "users", required: true },
-    invoices: [{ type: mongoose.Schema.Types.ObjectId, ref: "invoices"}],
-
 }, { timestamps: true })
 
 type Customers = InferSchemaType<typeof customersSchema>;
