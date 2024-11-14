@@ -26,7 +26,8 @@ app.set('views', './views');
 
 /**Authentication Middleware */
 app.use(cors({
-    origin: 'http://localhost:3000',
+    origin: ['http://localhost:3000', 'http://192.168.1.3:3000'],
+    // origin:true,
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,

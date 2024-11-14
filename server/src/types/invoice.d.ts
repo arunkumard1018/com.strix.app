@@ -35,7 +35,7 @@ type Invoice = {
     invoiceBy: Person;
     invoiceTo: Person;
     invoiceDetails: Array<TransportInvoiceDetails | ProductInvoiceDetails>;
-    totalAmount: number;
+    invoiceAmount: number;
     CGST?: number;
     SGST?: number;
     business: Id;

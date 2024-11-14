@@ -16,7 +16,7 @@ const getUserWithBusinessDetails = async (userId: Id) => {
          * This will return only the name and _id fields of each associated Business, excluding all other fields.
          */
         return userModel.findById(userId, { password: 0, __v: 0, updatedAt: 0,createdAt:0 , googleId:0})
-                .populate('business', 'name _id catagory logo invoicePrefix');
+                .populate('business', 'name _id catagory logo invoicePrefix GSTIN HSN');
 }
 
 export { createUser, finduser, getUserWithBusinessDetails }

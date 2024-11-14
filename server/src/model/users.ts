@@ -6,6 +6,7 @@ const userSchema = new mongoose.Schema({
     password: { type: String},
     picture: {type:String},
     googleId: {type:Number},
+    activebusiness:{ type: mongoose.Schema.Types.ObjectId, ref: "business" },
     business: [{ type: mongoose.Schema.Types.ObjectId, ref: "business" }],
 }, { timestamps: true });
 

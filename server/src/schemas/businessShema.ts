@@ -10,11 +10,11 @@ const businessSchema = Joi.object({
     email: Joi.string().email().optional().messages({
         "string.email": "Please enter a valid email address",
     }),
-    // phone: Joi.number().integer().required(),
+    phone: Joi.number().integer().required(),
     logo: Joi.string().optional(),
-    // invoicePrefix:Joi.string().required(),
+    invoicePrefix:Joi.string().required(),
     catagory: Joi.string().valid("Transport", "Retail", "Enterprise").required(),
-    GSTIN : Joi.string().optional(),
+    GSTIN : Joi.string().optional().allow(""),
     HSN : Joi.number().integer().optional(),
     stateCode: Joi.number().integer().optional(),
     address: addressSchema

@@ -108,8 +108,8 @@ const invoiceSchema = Joi.object<Invoice>({
         )
         .required()
         .custom((value, helpers) => {
-            const isTransport = value.every((item:TransportInvoiceDetails) => 'vehicleNo' in item);
-            const isProduct = value.every((item:ProductInvoiceDetails) => 'sku' in item);
+            const isTransport = value.every((item: TransportInvoiceDetails) => 'vehicleNo' in item);
+            const isProduct = value.every((item: ProductInvoiceDetails) => 'sku' in item);
 
             if (!(isTransport || isProduct)) {
                 return helpers.error('any.invalid', {
@@ -123,7 +123,9 @@ const invoiceSchema = Joi.object<Invoice>({
             'any.required': '"invoiceDetails" is a required field',
         }),
 
-    totalAmount: Joi.number().required().messages({
+    paymentStatus: Joi.string().valid("PROCESSING", "PAID", "DUE").required(),
+    paymentMethod: Joi.string().valid("NEFT", "RTGS", "CASH","UPI","DEBIT/CREDIT CARD").required(),
+    invoiceAmount: Joi.number().required().messages({
         'number.base': '"totalAmount" should be a number',
         'any.required': '"totalAmount" is a required field',
     }),

@@ -41,7 +41,7 @@ const handleUpdateBusiness = async (req: Request, res: Response) => {
         const business: CreateBusiness = req.body;
         business.owner = userId;
         const updatedBusiness = await updateBusiness(businessId, business);
-        res.status(HttpStatusCode.CREATED).json(ResponseEntity("success", "Business Updated", updateBusiness))
+        res.status(HttpStatusCode.CREATED).json(ResponseEntity("success", "Business Updated", updatedBusiness))
     } catch (error) {
         res.status(HttpStatusCode.INTERNAL_SERVER_ERROR)
             .json(ResponseEntity("error", "Error While Creating Business", undefined, (error as Error).message));

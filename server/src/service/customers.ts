@@ -21,7 +21,7 @@ const createCustomer = async (userID: Id, customersData: CreateCustomers) => {
  * @returns List [] of Customers
  */
 const getAllCustomersForBusiness = async (userId: Id, businessId: Id) => {
-    return CustomersModel.find({ business: businessId, user: userId });
+    return CustomersModel.find({ business: businessId, user: userId },{createdAt:0,updatedAt:0,user:0,__v:0});
 }
 
 const getCustomer = async (userId : Id, customersId : Id) => {

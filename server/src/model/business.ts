@@ -3,9 +3,9 @@ import mongoose, { InferSchemaType } from "mongoose";
 const businessSchema = new mongoose.Schema({
     name: { type: String, required: true },
     email: { type: String },
-    // phone:{type:Number, required:true},
+    phone:{type:Number, required:true},
     logo: { type: String },
-    // invoicePrefix: {type:String},
+    invoicePrefix: {type:String},
     catagory: { 
         type: String, 
         enum: ["Transport", "Retail", "Enterprise"],

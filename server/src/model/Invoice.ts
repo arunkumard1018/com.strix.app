@@ -67,8 +67,17 @@ const invoiceSchema = new mongoose.Schema({
             message: 'invoiceDetails should contain either only Transport or Product details.',
         },
     },
-
-    totalAmount: { type: Number, required: true },
+    paymentStatus: { 
+        type: String, 
+        enum: ["PROCESSING", "PAID", "DUE"],
+        required: true 
+    },
+    paymentMethod: { 
+        type: String, 
+        enum: ["NEFT", "RTGS", "CASH","UPI","DEBIT/CREDIT CARD"],
+        required: true 
+    },
+    invoiceAmount: { type: Number, required: true },
     CGST: { type: Number },
     SGST: { type: Number },
     business: { type: mongoose.Schema.Types.ObjectId, ref: "business", required: true },

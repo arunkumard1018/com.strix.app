@@ -55,7 +55,11 @@ const authMiddleWare = (req: Request, res: Response, next: NextFunction) => {
  */
 const logReqRes = () => {
     return (req: Request, res: Response, next: NextFunction) => {
-        logger.info(`${req.method} : ${req.headers.host}${req.url}`);
+        // logger.info(`Requsted Received from ${req.headers["user-agent"]}`)
+        // logger.info(`${req.method} : ${req.headers.host}${req.url}`);
+        const fullUrl = `${req.protocol}://${req.headers.host}${req.originalUrl}`;
+        logger.info(`Request received from ${req.headers["user-agent"]}`);
+        logger.info(`${req.method} : ${fullUrl}`);
         next();
     }
 }
