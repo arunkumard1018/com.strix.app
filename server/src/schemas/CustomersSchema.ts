@@ -11,8 +11,8 @@ const customersSchema = Joi.object({
         "string.email": "Please enter a valid email address",
     }),
     phone : Joi.number().integer(),
-    GSTIN : Joi.string().optional(),
-    PAN : Joi.string().optional(),
+    GSTIN : Joi.string().optional().allow(""),
+    PAN : Joi.string().optional().allow(""),
     address: addressSchema
 });
 
