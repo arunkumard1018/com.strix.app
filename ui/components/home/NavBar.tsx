@@ -10,7 +10,7 @@ function NavBar() {
   return (
     <div className=''>
       {/* hide nav links for md */}
-      <nav className='h-20 flex items-center justify-between fixed top-0 z-50 w-full px-2 sm:px-5 lg:px-10  2xl:px-40 shadow-sm  bg-white'>
+      <nav className='h-20 flex items-center justify-between fixed top-0 z-50 w-full px-4 sm:px-5 lg:px-10  2xl:px-40 shadow-sm  bg-white'>
         {/* Nav - Left */}
         <div className='flex items-center space-x-2'>
           {/* <div className='relative w-40 md:w-52 h-16'><Image alt='nav-logo' src="/img/strix.png" fill priority={true} /></div> */}

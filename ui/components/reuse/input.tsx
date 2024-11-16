@@ -1,19 +1,21 @@
 import React from 'react';
 import { FieldProps, ErrorMessage } from 'formik';
 import classNames from 'classnames';
+import { cn } from '@/lib/utils';
 
 interface CustomInputProps extends FieldProps {
     placeholder: string;
     label : string;
     additionalInfo?: string;
+    className?:string;
 }
 
-const CustomInput: React.FC<CustomInputProps> = ({ field, form, placeholder, additionalInfo, label}) => {
+const CustomInput: React.FC<CustomInputProps> = ({ field, form, placeholder, additionalInfo, label, className}) => {
     const hasError = form.touched[field.name] && form.errors[field.name];
     const isFieldActive = form.values[field.name] !== ''; // Field is active if it has a value
 
     return (
-        <div className="flex flex-col items-start justify-center w-[320px]  space-y-1 bg-background">
+        <div className={cn("flex flex-col items-start justify-center w-[320px]  space-y-1 bg-background",className)}>
             <label className="font-medium capitalize" htmlFor={field.name}>
                 {label}
             </label>
@@ -26,7 +28,7 @@ const CustomInput: React.FC<CustomInputProps> = ({ field, form, placeholder, add
                 placeholder={placeholder}
                 {...field}
                 className={classNames(
-                    'w-full py-2 px-2 border outline-none', // Base styles
+                    'w-full py-2 px-2  border-[0.1px] outline-none', // Base styles
                     {
                         // Default state styles
                         'bg-background  border-gray-800': !hasError || isFieldActive,

@@ -40,18 +40,21 @@ function Page() {
     }, [businessID])
     const handleBusinessFormData = async (values: BusinessFormData) => {
         try {
-            const response: ApiResponse<Business> = await updateBusiness(values, businessID);
+            const response: ApiResponse<BusinessData> = await updateBusiness(values, businessID);
+            console.log(response.result)
             if (response.result) {
                 const business: Business = {
                     _id: response.result._id,
                     name: response.result.name,
                     catagory: response.result.catagory,
+                    GSTIN:response.result.GSTIN || "",
+                    HSN:response.result.HSN || 0,
+                    invoicePrefix:response.result.invoicePrefix,
                     logo: response.result.logo,
                 }
                 dispatch(updateBusinessList(business))
                 router.push("/dashboard/business")
             }
-            console.log(values)
         } catch (error) {
             if (error instanceof AxiosError) {
                 setErrorMessage(error.response?.data.error)
@@ -65,6 +68,8 @@ function Page() {
         catagory: business?.catagory || "",
         GSTIN: business?.GSTIN || "",
         hsn: String(business?.HSN) || "",
+        phone:String(business?.phone) || "",
+        invoicePrefix: business?.invoicePrefix || "",
         stateCode: String(business?.stateCode) || "",
         street: business?.address.street || "",
         city: business?.address.city || "",

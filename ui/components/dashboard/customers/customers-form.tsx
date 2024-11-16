@@ -1,71 +1,77 @@
 "use client"
 import CustomInput from '@/components/reuse/input';
-import CustomSelect from '@/components/reuse/select';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { Field, Form, Formik } from "formik";
+import { useState } from 'react';
 import * as Yup from "yup";
 
 
-export interface BusinessFormData {
+export interface CustomersFormData {
     name: string;
-    catagory: string;
+    email:string;
     GSTIN: string;
-    hsn: string;
-    phone:string;
-    invoicePrefix:string
-    stateCode: string;
+    PAN: string;
+    phone: string;
     street: string;
     city: string;
     state: string;
     postalCode: string;
-    logo: string;
 }
-const BusinessFormSchema = Yup.object().shape({
+const CustomersFormSchema = Yup.object().shape({
     name: Yup.string().required("Name Required"),
-    catagory: Yup.string().required("Catagory is required"),
-    invoicePrefix: Yup.string().required("required"),
+    email: Yup.string().optional(),
     GSTIN: Yup.string().optional(),
-    hsn: Yup.number().integer("HSN Must Be Number").optional(),
+    PAN: Yup.string().optional(),
     phone: Yup.number().integer("Phone Must Be Number").required("Phone Required"),
-    stateCode: Yup.number().integer("HSN Must Be Number").optional(),
     street: Yup.string().required("Street Required"),
     city: Yup.string().required("City Required"),
     state: Yup.string().required("State Required"),
     postalCode: Yup.number().integer().required("Postal Code Required")
 });
 
-interface OnBoardingFormProps {
-    handleBusinessFormData: (values: BusinessFormData) => void;
-    initialValues: BusinessFormData;
+interface FormProps {
+    handleFormData: (values: CustomersFormData) => Promise<void>;
+    initialValues: CustomersFormData;
     className?: string;
     type?: "Update" | "Create"
 }
 
-export const BusinessForm = ({ handleBusinessFormData, initialValues, className, type = "Create" }: OnBoardingFormProps) => {
+export const CustomersForm = ({ handleFormData, initialValues, className, type = "Create" }: FormProps) => {
+    const [loading, setloading] = useState(false)
     return (
         <Formik
             initialValues={initialValues}
-            validationSchema={BusinessFormSchema}
-            onSubmit={(values) => {
-                handleBusinessFormData(values);
+            validationSchema={CustomersFormSchema}
+            onSubmit={ async (values) => {
+                setloading(true)
+                try {
+                    await handleFormData(values);
+                } finally {
+                    setloading(false)
+                }
             }}
         >
             {({ handleSubmit }) => (
                 <Form onSubmit={handleSubmit}>
                     <div className={cn('flex flex-col items-center  space-y-4 pb-10', className)}>
                         <Field
-                            label="Business Name"
+                            label="Customer Name"
                             name="name"
                             placeholder="John Doe"
                             component={CustomInput}
                         />
                         <Field
-                            label="Catagory"
-                            name="catagory"
-                            placeholder="Select Catagory"
-                            selectOptions={["Retail", "Transport", "Enterprise"]}
-                            component={CustomSelect}
+                            label="Email"
+                            name="email"
+                            placeholder="jhon@gmail.com"
+                            component={CustomInput}
+                        />
+                        <Field
+                            label="Phone"
+                            name="phone"
+                            placeholder="+91 65865 87744"
+                            component={CustomInput}
                         />
                         <Field
                             label="GSTIN"
@@ -73,38 +79,12 @@ export const BusinessForm = ({ handleBusinessFormData, initialValues, className,
                             placeholder="IUYXCF87GF6Y"
                             component={CustomInput}
                         />
-                        <div className='flex space-x-2'>
-                            <Field
-                                label="HSN"
-                                name="hsn"
-                                placeholder="22"
-                                className="w-[160px]"
-                                component={CustomInput}
-                            />
-                            <Field
-                                label="State Code"
-                                name="stateCode"
-                                placeholder="22"
-                                className="w-[160px]"
-                                component={CustomInput}
-                            />
-                        </div>
-                        <div className='flex space-x-2'>
-                            <Field
-                                label="Invoice Prefix"
-                                name="invoicePrefix"
-                                placeholder="INV-"
-                                className="w-[120px]"
-                                component={CustomInput}
-                            />
-                            <Field
-                                label="Phone"
-                                name="phone"
-                                placeholder="+91 97855 85665"
-                                className="w-[200px]"
-                                component={CustomInput}
-                            />
-                        </div>
+                        <Field
+                            label="PAN"
+                            name="PAN"
+                            placeholder="IUYXCF87GF6Y"
+                            component={CustomInput}
+                        />
                         <Field
                             label="Street"
                             name="street"
@@ -132,9 +112,10 @@ export const BusinessForm = ({ handleBusinessFormData, initialValues, className,
                         <Button
                             type="submit"
                             variant={"default"}
-                            className="mt-4 w-[320px] py-2 px-4 rounded-none border "
+                            disabled={loading}
+                            className="mt-4 w-[320px] py-2 px-4 rounded-none border"
                         >
-                            {`${type} Business`}
+                            {loading? `${type.slice(0, -1)}ing Customer...` : `${type} Customer` }
                         </Button>
                     </div>
                 </Form>

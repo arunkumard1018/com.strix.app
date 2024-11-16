@@ -4,10 +4,12 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 export interface Business {
     _id: string;
     name: string;
-    catagory:string;
-    logo:string;
+    catagory: string;
+    logo: string;
+    GSTIN: string;
+    HSN: number;
+    invoicePrefix: string;
 }
-
 
 export interface UserData {
     _id: string | undefined;
@@ -22,11 +24,14 @@ export interface AuthContext {
 }
 const initialState: AuthContext = {
     user: undefined,
-    activeBusiness:{
-        _id:"1H",
-        name:"Strix Invoice",
-        catagory:"Retail",
-        logo:"/img/strix.png"
+    activeBusiness: {
+        _id: "1H",
+        name: "Strix Invoice",
+        catagory: "Retail",
+        logo: "/img/strix.png",
+        GSTIN: "",
+        invoicePrefix: "",
+        HSN: 22
     }
 };
 
@@ -43,10 +48,16 @@ const userSlice = createSlice({
             }
         },
 
-        resetBusinessList() {
-            // state.business = [];
+        removeBusiness(state, action: PayloadAction<string>) {
+            if (state.user?.business) {
+                state.user.business = state.user.business.filter(
+                    (business: Business) => business._id !== action.payload
+                );
+                if (typeof window !== "undefined") {
+                    window.localStorage.setItem("userData", JSON.stringify(state.user));
+                }
+            }
         },
-
         addBusiness(state, action: PayloadAction<Business>) {
             state.user?.business.push(action.payload)
             if (typeof window !== undefined) {
@@ -64,20 +75,15 @@ const userSlice = createSlice({
                         window.localStorage.setItem("userData", JSON.stringify(state.user));
                     }
                 }
-                // if(state.activeBusiness._id === updatedBusiness._id){
-                //     setActiveBusiness(updatedBusiness)
-                // }
             }
         },
-
-        setActiveBusiness(state, action:PayloadAction<Business>){
+        setActiveBusiness(state, action: PayloadAction<Business>) {
             state.activeBusiness = action.payload;
             if (typeof window !== undefined) {
                 window.localStorage.removeItem("activeBusiness")
                 window.localStorage.setItem("activeBusiness", JSON.stringify(action.payload))
             }
         },
-
         clearUser(state) {
             state.user = undefined;
             if (typeof window !== undefined) {
@@ -87,7 +93,6 @@ const userSlice = createSlice({
         },
     },
 });
-
-export const { setUserData, clearUser, resetBusinessList, addBusiness, setActiveBusiness,updateBusinessList } = userSlice.actions;
+export const { setUserData, clearUser, removeBusiness, addBusiness, setActiveBusiness, updateBusinessList } = userSlice.actions;
 export default userSlice.reducer;
 

@@ -17,6 +17,8 @@ const initialValues = {
   GSTIN: "",
   hsn: "",
   stateCode: "",
+  phone:"",
+  invoicePrefix:"",
   street: "",
   city: "",
   state: "",
@@ -36,11 +38,14 @@ function Page() {
         const business: Business = {
             _id: response.result._id,
             name: response.result.name,
+            GSTIN:response.result.GSTIN || "",
+            HSN:response.result.HSN || 0,
+            invoicePrefix:response.result.invoicePrefix,
             catagory: response.result.catagory,
             logo: response.result.logo,
         }
-        dispatch(addBusiness(business))
-        router.push("/dashboard/business")
+        dispatch(addBusiness(business));
+        router.push("/dashboard/business");
     }
     } catch (error) {
       if (error instanceof AxiosError) {

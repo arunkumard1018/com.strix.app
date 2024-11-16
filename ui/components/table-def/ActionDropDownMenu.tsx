@@ -7,26 +7,36 @@ import Link from "next/link"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { ConfirmationDialog } from "./ConfirmationDialog"
+import { ToastAction } from "../ui/toast"
+import { useToast } from "@/hooks/use-toast"
 
-export function ActionsDropDownRow({ id, name, path, itemName, deleteFunction, revalidator }:
+export function ActionsDropDownRow({ id, name, path, itemName, deleteFunction }:
     {
-        id: number | string, name: string, path: string, itemName?: string,
-        deleteFunction: (id: number) => boolean,
-        revalidator: (id:number) => void
+        id: string, name: string, path: string, itemName?: string,
+        deleteFunction: (id: string) => Promise<boolean>,
     }) {
 
     const [isDialogOpen, setDialogOpen] = useState(false); // State to control dialog visibility
     const route = useRouter();
-
+    const { toast } = useToast();
 
     const handleDelete = async () => {
-
-        console.log(`Deleting business with id: ${id}`);
-        const resp = await deleteFunction(Number(id));
+        const resp = await deleteFunction(id);
         if (resp) {
-            revalidator(Number(id));
+            toast({
+                variant: "success",
+                title: `${name} Deleted Successfully!`,
+                description: `${name} ${itemName} Delete.`,
+                action: <ToastAction altText="Ok" >close</ToastAction>,
+            })
             route.refresh();
         } else {
+            toast({
+                variant: "destructive",
+                title: `Error While Deleting ${name}!`,
+                description: `${name} ${itemName} Failed to Delete.`,
+                action: <ToastAction altText="Ok" >close</ToastAction>,
+            })
         }
         setDialogOpen(false);
     };
@@ -47,11 +57,10 @@ export function ActionsDropDownRow({ id, name, path, itemName, deleteFunction, r
                         Copy {name} ID
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
-                    <Link href={`${path}/add-business/${id}`}>
+                    <Link href={`${path}/add-${name.toLowerCase()}/${id}`}>
                         <DropdownMenuItem>Update {name}</DropdownMenuItem>
                     </Link>
-
-                    <DropdownMenuItem onClick={() => setDialogOpen(true)}>Delete {name}</DropdownMenuItem> {/* Open Dialog */}
+                    <DropdownMenuItem onClick={() => setDialogOpen(true)}>Delete {name}</DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>
 
@@ -64,7 +73,7 @@ export function ActionsDropDownRow({ id, name, path, itemName, deleteFunction, r
                 description={`Are you sure you want to delete ${name}? This action cannot be undone.`}
                 confirmText="Delete"
                 cancelText="Cancel"
-                onConfirm={handleDelete} // Pass delete logic
+                onConfirm={handleDelete}
             />
 
         </div>

@@ -5,6 +5,7 @@ import { AppSidebar } from "@/components/dashboard/layout/app-sidebar";
 import OnboardingPage from "@/components/dashboard/layout/onboarding";
 import { ThemeProvider } from "@/components/themes/theme-provider";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import { Toaster } from "@/components/ui/toaster";
 import { setActiveBusiness, setUserData } from "@/store/slices/userSlice";
 import { RootState, store } from "@/store/store";
 import { useEffect } from "react";
@@ -34,7 +35,6 @@ export function Dashboardlayout({ children }: { children: React.ReactNode }) {
             }
         }
     }, [authContext.user, dispatch])
-    console.log(authContext.activeBusiness._id)
     return (
         <>
             {authContext.user === undefined ? <div className="flex items-center h-screen justify-center"><LoadingGif/></div> :
@@ -47,6 +47,7 @@ export function Dashboardlayout({ children }: { children: React.ReactNode }) {
                                 <div className="mt-20">
                                     {children}
                                 </div>
+                                <Toaster />
                             </SidebarInset>
                         </ThemeProvider>
                     </SidebarProvider>

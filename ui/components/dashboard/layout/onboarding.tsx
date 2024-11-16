@@ -16,6 +16,8 @@ const initialValues = {
     catagory: "",
     GSTIN: "",
     hsn: "",
+    phone:"",
+    invoicePrefix:"",
     stateCode: "",
     street: "",
     city: "",
@@ -31,17 +33,21 @@ function OnboardingPage() {
         try {
             const response: ApiResponse<Business> = await createBusiness(values);
             if (response.result) {
-                const business: Business = {
+                const business : Business = {
                     _id: response.result._id,
                     name: response.result.name,
                     catagory: response.result.catagory,
                     logo: response.result.logo,
+                    GSTIN:response.result.GSTIN,
+                    HSN:response.result.HSN,
+                    invoicePrefix:response.result.invoicePrefix,
                 }
                 dispatch(addBusiness(business))
                 dispatch(setActiveBusiness(business))
             }
         } catch (error) {
             /** Business Form Errors to Be Implemented  */
+            console.log(error)
             if (error instanceof AxiosError) {
                 setErrorMessage(error.response?.data.error)
             }

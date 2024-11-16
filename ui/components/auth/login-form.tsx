@@ -34,7 +34,7 @@ function LoginForm({ handleGoogleSignIn }: { handleGoogleSignIn: () => void }) {
     const [errorMessage, setErrorMessage] = useState("Inavlid Credentials!")
     const router = useRouter()
     const dispatch = useDispatch();
-    const doLogin = async (email: string, password: string) => {
+    const doLogin = async (email: string, password: string): Promise<boolean> => {
         try {
             const response: ApiResponse<AuthResponse> = await authenticate(email, password);
             if (response.result) {
@@ -44,19 +44,21 @@ function LoginForm({ handleGoogleSignIn }: { handleGoogleSignIn: () => void }) {
                 }
                 router.push("/dashboard");
             }
+            return true;
         } catch (error) {
             if (error instanceof AxiosError) {
                 if (!error.response) setErrorMessage("Unable to Process Request Please Try again after some times");
                 else if (error.status === 401) setErrorMessage(error.response.data.error);
-                else setErrorMessage(error.response.data.message)
+                else setErrorMessage(error.message)
             }
             setIsError(true);
+            return false;
         }
     }
 
     return (
-        <div className='bg-custome-black md:h-screen'>
-            <div className='h-screen flex pt-20  md:pt-0 md:items-center justify-center text-center text-white '>
+        <div className='bg-black md:h-screen'>
+            <div className='h-screen flex pt-10  md:pt-0 md:items-center justify-center text-center text-white '>
                 <div className='space-y-6 mx-2'>
                     <a href="/" className='cursor-pointer'><h1 className={cn(bebas_font.className, "p-0 m-0 text-4xl text-red-400 tracking-widest")}>STRIX INVOICE</h1></a>
                     {isError &&
@@ -69,15 +71,15 @@ function LoginForm({ handleGoogleSignIn }: { handleGoogleSignIn: () => void }) {
                     }
                     <div className=" w-[370px] md:w-[390px] shadow-xl border border-gray-800 rounded-md space-y-4 py-10">
 
-                        <h2 className='text-2xl font-extrabold mb-10'>{"Sign In"}</h2>
+                        <h2 className='text-2xl font-extrabold mb-5'>{"Sign In"}</h2>
                         <UserLoginForm doLogin={doLogin} />
                         <div>OR</div>
                         <div onClick={handleGoogleSignIn} className='flex items-center justify-center'>
                             <RegisterBtn text={"Continue With Google"} logo='/img/social/google.png' />
                         </div>
                     </div>
-                    <div className='text-gray-400 space-y-2'>
-                        <p>{"Don't Have an Account Yet?"}</p>
+                    <div className='text-gray-400'>
+                        <p className='py-2'>{"Don't Have an Account Yet?"}</p>
                         <Link href={"/auth/register"}>
                             <button className='px-1 bg-gray-800 border border-gray-600 rounded-sm font-bold'>{"Sign Up"}</button>
                         </Link>
@@ -89,7 +91,7 @@ function LoginForm({ handleGoogleSignIn }: { handleGoogleSignIn: () => void }) {
 }
 
 
-const UserLoginForm = ({ doLogin }: { doLogin: (email: string, password: string) => Promise<void> }) => {
+const UserLoginForm = ({ doLogin }: { doLogin: (email: string, password: string) => Promise<boolean> }) => {
     const [loading, setLoading] = useState(false)
     return (
         <Formik
@@ -99,8 +101,10 @@ const UserLoginForm = ({ doLogin }: { doLogin: (email: string, password: string)
                 try {
                     setLoading(true)
                     const { email, password } = values;
-                    await doLogin(email, password);
-                } finally {
+                    const status = await doLogin(email, password);
+                    if (!status)  setLoading(false);
+                } catch (error: unknown) {
+                    console.log((error as Error).message)
                     setLoading(false)
                 }
             }}

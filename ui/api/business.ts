@@ -9,6 +9,8 @@ const createBusiness = async (businessData: BusinessFormData) => {
             name: businessData.name,
             catagory: businessData.catagory,
             GSTIN: businessData.GSTIN,
+            invoicePrefix:businessData.invoicePrefix,
+            phone:Number(businessData.phone),
             HSN: Number(businessData.hsn),
             stateCode: Number(businessData.stateCode),
             logo:businessData.logo,
@@ -19,7 +21,7 @@ const createBusiness = async (businessData: BusinessFormData) => {
                 postalCode: Number(businessData.postalCode),
             }
         }
-        const response = await axiosClient.post<ApiResponse<Business>>("/api/users/business", { ...data});
+        const response = await axiosClient.post<ApiResponse<Business>>("/api/v1/users/business", { ...data});
         return response.data;
 }
 
@@ -28,6 +30,8 @@ const updateBusiness = async (businessData: BusinessFormData, businessId : strin
         name: businessData.name,
         catagory: businessData.catagory,
         GSTIN: businessData.GSTIN,
+        invoicePrefix:businessData.invoicePrefix,
+        phone:Number(businessData.phone),
         HSN: Number(businessData.hsn),
         stateCode: Number(businessData.stateCode),
         logo:businessData.logo,
@@ -38,13 +42,23 @@ const updateBusiness = async (businessData: BusinessFormData, businessId : strin
             postalCode: Number(businessData.postalCode),
         }
     }
-    const response = await axiosClient.put<ApiResponse<Business>>(`/api/users/business/${businessId}`,{...data});
+    const response = await axiosClient.put<ApiResponse<BusinessData>>(`/api/v1/users/business/${businessId}`,{...data});
     return response.data;
 }
 
 const getBusinessInfo = async (businessId : string) => {
-    const response = await axiosClient.get<ApiResponse<BusinessData>>(`/api/users/business/${businessId}`);
+    const response = await axiosClient.get<ApiResponse<BusinessData>>(`/api/v1/users/business/${businessId}`);
     return response.data;
 }
 
-export { createBusiness, getBusinessInfo, updateBusiness }
+const deleteBusiness = async (businessId: string) => {
+    try {
+        const response = await axiosClient.delete(`/api/v1/users/business/${businessId}`);
+        if (response.data.result.deletedCount > 0) return Promise.resolve(true);
+        return Promise.resolve(false)
+    } catch (error) {
+        return Promise.resolve(false)
+    }
+}
+
+export { createBusiness, getBusinessInfo, updateBusiness , deleteBusiness}

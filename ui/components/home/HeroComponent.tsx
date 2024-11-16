@@ -6,8 +6,8 @@ import { cn } from '@/lib/utils'
 
 function HeroComponent() {
     return (
-        <div className='space-y-4 md:space-y-0 md:flex items-center md:justify-between mx-2 md:h-[90vh] '>
-            <div className='md:h-[80vh] w-auto md:w-2/5 flex items-center '><HeroBoxReveal className='w-full' /></div>
+        <div className='space-y-4 md:space-y-0 md:flex items-center md:justify-between md:h-[90vh] md:mx-2 '>
+            <div className='md:h-[80vh] w-full md:w-2/5 flex items-center '><HeroBoxReveal className='w-full mx-0 px-0' /></div>
             <div className='w-full md:w-3/5 h-[50vh] md:h-[80vh] relative'>
                 <div className=''><Image alt='' src="/img/hero-img.jpg" fill priority/></div>
             </div>

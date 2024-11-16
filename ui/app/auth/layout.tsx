@@ -7,7 +7,7 @@ import { ThemeProvider } from '@/components/themes/theme-provider';
 
 function AutehnticationLayout({ children }: { children: React.ReactNode }) {
     return (
-        <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
+        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem forcedTheme='dark'  disableTransitionOnChange>
             <GoogleOAuthProvider clientId="852761542997-kk8hil8g7totjurlcal0ut6u7rgbgifv.apps.googleusercontent.com">
                 <Provider store={store}>
                     <div>

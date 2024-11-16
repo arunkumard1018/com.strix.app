@@ -20,7 +20,7 @@ const LoadingAnimation: React.FC = () => {
 const LoadingGif = () => {
     return (
         <div>
-            <Image src="/img/loading.gif" alt="Loading..." width={100} height={100} />
+            <Image src="/img/loading.gif" alt="Loading..." width={100} height={100} priority />
         </div>
     )
 }

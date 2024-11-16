@@ -146,15 +146,13 @@ export function TableComponent<TData, TValue>(
                 </CardContent>
                 <CardFooter className="flex justify-between">
                     <div className="text-xs text-muted-foreground">
-                        Showing <strong>1-10</strong> of <strong>32</strong>{" "}
+                        Showing <strong>{table.getRowCount()}</strong> of <strong>{data.length}</strong>{" "}
                         {heading}
-
                         {isSelectAvailable && <div className="flex-1 text-sm text-muted-foreground">
                             {table.getFilteredSelectedRowModel().rows.length} of{" "}
                             {table.getFilteredRowModel().rows.length} row(s) selected.
                         </div>}
                     </div>
-
                     <div className="flex items-center justify-end space-x-2 py-4">
                         <div className="space-x-2 flex">
                             <Button
@@ -174,7 +172,6 @@ export function TableComponent<TData, TValue>(
                         </div>
                     </div>
                 </CardFooter>
-
             </Card>
         </TabsContent>
     )

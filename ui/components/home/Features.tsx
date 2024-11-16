@@ -11,19 +11,19 @@ function Features() {
         setcurrentFeature(name);
     }
     return (
-        <div className='flex flex-col items-center w-[80vw] mx-auto py-auto text-white h-full '>
+        <div className='flex flex-col items-center w-full mx-2 md:w-[80vw] md:mx-auto space-y-2  py-auto text-white h-full '>
             <div>
-                <p className='text-center text-xl md:text-3xl font-medium'>Comprehensive solutions for all your invoicing needs, effortlessly covered</p>
-                <p className='py-2 text-center text-muted'>Create polished, professional quotes for your clients that can quickly be turned into invoices—faster than you can say, Let&apos;s go!</p>
+                <p className='text-center text-lg md:text-3xl font-medium'>Comprehensive solutions for all your invoicing needs, effortlessly covered</p>
+                <p className='py-2 text-center text-xs md:text-sm text-muted'>Create polished, professional quotes for your clients that can quickly be turned into invoices—faster than you can say, Let&apos;s go!</p>
             </div>
             <Tabs defaultValue="Studio" className="flex-col items-center justify-items-center space-y-5 w-full ">
-                <TabsList className='flex  bg-[#1b1d20] rounded-full font-bold'>
+                <TabsList className='flex  bg-[#1b1d20] rounded-full font-bold text-sm'>
                     <Btn className={cn(currentFeature === "Studio" && "bg-custome-orange", currentFeature !== "Studio" && "hover:bg-gray-800")}><TabsTrigger value="Studio" onClick={() => changeFeature("Studio")} >Studio</TabsTrigger></Btn>
                     <Btn className={cn(currentFeature === "Api" && "bg-custome-orange", currentFeature !== "Api" && "hover:bg-gray-800")}><TabsTrigger value="Api" onClick={() => changeFeature("Api")} >Api</TabsTrigger></Btn>
                     <Btn className={cn(currentFeature === "Content Lake" && "bg-custome-orange", currentFeature !== "Content Lake" && "hover:bg-gray-800")}><TabsTrigger value="Content Lake" onClick={() => changeFeature("Content Lake")} >Content Lake</TabsTrigger></Btn>
                 </TabsList>
                 <div className='w-full'>
-                    <h3 className='text-2xl font-bold text-center my-4'>Professional-Looking Invoices</h3>
+                    {/* <h3 className='text-2xl font-bold text-center my-4'>Professional-Looking Invoices</h3> */}
                     <FeatuesTabsContent value='Studio' image='/img/dashboard/dash-cp-bg-m.png' />
                     <FeatuesTabsContent value='Api' image='/img/dashboard/lap.png' />
                     <FeatuesTabsContent value='Content Lake' image='/img/dashboard/lap-m.jpg' />
@@ -43,9 +43,9 @@ export const FeatuesTabsContent = ({ value, image }: { value: string, image: str
 
     return (
         <TabsContent value={value}>
-            <div className='flex  flex-col  md:flex-row  w-full justify-between items-center  md:pt-5 space-y-4'>
+            <div className='flex  flex-col  md:flex-row  w-full justify-between items-center  md:pt-5 space-y-6'>
                 <div className='md:w-1/2  flex items-center'>
-                    <div className='relative w-[400px] h-[300px] '>
+                    <div className='relative w-[80vw] h-[250px] md:w-[400px] md:h-[300px] '>
                         <Image alt='' src={image} fill />
                     </div>
                 </div>
