@@ -84,11 +84,13 @@ const handleGetBusinessWithId = async (req: Request, res: Response) => {
 
 const handleDeleteBusiness = async (req: Request, res: Response) => {
     const { businessId }: Id = req.params;
+    console.log("deleting business :", businessId)
     const userId: Id = req.authContext.userId;
     try {
         const response = await deleteBusinessWithID(businessId, userId);
         if(response.deletedCount === 0) {
-            res.status(HttpStatusCode.NOT_FOUND).json(ResponseEntity("error", "Business Not Found", undefined,`Unable to Delete business with id ${businessId}`))
+            res.status(HttpStatusCode.NOT_FOUND).json(ResponseEntity("error", "Business Not Found", undefined,`Unable to Delete business with id ${businessId}`));
+            return;
         }
         res.status(HttpStatusCode.OK).json(ResponseEntity("success", "Business Deleted", response))
     } catch (error) {
