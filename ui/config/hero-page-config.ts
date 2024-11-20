@@ -169,10 +169,10 @@ export const HERO_PAGE_CONTENT = {
                 paths: [
                     {
                         title: "Privacy Policy",
-                        link: "/Privacy"
+                        link: "/info/privacy-policy"
                     },
                     {
-                        title: "AbouTerms of UsetUs",
+                        title: "Terms of Use",
                         link: "/AbouTerms"
                     },
                     {

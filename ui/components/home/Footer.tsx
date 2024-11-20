@@ -31,7 +31,7 @@ function Footer({ className }: { className?: string }) {
                             <h3 className="font-bold">{item.title.toUpperCase()}</h3>
                             {item.paths.map((data) => (
                                 <ul className="mt-2 space-y-1" key={data.link}>
-                                    <Link href="/" ><li>{data.title}</li></Link>
+                                    <Link href={data.link} ><li>{data.title}</li></Link>
                                 </ul>
                             ))}
                         </div>
