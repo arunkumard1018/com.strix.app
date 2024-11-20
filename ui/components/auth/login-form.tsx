@@ -102,9 +102,9 @@ const UserLoginForm = ({ doLogin }: { doLogin: (email: string, password: string)
                     setLoading(true)
                     const { email, password } = values;
                     const status = await doLogin(email, password);
-                    if (!status)  setLoading(false);
+                    if (!status) setLoading(false);
+                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
                 } catch (error: unknown) {
-                    console.log((error as Error).message)
                     setLoading(false)
                 }
             }}

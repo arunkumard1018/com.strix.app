@@ -1,5 +1,5 @@
 import Features from "@/components/home/Features";
-import Footer from "@/components/home/Footer";
+import { Footer } from "@/components/home/Footer";
 import HeroComponent from "@/components/home/HeroComponent";
 import { NavBar } from "@/components/home/NavBar";
 import SecondaryHero from "@/components/home/SecondaryHero";
@@ -15,7 +15,9 @@ export default function Home() {
         <section className="bg-white"><SecondaryHero /></section>
         <section className="px-2  bg-custome-black py-10 mt-10"><Features /></section>
       </main>
-      <Footer />
+      <footer className="px-2 md:w-[80vw] md:mx-auto">
+        <Footer />
+      </footer>
     </div>
   );
 }

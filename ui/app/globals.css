@@ -1,6 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -27,8 +28,7 @@
     --chart-3: 197 37% 24%;
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
-    --radius: 0.5rem
-  ;
+    --radius: 0.5rem;
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
     --sidebar-primary: 240 5.9% 10%;
@@ -36,7 +36,9 @@
     --sidebar-accent: 240 4.8% 95.9%;
     --sidebar-accent-foreground: 240 5.9% 10%;
     --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 217.2 91.2% 59.8%}
+    --sidebar-ring: 217.2 91.2% 59.8%
+  }
+
   .dark {
     --background: 240 10% 3.9%;
     --foreground: 0 0% 98%;
@@ -61,8 +63,7 @@
     --chart-2: 160 60% 45%;
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%
-  ;
+    --chart-5: 340 75% 55%;
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
     --sidebar-primary: 224.3 76.3% 48%;
@@ -70,12 +71,15 @@
     --sidebar-accent: 240 3.7% 15.9%;
     --sidebar-accent-foreground: 240 4.8% 95.9%;
     --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%}
+    --sidebar-ring: 217.2 91.2% 59.8%
+  }
 }
+
 @layer base {
   * {
     @apply border-border;
   }
+
   body {
     @apply bg-background text-foreground;
   }
@@ -86,9 +90,56 @@ input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,
 input:-webkit-autofill:active {
-    -webkit-box-shadow: 0 0 0 0px var(--background) inset !important; /* Your custom dark background */
-    -webkit-text-fill-color: var(--background)  !important; /* Custom white text color */
-    /* Matching the border color with your custom background */
-    border: 1px solid #1a1a1a; 
-    border-radius: 0px ;
+  -webkit-box-shadow: 0 0 0 0px var(--background) inset !important;
+  /* Your custom dark background */
+  -webkit-text-fill-color: var(--background) !important;
+  /* Custom white text color */
+  /* Matching the border color with your custom background */
+  border: 1px solid #1a1a1a;
+  border-radius: 0px;
+}
+
+
+@media print {
+
+  /* Hide print button */
+  .show {
+    display: none;
+  }
+
+  /* Ensure invoice fills the page */
+  /* #invoice {
+    width: 100%;
+  } */
+  .no-print {
+    display: none;
+  }
+
+  .mt-20 {
+    margin-top: 0 !important;
+  }
+
+  .text-2xl {
+    font-size: 2.5rem;
+    line-height: 1;
+  }
+  .px-4{
+    padding-left: 2.5rem /* 40px */;
+    padding-right: 2.5rem
+  }
+  .invoice{
+    border: none;
+  }
+  .py-10{
+    padding-top: 1rem !important/* 40px */;
+    padding-bottom: 0 !important/* 40px */;
+  }
+  th,td, table{
+    border: none;
+  }
+  #t-head{
+    border-bottom: 1px solid black;
+    padding-bottom: 5px;
+  }
+  
 }

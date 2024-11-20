@@ -26,8 +26,8 @@ export default function CustomersTable() {
                 if (customers.result) {
                     dispatch(setCustomers(customers.result));
                 }
-            } catch (error: unknown) {
-                console.log((error as Error).message);
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            } catch (_error: unknown) {
             }
         };
         loadCustomers(businessId);

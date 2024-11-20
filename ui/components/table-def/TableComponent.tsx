@@ -4,14 +4,14 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, 
 import { Input } from "@/components/ui/input"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { TabsContent } from "@/components/ui/tabs"
+import { cn } from "@/lib/utils"
 import { ColumnDef, ColumnFiltersState, flexRender, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, SortingState, useReactTable, VisibilityState } from "@tanstack/react-table"
 import React from "react"
-import { cn } from "@/lib/utils"
 import { DataTableViewOptions } from "./data-table-view-options"
 
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[]
-    data: TData[] 
+    data: TData[]
     heading: string
     headingInfo: string
     isSearchInputRequired: boolean
@@ -55,7 +55,8 @@ export function TableComponent<TData, TValue>(
             rowSelection,
         },
     })
-
+    const { pageIndex } = table.getState().pagination;
+    const currentRowsCount = table.getRowModel().rows.length;
     return (
         <TabsContent value="all">
             <Card x-chunk="dashboard-06-chunk-0" className=" rounded-none shadow-none border">
@@ -75,7 +76,7 @@ export function TableComponent<TData, TValue>(
                                     onChange={(event) =>
                                         table.getColumn(searchInputValue)?.setFilterValue(event.target.value)
                                     }
-                                    className="max-w-sm"
+                                    className="max-w-sm rounded-none"
                                 />}
                         </div>
 
@@ -89,13 +90,11 @@ export function TableComponent<TData, TValue>(
                         <Table className="relative">
                             <TableHeader className="bg-accent">
                                 {table.getHeaderGroups().map((headerGroup) => (
-
                                     <TableRow key={headerGroup.id}>
                                         {headerGroup.headers.map((header, index) => {
                                             const val = columns[index].id ? smHiddenCells?.includes(columns[index].id) : undefined;
-
                                             return (
-                                                <TableHead key={header.id} className={cn( " text-xs md:text-sm",val && "hidden md:table-cell")} >
+                                                <TableHead key={header.id} className={cn(" text-xs md:text-sm", val && "hidden md:table-cell")} >
                                                     {header.isPlaceholder
                                                         ? null
                                                         : flexRender(
@@ -108,7 +107,6 @@ export function TableComponent<TData, TValue>(
                                     </TableRow>
                                 ))}
                             </TableHeader>
-
                             <TableBody>
                                 {table.getRowModel().rows?.length ? (
                                     table.getRowModel().rows.map((row) => (
@@ -145,8 +143,9 @@ export function TableComponent<TData, TValue>(
                     </div>
                 </CardContent>
                 <CardFooter className="flex justify-between">
-                    <div className="text-xs text-muted-foreground">
-                        Showing <strong>{table.getRowCount()}</strong> of <strong>{data.length}</strong>{" "}
+                    <div className="text-xs text-muted-foreground flex-col">
+                        <div>Page {pageIndex + 1} of {table.getPageCount()}</div>
+                        Showing <strong>{currentRowsCount}</strong> of <strong>{data.length}</strong>{" "}
                         {heading}
                         {isSelectAvailable && <div className="flex-1 text-sm text-muted-foreground">
                             {table.getFilteredSelectedRowModel().rows.length} of{" "}

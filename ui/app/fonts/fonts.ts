@@ -1,4 +1,4 @@
-import { Inter, Lusitana, Bebas_Neue } from 'next/font/google';
+import { Bebas_Neue, Inter, Lusitana } from 'next/font/google';
 import localFont from 'next/font/local';
 
 export const inter = Inter({ subsets: ['latin'] });
@@ -8,6 +8,9 @@ export const lusitana = Lusitana({
     subsets: ['latin'],
 });
 
+// export const Josefin_Sans = Josefin_Sans({
+
+// });
 export const bebas_font = Bebas_Neue({
     weight: ['400'],
     subsets: ['latin'],

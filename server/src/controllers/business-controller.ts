@@ -84,7 +84,6 @@ const handleGetBusinessWithId = async (req: Request, res: Response) => {
 
 const handleDeleteBusiness = async (req: Request, res: Response) => {
     const { businessId }: Id = req.params;
-    console.log("deleting business :", businessId)
     const userId: Id = req.authContext.userId;
     try {
         const response = await deleteBusinessWithID(businessId, userId);

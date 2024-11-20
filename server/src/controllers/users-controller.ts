@@ -8,7 +8,6 @@ const handlegetUserInfo = async (req: Request, res: Response) => {
     console.info("in users info")
     try {
         const userId = req.authContext.userId;
-        console.log(userId)
         // const userInfo = await getUserWithBusinessDetails(userId);
         
         res.status(HttpStatusCode.OK).json(ResponseEntity("success", "Authenticated User Info", {user:"userInfo"}))

@@ -21,8 +21,8 @@ function SecondaryHero({ className }: { className?: string }) {
                 text="Experience with StrixInvoice"
             />
             <p className="text-center pt-2 md:pt-0 text-xs md:text-xl">StrixInvoice simplifies invoicing, making it the easiest part of running your business</p>
-            <div className="relative w-[90vw] h-[50vh] md:w-[75vw] md:h-[125vh] mt-20 ">
-                <Image src={"/img/dashboard/dash-5.png"} alt="" fill className="rounded-md" />
+            <div className="relative w-[90vw] h-[50vh] md:w-[75vw] md:h-[125vh] mt-20 rounded-none">
+                <Image src={"/img/dashboard/dash-5.png"} alt="" fill className="rounded-none" />
             </div>
         </div>
     )

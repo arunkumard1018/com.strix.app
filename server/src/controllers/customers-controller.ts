@@ -85,7 +85,6 @@ const handlegetAllcustomers = async (req: Request, res: Response) => {
 const handleDeleteCustomer = async (req: Request, res: Response) => {
     const userId: Id = req.authContext.userId;
     const { businessId, customersId }: Id = req.params;
-    console.log(userId, businessId, customersId);
     try {
         const deletedCustomersRes = await deleteCustomer(userId, customersId, businessId);
         res.status(HttpStatusCode.OK).json(ResponseEntity("success", "Customer Deleted Successfully!", deletedCustomersRes));

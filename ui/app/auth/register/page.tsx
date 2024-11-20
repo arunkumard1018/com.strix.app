@@ -16,7 +16,6 @@ function Page() {
         const { code } = authResult as CodeResponse;
         const response: ApiResponse<AuthResponse> = await authenticateGoogleCode(code);
         if (response.result) {
-          console.log("SETING RESPONSE CONTEXT")
           dispatch(setUserData(response.result?.user));
           if (response.result.user.business.length !== 0) {
             dispatch(setActiveBusiness(response.result.user.business[0]))

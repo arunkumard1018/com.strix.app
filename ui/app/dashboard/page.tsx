@@ -1,8 +1,9 @@
 "use client"
 
 import { DashboardLineChart } from "@/components/dashboard/charts/dashboard-line-chart"
-import { Component } from "@/components/dashboard/charts/pie-chart"
-import { LatestInvoicesTable, Transactions } from "@/components/dashboard/page/latest-invoice"
+import { InvoicePieChart } from "@/components/dashboard/charts/pie-chart"
+import { LatestInvoicesTable } from "@/components/dashboard/page/latest-invoice"
+import { LatestTransactions } from "@/components/dashboard/page/latestTransactions"
 
 export default function Page() {
   return (
@@ -17,10 +18,10 @@ export default function Page() {
             <LatestInvoicesTable />
           </div>
           <div className="p-2 bg-card text-card-foreground rounded-none border" >
-            <p className="px-2 font-bold text-2xl py-2 ">Transactions</p>
-            <Transactions />
+            <p className="px-2 font-bold text-2xl py-2 ">Latest Transactions</p>
+            <LatestTransactions />
           </div>
-          <div className="" ><Component /></div>
+          <div className="" ><InvoicePieChart /></div>
         </div>
       </div>
     </div>

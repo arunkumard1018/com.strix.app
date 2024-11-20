@@ -23,7 +23,7 @@ function NavHeader() {
     }
 
     return (
-        <header className={cn("flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12 justify-between fixed z-50 bg-background shadow-sm w-screen",(isExpanded && !isMobile) ? "md:w-[calc(100vw-17rem)]" : "md:w-[calc(100vw-3rem)]")}>
+        <header className={cn("no-print flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12 justify-between fixed z-50 bg-background shadow-sm w-screen",(isExpanded && !isMobile) ? "md:w-[calc(100vw-17rem)]" : "md:w-[calc(100vw-3rem)]")}>
             <div className="flex items-center gap-2 px-4">
                 <div onClick={ToggleSideBarTrigger} className=""><SidebarTrigger className="-ml-1" /></div>
                 <Separator orientation="vertical" className="mr-2 h-4" />

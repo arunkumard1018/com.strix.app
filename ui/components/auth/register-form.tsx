@@ -41,7 +41,6 @@ function RegisterForm({ handleGoogleSignIn }: { handleGoogleSignIn: () => void }
     try {
       const response: ApiResponse<AuthResponse> = await registerUser(name, email, password);
       if (response.result) {
-        console.log("SETING RESPONSE CONTEXT")
         dispatch(setUserData(response.result?.user));
         router.push("/dashboard");
       }

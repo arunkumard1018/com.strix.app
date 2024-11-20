@@ -16,8 +16,8 @@ const initialValues = {
     catagory: "",
     GSTIN: "",
     hsn: "",
-    phone:"",
-    invoicePrefix:"",
+    phone: "",
+    invoicePrefix: "",
     stateCode: "",
     street: "",
     city: "",
@@ -33,21 +33,20 @@ function OnboardingPage() {
         try {
             const response: ApiResponse<Business> = await createBusiness(values);
             if (response.result) {
-                const business : Business = {
+                const business: Business = {
                     _id: response.result._id,
                     name: response.result.name,
                     catagory: response.result.catagory,
                     logo: response.result.logo,
-                    GSTIN:response.result.GSTIN,
-                    HSN:response.result.HSN,
-                    invoicePrefix:response.result.invoicePrefix,
+                    GSTIN: response.result.GSTIN,
+                    HSN: response.result.HSN,
+                    invoicePrefix: response.result.invoicePrefix,
                 }
                 dispatch(addBusiness(business))
                 dispatch(setActiveBusiness(business))
             }
         } catch (error) {
             /** Business Form Errors to Be Implemented  */
-            console.log(error)
             if (error instanceof AxiosError) {
                 setErrorMessage(error.response?.data.error)
             }
@@ -68,7 +67,7 @@ function OnboardingPage() {
                     </div>}
                     <div className=" w-[370px] md:w-[390px] shadow-xl border border-gray-800  space-y-4 py-5">
                         {/* Business Details Form */}
-                        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+                        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem forcedTheme='dark' disableTransitionOnChange>
                             <BusinessForm handleBusinessFormData={handleBusinessFormData} initialValues={initialValues} className='items-center' />
                         </ThemeProvider>
                     </div>
@@ -78,6 +77,7 @@ function OnboardingPage() {
         </div>
     )
 }
+
 
 
 export default OnboardingPage

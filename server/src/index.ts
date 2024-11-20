@@ -9,6 +9,8 @@ import { businessRouter } from "./routes/business";
 import apiRouter from './routes/info';
 import { customersRouter } from "./routes/customers";
 import { invoiceRoute } from "./routes/invoice";
+import { latestDataRoute } from "./routes/latestData";
+import logger from "./lib/logConfig";
 dotenv.config()
 
 
@@ -43,22 +45,22 @@ app.use(authMiddleWare)
  * Note : Changes in Route May Block the access for Public Routes due to All 
  *        Rotes are Protected By Default Configure public Routes in auth Middleware also incase of Route Changes
  */
-app.use("/", apiRouter)
-app.use("/api/v1/auth", authRouter)
-app.use("/api/v1/users/business",businessRouter)
-app.use("/api/v1/business/:businessId/customers",customersRouter)
-app.use("/api/v1/business/:businessId/invoices",invoiceRoute)
+app.use("/", apiRouter);
+app.use("/api/v1/auth", authRouter);
+app.use("/api/v1/users/business", businessRouter);
+app.use("/api/v1/business/:businessId/customers", customersRouter);
+app.use("/api/v1/business/:businessId/invoices", invoiceRoute);
+app.use("/api/v1/users/latest", latestDataRoute)
 
-console.log("Conecting To Mongo DB Server....")
-
+logger.info("Conecting To Mongo DB Server....")
 mongoose.connect(process.env.MONGO_URL!)
     .then(() => {
-        console.log("Connected to MongoDB");
+        logger.info("Connected to MongoDB");
     })
     .catch((error) => {
-        console.error("Database connection error:", error);
+        logger.error("Database connection error:", error);
     });
 
 app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+    logger.info(`Server running on port ${PORT}`);
 });

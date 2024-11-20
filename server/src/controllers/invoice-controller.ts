@@ -3,8 +3,16 @@ import { ResponseEntity } from "../lib/ApiResponse";
 import logger from "../lib/logConfig";
 import { HttpStatusCode } from "../lib/status-codes";
 import { invoiceSchema } from "../schemas/Invoices";
-import { createInvoice, deleteInvoice, getAllInvoicesForBusiness, getInvoiceDetails, updateInvoice } from "../service/invoices";
 import { Invoice } from "../types/invoice";
+import {
+    createInvoice,
+    deleteInvoice,
+    getAllInvoicesForBusiness,
+    getInvoiceDetails,
+    getInvoiceStatsByBusinessAndUserId,
+    getLatestInvoices,
+    updateInvoice
+} from "../service/invoices";
 
 const handleCreateInvoices = async (req: Request, res: Response) => {
     const { businessId }: Id = req.params;
@@ -42,8 +50,8 @@ const handleUpdateInvoices = async (req: Request, res: Response) => {
         const invoiceData: Invoice = req.body;
         invoiceData.user = userId;
         invoiceData.business = businessId;
-        const updatedInvoice = await updateInvoice(invoiceData,invoiceId,userId);
-        res.status(HttpStatusCode.ACCEPTED).json(ResponseEntity("success", "Invoices Updated Successfully!",updatedInvoice))
+        const updatedInvoice = await updateInvoice(invoiceData, invoiceId, userId);
+        res.status(HttpStatusCode.ACCEPTED).json(ResponseEntity("success", "Invoices Updated Successfully!", updatedInvoice))
     } catch (error) {
         const message = (error as Error).message;
         res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json(ResponseEntity("error", "Error While Updating Invoices!", undefined, message));
@@ -92,4 +100,35 @@ const handleDeleteInvoices = async (req: Request, res: Response) => {
     }
 }
 
-export { handleCreateInvoices, handleDeleteInvoices, handleGetAllInvoices, handleGetInvoices, handleUpdateInvoices };
+const handleLatestInvoices = async (req: Request, res: Response) => {
+    const userId = req.authContext.userId;
+    try {
+        const latestInvoices = await getLatestInvoices(userId);
+        res.status(HttpStatusCode.OK).json(ResponseEntity("success", "Latest Five Invoices!", latestInvoices));
+    } catch (error) {
+        const message = (error as Error).message;
+        res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json(ResponseEntity("error", "Error While Fetching Latest Invoices!", undefined, message));
+    }
+}
+
+const handleInvoiceStats = async (req: Request, res: Response) => {
+    const { businessId }: Id = req.params;
+    const userId: Id = req.authContext.userId;
+    logger.info(`Accessing Business stats for ${businessId} by user ${req.authContext.userEmail}`)
+    try {
+        const stats = await getInvoiceStatsByBusinessAndUserId(businessId, userId);
+        res.status(HttpStatusCode.OK).json(ResponseEntity("success", "Business Statistics!", stats));
+    } catch (error) {
+        const message = (error as Error).message;
+        res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json(ResponseEntity("error", "Error while fetching Business Statistics!", undefined, message));
+    }
+}
+export {
+    handleCreateInvoices,
+    handleDeleteInvoices,
+    handleGetAllInvoices,
+    handleGetInvoices,
+    handleUpdateInvoices,
+    handleLatestInvoices,
+    handleInvoiceStats
+};

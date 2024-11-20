@@ -37,7 +37,7 @@ export function Dashboardlayout({ children }: { children: React.ReactNode }) {
     }, [authContext.user, dispatch])
     return (
         <>
-            {authContext.user === undefined ? <div className="flex items-center h-screen justify-center"><LoadingGif/></div> :
+            {authContext.user === undefined ? <div className="flex items-center h-screen justify-center"><LoadingGif /></div> :
                 authContext.user?.business === undefined || authContext.user?.business.length === 0 ? <div><OnboardingPage /></div> :
                     <SidebarProvider>
                         <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>

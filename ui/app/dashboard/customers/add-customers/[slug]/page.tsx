@@ -31,8 +31,8 @@ function Page() {
             try {
                 const response: ApiResponse<Customers> = await getCustomers(activeBusinessId, customersId);
                 setCustomers(response.result);
-            } catch (error) {
-                console.log((error as Error).message);
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            } catch (_error: unknown) {
             } finally {
                 setLoading(false);
             }

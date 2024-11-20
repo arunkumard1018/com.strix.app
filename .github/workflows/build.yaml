@@ -37,7 +37,6 @@
 #       - name: Show Files
 #         run: ls server/
 
-
 #       - name: Deploy to Server 1
 #         uses: easingthemes/ssh-deploy@main
 #         env:
@@ -57,7 +56,15 @@
 #           script: |
 #             cd ${{ secrets.TARGET_DIR }}
 #             npm install --production
+
+#             # Setting Up Env Vars
 #             echo "SERVER_PORT=${{ secrets.SERVER_PORT }}" > .env
 #             echo "MONGO_URL=${{ secrets.MONGO_URL }}" >> .env
+#             echo "JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}" >> .env
+#             echo "JWT_TOKEN_EXPIRY=${{ secrets.JWT_TOKEN_EXPIRY }}" >> .env
+#             echo "NODE_ENV=${{ secrets.NODE_ENV }}" >> .env
+#             echo "GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}" >> .env
+#             echo "GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}" >> .env
+
 #             pm2 restart build/index.js
 #             echo "Deployment updated on $(date '+%Y-%m-%d %H:%M:%S') by ${{ github.actor }}" >> ci-info.txt

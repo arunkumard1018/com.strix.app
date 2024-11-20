@@ -41,7 +41,6 @@ function Page() {
     const handleBusinessFormData = async (values: BusinessFormData) => {
         try {
             const response: ApiResponse<BusinessData> = await updateBusiness(values, businessID);
-            console.log(response.result)
             if (response.result) {
                 const business: Business = {
                     _id: response.result._id,

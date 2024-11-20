@@ -55,12 +55,13 @@ const updateCustomers = async (customersData: CustomersFormData, customersId: st
 }
 
 const deleteCustomers = async (customersId: string, businessId: string) => {
-    console.log("Deleteing Customers ", customersId)
     try {
         const response = await axiosClient.delete(`/api/v1/business/${businessId}/customers/${customersId}`);
         if (response.data.result.deletedCount > 0) return Promise.resolve(true);
         return Promise.resolve(false)
-    } catch (error) {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (_error: unknown) {
+
         return Promise.resolve(false)
     }
 }
