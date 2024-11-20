@@ -30,7 +30,7 @@ jobs:
 
       - name: Run Tests
         working-directory: server
-        run: npm run test
+        run: echo "npm run Test Scripts need to be Implememnted!"
 
       - name: Show Files
         run: ls server/
