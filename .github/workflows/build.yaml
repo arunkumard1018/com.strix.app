@@ -1,70 +1,72 @@
-# name: Push-to-EC2
+name: Push-to-EC2
 
-# # Trigger deployment only on push to main branch
-# on:
-#   push:
-#     branches:
-#       - main
-#     paths:
-#       - 'server/**'
+# Trigger deployment only on push to main branch
+on:
+  push:
+    branches:
+      - main
+    # paths:
+    #   - 'server/**'
 
-# jobs:
-#   deploy:
-#     name: Deploy to EC2 on master branch push
-#     runs-on: ubuntu-latest
+jobs:
+  deploy:
+    name: Deploy to EC2 on master branch push
+    runs-on: ubuntu-latest
+    environment: production
 
-#     steps:
-#       - name: Checkout the files
-#         uses: actions/checkout@v3
+    steps:
+      - name: Checkout the files
+        uses: actions/checkout@v3
 
-#       - name: Install Node.js
-#         uses: actions/setup-node@v3
-#         with:
-#           node-version: '20.x'
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20.x'
 
-#       - name: Install npm dependencies
-#         working-directory: server
-#         run: npm install
+      - name: Install npm dependencies
+        working-directory: server
+        run: npm install
 
-#       - name: Run Build
-#         working-directory: server
-#         run: npm run build --if-present
+      - name: Run Build
+        working-directory: server
+        run: npm run build --if-present
 
-#       - name: Run Test
-#         working-directory: server
-#         run: echo "npm run Testes Executed Successfully!"
+      - name: Run Test
+        working-directory: server
+        run: echo "npm run Testes Executed Successfully!"
 
-#       - name: Show Files
-#         run: ls server/
+      - name: Show Files
+        run: ls server/
 
-#       - name: Deploy to Server 1
-#         uses: easingthemes/ssh-deploy@main
-#         env:
-#           SSH_PRIVATE_KEY: ${{ secrets.EC2_KEY }}
-#           REMOTE_HOST: ${{ secrets.EC2_HOST }}
-#           REMOTE_USER: ${{ secrets.EC2_USER }}
-#           TARGET: ${{ secrets.TARGET_DIR }}
-#           SOURCE: "server/"
-#           EXCLUDE: "/node-modules/,/node_modules/,/src/"
 
-#       - name: Executing remote ssh commands using ssh key
-#         uses: appleboy/ssh-action@master
-#         with:
-#           host: ${{ secrets.EC2_HOST }}
-#           username: ${{ secrets.EC2_USER }}
-#           key: ${{ secrets.EC2_KEY }}
-#           script: |
-#             cd ${{ secrets.TARGET_DIR }}
-#             npm install --production
+      - name: Deploy to Server 1
+        uses: easingthemes/ssh-deploy@main
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.EC2_KEY }}
+          REMOTE_HOST: ${{ secrets.EC2_HOST }}
+          REMOTE_USER: ${{ secrets.EC2_USER }}
+          TARGET: ${{ secrets.TARGET_DIR }}
+          SOURCE: "server/"
+          EXCLUDE: "/node-modules/,/node_modules/,/src/"
 
-#             # Setting Up Env Vars
-#             echo "SERVER_PORT=${{ secrets.SERVER_PORT }}" > .env
-#             echo "MONGO_URL=${{ secrets.MONGO_URL }}" >> .env
-#             echo "JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}" >> .env
-#             echo "JWT_TOKEN_EXPIRY=${{ secrets.JWT_TOKEN_EXPIRY }}" >> .env
-#             echo "NODE_ENV=${{ secrets.NODE_ENV }}" >> .env
-#             echo "GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}" >> .env
-#             echo "GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}" >> .env
+      - name: Executing remote ssh commands using ssh key
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_KEY }}
+          script: |
+            cd ${{ secrets.TARGET_DIR }}
+            npm install --omit=dev
 
-#             pm2 restart build/index.js
-#             echo "Deployment updated on $(date '+%Y-%m-%d %H:%M:%S') by ${{ github.actor }}" >> ci-info.txt
+            # Envs Setup
+            echo "MONGO_URL=${{ secrets.MONGO_URL }}" > .env
+            echo "JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}" >> .env
+            echo "JWT_TOKEN_EXPIRY=${{ secrets.JWT_TOKEN_EXPIRY }}" >> .env
+            echo "SERVER_PORT=${{ secrets.SERVER_PORT }}" >> .env
+            echo "NODE_ENV=prod" >> .env
+            echo "GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}" >> .env
+            echo "GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}" >> .env
+
+            pm2 start build/index.js
+            echo "Deployment updated on $(date '+%Y-%m-%d %H:%M:%S') by ${{ github.actor }}" >> ci-info.txt
