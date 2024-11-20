@@ -1,12 +1,9 @@
 name: Push-to-EC2
 
-# Trigger deployment only on push to main branch
 on:
   push:
     branches:
       - main
-    # paths:
-    #   - 'server/**'
 
 jobs:
   deploy:
@@ -31,13 +28,17 @@ jobs:
         working-directory: server
         run: npm run build --if-present
 
-      - name: Run Test
+      - name: Run Tests
         working-directory: server
-        run: echo "npm run Testes Executed Successfully!"
+        run: npm run test
 
       - name: Show Files
         run: ls server/
 
+      - name: Set up SSH
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.EC2_KEY }}
 
       - name: Deploy to Server 1
         uses: easingthemes/ssh-deploy@main
@@ -47,7 +48,7 @@ jobs:
           REMOTE_USER: ${{ secrets.EC2_USER }}
           TARGET: ${{ secrets.TARGET_DIR }}
           SOURCE: "server/"
-          EXCLUDE: "/node-modules/,/node_modules/,/src/"
+          EXCLUDE: "node_modules/,src/"
 
       - name: Executing remote ssh commands using ssh key
         uses: appleboy/ssh-action@master
@@ -68,5 +69,6 @@ jobs:
             echo "GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}" >> .env
             echo "GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}" >> .env
 
+            # Start the app using pm2
             pm2 start build/index.js
             echo "Deployment updated on $(date '+%Y-%m-%d %H:%M:%S') by ${{ github.actor }}" >> ci-info.txt
