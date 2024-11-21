@@ -60,7 +60,7 @@ jobs:
             cd ${{ secrets.TARGET_DIR }}
             npm install --omit=dev
 
-            # Envs Setup
+            # Create or update the .env file
             echo "MONGO_URL=${{ secrets.MONGO_URL }}" > .env
             echo "JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}" >> .env
             echo "JWT_TOKEN_EXPIRY=${{ secrets.JWT_TOKEN_EXPIRY }}" >> .env
@@ -71,6 +71,14 @@ jobs:
             echo "CORS_ORIGINS=${{ secrets.CORS_ORIGINS }}" >> .env
             echo "APP_DOMAIN=${{ secrets.APP_DOMAIN }}" >> .env
 
-            # Start the app using pm2
-            pm2 start build/index.js
+            # Restart app using PM2 or start it if not running
+            pm2 restart strix || pm2 start build/index.js --name strix
+
+            # Save PM2 process list to restart on reboot
+            pm2 save
+
+            # Optional: Check status of the app
+            pm2 status
+
+            # Log deployment time
             echo "Deployment updated on $(date '+%Y-%m-%d %H:%M:%S') by ${{ github.actor }}" >> ci-info.txt
