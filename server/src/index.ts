@@ -27,10 +27,11 @@ app.set('view engine', 'ejs');
 app.set('views', './views');
 
 /**Authentication Middleware */
+const allowedOrigins = process.env.CORS_ORIGINS ? process.env.CORS_ORIGINS.split(',') : [];
 app.use(cors({
-    origin: ['http://localhost:3000', 'http://192.168.1.3:3000'],
+    origin: allowedOrigins,
     // origin:true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE','PATCH'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
 }));

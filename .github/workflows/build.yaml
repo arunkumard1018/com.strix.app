@@ -68,6 +68,8 @@ jobs:
             echo "NODE_ENV=prod" >> .env
             echo "GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}" >> .env
             echo "GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}" >> .env
+            echo "CORS_ORIGINS=${{ secrets.CORS_ORIGINS }}" >> .env
+            echo "APP_DOMAIN=${{ secrets.APP_DOMAIN }}" >> .env
 
             # Start the app using pm2
             pm2 start build/index.js

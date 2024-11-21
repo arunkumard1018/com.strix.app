@@ -16,6 +16,14 @@ const generateJwtToken = (userId: Id, email: string): string => {
     const token = jsonwebtoken.sign({ id: userId, email: email }, secreatKey, { expiresIn: tokenExpiry });
     return token;
 }
+const cookieConfig = {
+    httpOnly: true,   // Cookie is not accessible via JavaScript
+    secure: true,     // Ensures cookie is sent over HTTPS
+    domain: process.env.APP_DOMAIN || '.localhost:3000', // Share cookie across all subdomains
+    path: '/',        // Make cookie accessible to all routes
+    maxAge: 8 * 60 * 60 * 1000,
+    // sameSite: 'lax',  // Prevent CSRF while allowing subdomain requests
+};
 
 const handleUserRegister = async (req: Request, res: Response) => {
     try {
@@ -40,11 +48,7 @@ const handleUserRegister = async (req: Request, res: Response) => {
         delete user.__v;
 
         const token = generateJwtToken(user._id, user.email);
-        res.cookie("token", token, {
-            httpOnly: true,
-            sameSite: "strict",
-            maxAge: 3 * 60 * 60 * 1000,
-        });
+        res.cookie('token', token, { ...cookieConfig,sameSite: 'lax',});
         res.status(HttpStatusCode.CREATED)
             .json(ResponseEntity("success", "User Created Successfully", { token, user: user }));
 
@@ -80,13 +84,8 @@ const handleAuthentication = async (req: Request, res: Response) => {
         }
         const token = generateJwtToken(user._id, user.email);
         const userDeatils = await getUserWithBusinessDetails(user._id);
-        res.cookie("token", token, {
-            httpOnly: true,
-            sameSite: "strict",
-            maxAge: 3 * 60 * 60 * 1000,
-        });
+        res.cookie('token', token, { ...cookieConfig,sameSite: 'lax',});
         res.status(HttpStatusCode.OK).json(ResponseEntity('success', "Authentication Successfull", { token, user: userDeatils }))
-
     } catch (error) {
         const message = (error as Error).message;
         logger.error(message);
@@ -129,13 +128,8 @@ const handleOAuth2Google = async (req: Request, res: Response) => {
             token = generateJwtToken(userInfo._id, email);
             userDeatils = userInfo;
         }
-        res.cookie("token", token, {
-            httpOnly: true,
-            sameSite: "strict",
-            maxAge: 3 * 60 * 60 * 1000,
-        });
+        res.cookie('token', token, { ...cookieConfig,sameSite: 'lax',});
         res.status(HttpStatusCode.OK).json(ResponseEntity('success', "Authentication Successfull", { token, user: userDeatils }))
-
     } catch (error) {
         logger.error("GOOGLE AUTH ERROR", error)
         res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json((error as Error).message);
@@ -154,16 +148,8 @@ const handleUsersInfo = async (req: Request, res: Response) => {
 }
 
 const handleLogout = async (req: Request, res: Response) => {
-    res.clearCookie("token", {
-        httpOnly: true,
-        sameSite: "strict" // SameSite attribute for added security
-    });
+    res.clearCookie('token', { ...cookieConfig, sameSite:"lax" });
     res.status(HttpStatusCode.OK).json(ResponseEntity("success", "Logged out successfully"));
 }
 
 export { handleAuthentication, handleOAuth2Google, handleUserRegister, handleLogout, handleUsersInfo };
-
-
-/**
- * const token = req.cokkies.token; undifined if token not present
- */
