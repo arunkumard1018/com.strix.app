@@ -4,6 +4,13 @@ on:
   push:
     branches:
       - main
+    paths:
+      - 'server/**'  
+  pull_request:
+    branches:
+      - main  # Trigger on pull requests to the main branch
+    paths:
+      - 'server/**'      # Runs when any file under the 'Server' directory changes
 
 jobs:
   deploy:

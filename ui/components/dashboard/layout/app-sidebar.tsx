@@ -1,5 +1,6 @@
 "use client"
 
+import { logoutUser } from "@/api/auth";
 import { logoff } from "@/app/actions";
 import { NavFeatures } from "@/components/dashboard/layout/nav-features";
 import { NavMain } from "@/components/dashboard/layout/nav-main";
@@ -111,9 +112,15 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const dispatch = useDispatch();
   const authContext = useSelector((state: RootState) => state.authContext);
   const doLogout = async () => {
-    await logoff();
-    dispatch(clearUser())
-    window.location.href = "/auth/login";
+    try {
+      await logoff();
+      await logoutUser();
+    } catch (error) {
+      console.log("Error While Logging Out",(error as Error).message)
+    } finally {
+      dispatch(clearUser());
+      window.location.href = "/auth/login";
+    }
   }
 
   return (
@@ -126,7 +133,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavFeatures projects={data.features} />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={authContext.user} logout={doLogout} />
+        <NavUser user={authContext.user} logout={doLogout}  />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

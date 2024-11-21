@@ -40,6 +40,8 @@ const getUsersInfo = async () => {
         throw error;
     }
 }
-
-export { authenticate, getUsersInfo, authenticateGoogleCode , registerUser};
+const logoutUser = async () => {
+    return await axiosClient.post("/api/v1/auth/logout",{});
+}
+export { authenticate, getUsersInfo, authenticateGoogleCode , registerUser, logoutUser};
 
