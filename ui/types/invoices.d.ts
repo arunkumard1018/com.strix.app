@@ -26,3 +26,14 @@ export interface InvoiceStats {
     totalProcessingAmount: number;
     totalDueAmount: number;
 }
+interface MonthlyData {
+    month: string;
+    invoices: number;
+    PAID: number;
+    revenue: number;
+}
+
+interface InvoiceData {
+    data: MonthlyData[];
+    totalRevenue: number;
+}

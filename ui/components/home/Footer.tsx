@@ -7,30 +7,28 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '..
 
 function Footer({ className }: { className?: string }) {
     return (
-        <footer className={cn("bg-white py-8  md:py-20", className)}>
-            <div className="grid md:grid-cols-2 gap-4">
-
+        <footer className={cn("bg-white", className)}>
+            <div className="grid md:grid-cols-2 gap-4 py-10">
                 <div className='md:ml-6 '>
                     <h2 className="text-4xl  font-bold">Strix Invoice</h2>
                     <p className="mt-2">{HERO_PAGE_CONTENT.footer.description}</p>
                     <div className="flex mt-4 space-x-1 items-center">
-                        <Image src="/icons/play-store.png" alt="" className="w" width={35} height={35} />
+                        <div><Image src="/icons/play-store.png" alt="" className="w" width={25} height={25} /></div>
                         <div>Download on Play Store</div>
                     </div>
                     <div className='flex py-4 space-x-4'>
-                        <Image src="/img/social/x.png" alt="" className="w" width={35} height={35} />
-                        <Image src="/img/social/insta.png" alt="" className="w" width={35} height={35} />
-                        <Image src="/img/social/facebook.png" alt="" className="w" width={35} height={35} />
-                        <Image src="/img/social/linkdin.png" alt="" className="w" width={35} height={35} />
+                        <Link href="#"><div className='relative size-5'><Image src="/svg/twitter.svg" alt="" className="w" fill /></div></Link>
+                        <Link href="#"><div className='relative size-5'><Image src="/svg/facebook.svg" alt="" className="w" fill /></div></Link>
+                        <Link href="#"><div className='relative size-5'><Image src="/svg/insta.svg" alt="" className="w" fill /></div></Link>
                     </div>
                 </div>
 
-                <div className='hidden w-full md:flex justify-around'>
+                <div className='hidden w-full md:flex justify-end gap-16'>
                     {HERO_PAGE_CONTENT.footer.FooterLinks.map((item, index) => (
                         <div key={index * 5}>
-                            <h3 className="font-bold">{item.title.toUpperCase()}</h3>
+                            <h3 className="font-bold text-xl">{item.title}</h3>
                             {item.paths.map((data) => (
-                                <ul className="mt-2 space-y-1" key={data.link}>
+                                <ul className="mt-2 space-y-1 font-medium text-sm" key={data.link}>
                                     <Link href={data.link} ><li>{data.title}</li></Link>
                                 </ul>
                             ))}
@@ -49,6 +47,10 @@ function Footer({ className }: { className?: string }) {
                     ))}
                 </Accordion>
             </div>
+            <div className=" text-center text-sm pb-4 md:py-4">
+                &copy; 2024 Striix Invoice. All rights reserved.
+            </div>
+
         </footer>
     )
 }

@@ -11,13 +11,13 @@ function Features() {
         setcurrentFeature(name);
     }
     return (
-        <div className='flex flex-col items-center w-full mx-2 md:w-[80vw] md:mx-auto space-y-2  py-auto text-white h-full '>
-            <div>
+        <div className='flex flex-col items-center w-full mx-2 md:w-[80vw] md:mx-auto space-y-2   text-white h-full '>
+            <div className='md:mt-4 mx-2'>
                 <p className='text-center text-lg md:text-3xl font-medium'>Comprehensive solutions for all your invoicing needs, effortlessly covered</p>
                 <p className='py-2 text-center text-xs md:text-sm text-muted'>Create polished, professional quotes for your clients that can quickly be turned into invoices—faster than you can say, Let&apos;s go!</p>
             </div>
             <Tabs defaultValue="studio" className="flex-col items-center justify-items-center space-y-5 w-full ">
-                <TabsList className='flex  bg-[#1b1d20] rounded-full font-bold text-sm'>
+                <TabsList className='flex  bg-[#1b1d20] rounded-none font-bold text-sm'>
                     <Btn className={cn(currentFeature === "studio" && "bg-custome-orange", currentFeature !== "studio" && "hover:bg-gray-800")}><TabsTrigger value="studio" onClick={() => changeFeature("studio")} >Studio</TabsTrigger></Btn>
                     <Btn className={cn(currentFeature === "api" && "bg-custome-orange", currentFeature !== "api" && "hover:bg-gray-800")}><TabsTrigger value="api" onClick={() => changeFeature("api")} >Api</TabsTrigger></Btn>
                     <Btn className={cn(currentFeature === "contentLake" && "bg-custome-orange", currentFeature !== "contentLake" && "hover:bg-gray-800")}><TabsTrigger value="contentLake" onClick={() => changeFeature("contentLake")} >Content Lake</TabsTrigger></Btn>
@@ -29,14 +29,13 @@ function Features() {
                     <FeatuesTabsContent value="contentLake" />
                 </div>
             </Tabs>
-
         </div>
     )
 }
 
 export const Btn = ({ children, className }: { children: React.ReactNode, className?: string }) => {
     return (
-        <div className={cn(' py-2 px-4  rounded-full', className)}>{children}</div>
+        <div className={cn(' py-2 px-4  rounded-none', className)}>{children}</div>
     )
 }
 // Define content for different tabs

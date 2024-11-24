@@ -1,6 +1,6 @@
 import express from "express";
 import { get } from "mongoose";
-import { handleCreateInvoices, handleDeleteInvoices, handleGetAllInvoices, handleGetInvoices, handleUpdateInvoices } from "../controllers/invoice-controller";
+import { handleCreateInvoices, handleDeleteInvoices, handleGetAllInvoices, handleGetInvoices, handleUpdateInvoices } from "../controllers/invoiceController";
 
 const invoiceRoute = express.Router({ mergeParams: true });
 

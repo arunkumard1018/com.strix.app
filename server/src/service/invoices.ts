@@ -59,11 +59,16 @@ const getLatestInvoices = async (userId: string) => {
 
 const getInvoiceStatsByBusinessAndUserId = async (businessId: Id, userId: Id) => {
     try {
+        // Validate userId and businessId
+        if (!mongoose.Types.ObjectId.isValid(userId) || !mongoose.Types.ObjectId.isValid(businessId)) {
+            throw new Error("Invalid userId or businessId");
+        }
+
         const stats = await InvoiceModel.aggregate([
             {
                 $match: {
-                    business: new mongoose.Types.ObjectId(businessId),
-                    user: new mongoose.Types.ObjectId(userId),
+                    business: mongoose.Types.ObjectId.createFromHexString(businessId),
+                    user: mongoose.Types.ObjectId.createFromHexString(userId),
                 },
             },
             {
@@ -112,10 +117,83 @@ const getInvoiceStatsByBusinessAndUserId = async (businessId: Id, userId: Id) =>
             totalDueAmount: 0,
         }; // Return a default structure if no data is found
     } catch (error) {
-        console.error("Error fetching invoice stats:", error);
+        logger.error("Error fetching invoice stats:", error);
         throw error;
     }
 };
+
+
+async function getInvoiceData(year: number, userId: string, businessId: string) {
+    try {
+        // Validate userId and businessId
+        if (!mongoose.Types.ObjectId.isValid(userId) || !mongoose.Types.ObjectId.isValid(businessId)) {
+            throw new Error("Invalid userId or businessId");
+        }
+
+        const result = await InvoiceModel.aggregate([
+            // Match invoices for the specific year, user, and business
+            {
+                $match: {
+                    user: mongoose.Types.ObjectId.createFromHexString(userId),
+                    business: mongoose.Types.ObjectId.createFromHexString(businessId),
+                    invoiceDate: {
+                        $gte: new Date(`${year}-01-01`),
+                        $lt: new Date(`${year + 1}-01-01`),
+                    },
+                },
+            },
+            // Add a "month" field
+            {
+                $addFields: {
+                    month: { $month: "$invoiceDate" }, // Extract the month from invoiceDate
+                },
+            },
+            // Group by month
+            {
+                $group: {
+                    _id: "$month",
+                    invoices: { $sum: 1 }, // Total invoices in the month
+                    PAID: { $sum: { $cond: [{ $eq: ["$paymentStatus", "PAID"] }, 1, 0] } }, // Count "PAID" invoices
+                    revenue: { $sum: "$invoiceAmount" }, // Sum of invoice amounts
+                },
+            },
+            // Sort by month
+            {
+                $sort: { _id: 1 },
+            },
+        ]);
+
+        // Transform the result into the desired format
+        const months = [
+            "January",
+            "February",
+            "March",
+            "April",
+            "May",
+            "June",
+            "July",
+            "August",
+            "September",
+            "October",
+            "November",
+            "December",
+        ];
+        const data = result.map((item) => ({
+            month: months[item._id - 1], // Convert month number to name
+            invoices: item.invoices,
+            PAID: item.PAID,
+            revenue: item.revenue,
+        }));
+
+        // Calculate total revenue
+        const totalRevenue = data.reduce((acc, item) => acc + item.revenue, 0);
+
+        return { data, totalRevenue };
+    } catch (error) {
+        logger.error("Error fetching authorized user invoice data:", error);
+        throw error;
+    }
+}
 
 export {
     createInvoice,
@@ -125,4 +203,5 @@ export {
     updateInvoice,
     getLatestInvoices,
     getInvoiceStatsByBusinessAndUserId,
+    getInvoiceData,
 };

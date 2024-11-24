@@ -14,7 +14,7 @@ function NavBar() {
         {/* Nav - Left */}
         <div className='flex items-center space-x-2'>
           {/* <div className='relative w-40 md:w-52 h-16'><Image alt='nav-logo' src="/img/strix.png" fill priority={true} /></div> */}
-          <Link href={"/"}><div className={cn(bebas_font.className, "p-0 m-0 text-3xl text-red-400 tracking-widest")}>STRIX INVOICE</div></Link>
+          <Link href={"/"}><div className={cn(bebas_font.className, "p-0 m-0 text-3xl text-red-400 tracking-wider")}>STRIX INVOICE</div></Link>
           <div className='font-medium space-x-8 pl-2 hidden lg:block'>
             {NAV_LINKS.map((item) => (
               <Link href="/" key={item.text} className='py-2 px-3 hover:bg-gray-200 hover:bg-opacity-80 rounded-sm  '>{item.text}</Link>

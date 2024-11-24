@@ -44,7 +44,7 @@ const chartConfig = {
 } satisfies ChartConfig
 
 export function InvoicePieChart() {
-    const storeState = useSelector((state: RootState) => state);
+    const activeBusiness = useSelector((state: RootState) => state.authContext.activeBusiness);
     const stats = useSelector((state: RootState) => state.latestData.invoiceStats);
     const dispatch = useDispatch();
     const chartData = React.useMemo(() => {
@@ -71,7 +71,7 @@ export function InvoicePieChart() {
     const totalInvoices = React.useMemo(() => {
         return chartData.reduce((acc, curr) => acc + curr.visitors, 0)
     }, [chartData])
-    const activeBusinessId = storeState.authContext.activeBusiness._id;
+    const activeBusinessId = activeBusiness._id;
     React.useEffect(() => {
         const loadStats = async () => {
             try {
@@ -88,7 +88,7 @@ export function InvoicePieChart() {
         <Card className="flex flex-col rounded-none shadow-none">
             <CardHeader className="items-center pb-0">
                 <CardTitle>Invoice Details</CardTitle>
-                <CardDescription>{storeState.authContext.activeBusiness.name}</CardDescription>
+                <CardDescription>{activeBusiness.name}</CardDescription>
             </CardHeader>
             <CardContent className="flex-1 pb-0">
                 {allZero ? <div className="flex justify-center items-center p-4 text-center text-muted-foreground">

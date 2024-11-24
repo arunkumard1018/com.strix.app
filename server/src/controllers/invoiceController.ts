@@ -8,6 +8,7 @@ import {
     createInvoice,
     deleteInvoice,
     getAllInvoicesForBusiness,
+    getInvoiceData,
     getInvoiceDetails,
     getInvoiceStatsByBusinessAndUserId,
     getLatestInvoices,
@@ -123,6 +124,20 @@ const handleInvoiceStats = async (req: Request, res: Response) => {
         res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json(ResponseEntity("error", "Error while fetching Business Statistics!", undefined, message));
     }
 }
+const handleInvoiceData = async (req: Request, res: Response) => {
+    const {year, businessId}: Id = req.params;
+    const userId: Id = req.authContext.userId;
+    logger.info(`Accessing Business stats for ${businessId} by user ${req.authContext.userEmail}`)
+    try {
+        const invoiceData = await getInvoiceData(Number(year), userId, businessId);
+        res.status(HttpStatusCode.OK).json(ResponseEntity("success", "Invoice Data!", invoiceData));
+    } catch (error) {
+        const message = (error as Error).message;
+        res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json(ResponseEntity("error", "Error while fetching Invoice Statistics!", undefined, message));
+    }
+}
+
+
 export {
     handleCreateInvoices,
     handleDeleteInvoices,
@@ -130,5 +145,6 @@ export {
     handleGetInvoices,
     handleUpdateInvoices,
     handleLatestInvoices,
-    handleInvoiceStats
+    handleInvoiceStats,
+    handleInvoiceData,
 };
