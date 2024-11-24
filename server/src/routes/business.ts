@@ -1,5 +1,5 @@
 import express from "express";
-import { handleAddBusiness, handleDeleteBusiness, handleGetAllBusiness, handleGetBusinessWithId, handleUpdateBusiness, } from "../controllers/business-controller";
+import { handleAddBusiness, handleDeleteBusiness, handleGetAllBusiness, handleGetBusinessWithId, handleUpdateBusiness, } from "../controllers/businessController";
 
 const businessRouter = express.Router();
 

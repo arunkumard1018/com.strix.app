@@ -1,5 +1,5 @@
 import express from "express"
-import { handleCreateCustomer, handleDeleteCustomer, handlegetAllcustomers, handlegetCustomer, handleUpdateCustomer } from "../controllers/customers-controller";
+import { handleCreateCustomer, handleDeleteCustomer, handlegetAllcustomers, handlegetCustomer, handleUpdateCustomer } from "../controllers/customersController";
 
 const customersRouter = express.Router({ mergeParams: true });
 

@@ -1,5 +1,5 @@
 import express from "express";
-import { handleAuthentication, handleLogout, handleOAuth2Google, handleUserRegister, handleUsersInfo } from "../controllers/auth-controller";
+import { handleAuthentication, handleLogout, handleOAuth2Google, handleUserRegister, handleUsersInfo } from "../controllers/authController";
 
 const authRouter = express.Router();
 

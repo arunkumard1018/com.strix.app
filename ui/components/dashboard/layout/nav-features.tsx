@@ -10,7 +10,8 @@ import {
   SidebarGroupLabel,
   SidebarMenu,
   SidebarMenuButton,
-  SidebarMenuItem
+  SidebarMenuItem,
+  useSidebar
 } from "@/components/ui/sidebar"
 
 export function NavFeatures({
@@ -22,13 +23,18 @@ export function NavFeatures({
     icon: LucideIcon
   }[]
 }) {
-
+  const { isMobile, toggleSidebar } = useSidebar()
+  const toogle = () => {
+    if (isMobile) {
+      toggleSidebar()
+    }
+  }
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
       <SidebarGroupLabel>Features</SidebarGroupLabel>
       <SidebarMenu>
         {projects.map((item) => (
-          <SidebarMenuItem key={item.name}>
+          <SidebarMenuItem key={item.name} onClick={toogle}>
             <SidebarMenuButton asChild>
               <a href={item.url}>
                 <item.icon />

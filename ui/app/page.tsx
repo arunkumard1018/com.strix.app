@@ -12,10 +12,10 @@ export default function Home() {
         <NavBar />
         <main>
           <section className="bg-white">
-            <div className="mt-32 md:mt-20 mx-4  md:w-[80vw] md:mx-auto " ><HeroComponent /></div>
+            <div className="mt-32 md:mt-10 mx-4  md:w-[80vw] md:mx-auto " ><HeroComponent /></div>
           </section>
           <section className="bg-white"><SecondaryHero /></section>
-          <section className="px-2  bg-custome-black py-10 mt-10"><Features /></section>
+          <section className="px-2  bg-custome-black py-10 mt-10 md:h-[90vh]"><Features /></section>
         </main>
         <footer className="px-2 md:w-[80vw] md:mx-auto">
           <Footer />

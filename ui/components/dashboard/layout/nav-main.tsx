@@ -10,7 +10,8 @@ import {
   SidebarGroupLabel,
   SidebarMenu,
   SidebarMenuButton,
-  SidebarMenuItem
+  SidebarMenuItem,
+  useSidebar
 } from "@/components/ui/sidebar"
 import Link from "next/link"
 
@@ -28,6 +29,13 @@ export function NavMain({
     }[]
   }[]
 }) {
+  const { isMobile, toggleSidebar } = useSidebar()
+  const toogle = () => {
+    if (isMobile) {
+      toggleSidebar()
+    }
+  }
+  
   return (
     <SidebarGroup>
       <SidebarGroupLabel>Menu</SidebarGroupLabel>
@@ -43,7 +51,7 @@ export function NavMain({
               <Link href={item.url}>
                 <SidebarMenuButton tooltip={item.title}>
                   {item.icon && <item.icon />}
-                  <span>{item.title}</span>
+                  <span className="" onClick={toogle}>{item.title}</span>
                   <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
                 </SidebarMenuButton>
               </Link>

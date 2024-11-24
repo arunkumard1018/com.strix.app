@@ -18,11 +18,9 @@ export default function Layout({ children }: { children: React.ReactNode }): Rea
     );
 }
 
-
 export function Dashboardlayout({ children }: { children: React.ReactNode }) {
     const dispatch = useDispatch();
     const authContext = useSelector((state: RootState) => state.authContext);
-
     useEffect(() => {
         if (typeof window !== undefined && authContext.user === undefined) {
             const data = window.localStorage.getItem("userData");
@@ -51,7 +49,6 @@ export function Dashboardlayout({ children }: { children: React.ReactNode }) {
                             </SidebarInset>
                         </ThemeProvider>
                     </SidebarProvider>
-
             }
         </>
     )
