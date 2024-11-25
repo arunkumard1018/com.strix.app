@@ -1,0 +1,14 @@
+{
+  "name": "strixinvoice",
+  "private": true,
+  "workspaces": ["ui", "server"],
+  "scripts": {
+    "start": "concurrently \"npm start --prefix ui\" \"npm start --prefix server\"",
+    "dev": "concurrently \"npm run dev --prefix ui\" \"npm run dev --prefix server\"",
+    "install:all": "npm install --workspaces",
+    "build": "concurrently \"npm run build --prefix ui\" \"npm run build --prefix server\""
+  },
+  "dependencies": {
+    "concurrently": "^7.6.0"
+  }
+}

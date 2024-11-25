@@ -7,9 +7,9 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '..
 
 function Footer({ className }: { className?: string }) {
     return (
-        <footer className={cn("bg-white", className)}>
-            <div className="grid md:grid-cols-2 gap-4 py-10">
-                <div className='md:ml-6 '>
+        <footer className={cn("md:w-[80vw] md:mx-auto", className)}>
+            <div className="grid md:grid-cols-2 gap-4 py-10 md:py-20">
+                <div className=''>
                     <h2 className="text-4xl  font-bold">Strix Invoice</h2>
                     <p className="mt-2">{HERO_PAGE_CONTENT.footer.description}</p>
                     <div className="flex mt-4 space-x-1 items-center">

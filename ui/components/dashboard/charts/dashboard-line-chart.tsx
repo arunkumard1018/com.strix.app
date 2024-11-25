@@ -8,7 +8,7 @@ import { formatCurrency } from "@/lib/utils";
 import { RootState } from "@/store/store";
 import { ApiResponse } from "@/types/api-responses";
 import { InvoiceData, MonthlyData } from "@/types/invoices";
-import { TrendingUp } from "lucide-react";
+import { TrendingDown, TrendingUp } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { CartesianGrid, Line, LineChart, XAxis } from "recharts";
@@ -47,7 +47,8 @@ export function DashboardLineChart() {
     const Activebusiness = useSelector((state: RootState) => state.authContext.activeBusiness._id);
     const currentYear = new Date().getFullYear()
     const [selectedYear, setSelectedYear] = useState<number>(currentYear);
-    
+    const [trendingPercentage, setTrendingPercentage] = useState(0)
+
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -56,19 +57,38 @@ export function DashboardLineChart() {
                     const updatedData = initialChartData.map((item) => {
                         const matchingData = response.result?.data.find((d) => d.month === item.month);
                         return {
-                            ...item,    
+                            ...item,
                             invoices: matchingData?.invoices || 0,
                             PAID: matchingData?.PAID || 0,
                             revenue: matchingData?.revenue || 0,
                         };
                     });
+
+                    // Calculate percentage change for the latest month
+                    const currentMonthIndex = new Date().getMonth(); // 0-indexed
+                    const currentMonthRevenue = updatedData[currentMonthIndex]?.revenue || 0;
+                    const previousMonthRevenue = currentMonthIndex > 0
+                        ? updatedData[currentMonthIndex - 1]?.revenue || 0
+                        : 0;
+
+                    let percentageChange = 0;
+                    if (previousMonthRevenue === 0) {
+                        percentageChange = currentMonthRevenue > 0 ? 100 : 0; // 100% increase if current revenue exists
+                    } else {
+                        percentageChange = ((currentMonthRevenue - previousMonthRevenue) / previousMonthRevenue) * 100;
+                    }
+
+                    setTotalRevenue(response.result?.totalRevenue || 0);
+                    setTrendingPercentage(percentageChange);
                     setChartData(updatedData);
                 } else {
-                    setChartData(initialChartData); 
+                    setTotalRevenue(0);
+                    setTrendingPercentage(0);
+                    setChartData(initialChartData);
                 }
-        
+
                 setTotalRevenue(response.result?.totalRevenue || 0);
-            } catch (error:unknown) {
+            } catch (error: unknown) {
                 console.log(error)
                 setChartData(initialChartData); // Reset to initial in case of error
             }
@@ -128,7 +148,18 @@ export function DashboardLineChart() {
                 <div className="flex w-full items-start gap-2 text-sm">
                     <div className="grid gap-2">
                         <div className="flex items-center gap-2 font-medium leading-none">
-                            Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
+                            {/* Trending up by {trendingPercentage} this month <TrendingUp className="h-4 w-4" /> */}
+                            {trendingPercentage > 0 ? (
+                                <>
+                                    Trending up by {trendingPercentage.toFixed(1)}% this month <TrendingUp className="h-4 w-4 text-green-500" />
+                                </>
+                            ) : trendingPercentage < 0 ? (
+                                <>
+                                    Trending down by {Math.abs(trendingPercentage).toFixed(1)}% this month <TrendingDown className="h-4 w-4 text-red-500" />
+                                </>
+                            ) : (
+                                <>No change this month</>
+                            )}
                         </div>
                         <div className="flex items-center gap-2 leading-none text-muted-foreground">
                             Showing total revenue and invoices for the year {selectedYear}

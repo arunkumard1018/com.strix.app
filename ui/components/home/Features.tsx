@@ -41,7 +41,7 @@ export const Btn = ({ children, className }: { children: React.ReactNode, classN
 // Define content for different tabs
 const tabContents = {
     studio: {
-        image: '/img/dashboard/features-img-1.png',
+        image: '/img/ftr-1-nbg.png',
         description: 'Our tool allows you to add your company logo, adjust colors, choose fonts, and personalize the layout to fit your unique style. You can create invoices that include all the necessary details, such as the client\'s contact information, itemized list of services or products, applicable taxes, payment terms, and due dates.',
         features: [
             'Unlike many other invoicing tools, our platform does not add watermarks.',
@@ -50,7 +50,7 @@ const tabContents = {
         ],
     },
     api: {
-        image: '/img/dashboard/features-img-2.png',
+        image: '/img/ftr-nbg-api.png',
         description: 'Easily integrate our API to streamline your invoicing process and ensure seamless data synchronization across platforms.',
         features: [
             'Developer-friendly API documentation.',
@@ -59,7 +59,7 @@ const tabContents = {
         ],
     },
     contentLake: {
-        image: '/img/dashboard/features-img-3.jpg',
+        image: '/img/ftr-3-nbg.png',
         description: 'Manage and store your invoice data efficiently with our robust Content Lake, designed for high-performance and scalability.',
         features: [
             'Efficient data storage solutions.',
@@ -75,10 +75,10 @@ export const FeatuesTabsContent = ({ value }: { value: keyof typeof tabContents 
 
     return (
         <TabsContent value={value}>
-            <div className="flex flex-col md:flex-row w-full justify-between items-center md:pt-5 space-y-6">
-                <div className="md:w-1/2 flex items-center">
-                    <div className="relative w-[80vw] h-[250px] md:w-[400px] md:h-[300px]">
-                        <Image alt={`${value} image`} src={image} fill />
+            <div className="flex flex-col md:flex-row w-full justify-between items-center md:pt-5 space-y-10">
+                <div className="md:w-1/2 flex items-center  justify-center">
+                    <div className="relative w-[80vw] h-[250px] md:w-[400px] md:h-[300px] ">
+                        <Image alt={`${value} image`} src={image} fill priority className='shadow-inner'/>
                     </div>
                 </div>
                 <div className="md:w-1/2 space-y-5">

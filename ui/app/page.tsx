@@ -1,5 +1,7 @@
+import FAQ from "@/components/home/faqs";
 import Features from "@/components/home/Features";
 import { Footer } from "@/components/home/Footer";
+import GetStarted from "@/components/home/get-started";
 import HeroComponent from "@/components/home/HeroComponent";
 import { NavBar } from "@/components/home/NavBar";
 import SecondaryHero from "@/components/home/SecondaryHero";
@@ -15,9 +17,11 @@ export default function Home() {
             <div className="mt-32 md:mt-10 mx-4  md:w-[80vw] md:mx-auto " ><HeroComponent /></div>
           </section>
           <section className="bg-white"><SecondaryHero /></section>
+          <section className="bg-white py-10 md:w-[80vw] md:mx-auto"><GetStarted /></section>
           <section className="px-2  bg-custome-black py-10 mt-10 md:h-[90vh]"><Features /></section>
+          <section className="px-2 bg-white py-20 md:w-[80vw] md:mx-auto "><FAQ /></section>
         </main>
-        <footer className="px-2 md:w-[80vw] md:mx-auto">
+        <footer className="px-2  bg-muted">
           <Footer />
         </footer>
       </ThemeProvider>
