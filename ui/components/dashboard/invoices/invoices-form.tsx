@@ -1,16 +1,20 @@
 "use client";
 import CustomInput from "@/components/reuse/invoice-input";
+import { Button } from "@/components/ui/button";
 import {
     Tabs,
     TabsContent,
     TabsList,
     TabsTrigger,
 } from "@/components/ui/tabs";
-import { Field, Formik, FormikProps } from "formik";
+import { getCurrentDate } from "@/lib/utils";
+import { PlusCircledIcon } from "@radix-ui/react-icons";
+import { Field, FieldArray, Formik, FormikProps } from "formik";
 import { Printer } from "lucide-react";
+import { InvoiceProductRow } from "./invoice-products-row";
 import DynamicTable from "./invoice-template/dynamic-table";
 import { InvoiceDetails, InvoiceFooter, InvoiceHeading } from "./invoice-template/invoice-header";
-import { Button } from "@/components/ui/button";
+import "./invoice.css";
 
 interface Inoviceheading {
     heading: string;
@@ -25,10 +29,44 @@ interface InvoiceFrom {
     postalCode: string;
     phone: string;
 }
-interface InvoiceConfig {
+interface InvoiceTo {
+    street: string;
+    street2: string;
+    city: string;
+    state: string;
+    postalCode: string;
+    phone: string;
+    GSTIN: string;
+    PAN: string;
+}
+interface InvoiceDetails {
+    invoicePrefix: string
+    invoiceNo: string;
+    invoiceDate: string;
+    GSTIN: string;
+    PAN: string;
+    HSN: string;
+    stateCode: string;
+}
+interface InvoiceProduct {
+    sku: string;
+    description: string;
+    price: number;
+    qty: number;
+    cgst: number;
+    sgst: number;
+    totalAmount: number;
+}
+
+export interface InvoiceConfig {
     Inoviceheading: Inoviceheading;
     invoiceFrom: InvoiceFrom;
+    invoiceTo: InvoiceTo;
+    invoiceDetails: InvoiceDetails;
+    invoiceProducts: InvoiceProduct[];
 }
+
+
 const initialValues: InvoiceConfig = {
     Inoviceheading: {
         heading: "Strix Invoice",
@@ -42,7 +80,37 @@ const initialValues: InvoiceConfig = {
         state: "Karnataka",
         postalCode: "577002",
         phone: "+91 87255 26533"
-    }
+    },
+    invoiceTo: {
+        street: "#128 GEM Road",
+        street2: "MG Complex 5d ",
+        city: "Manglore",
+        state: "Karnataka",
+        postalCode: "577002",
+        phone: "+91 55477 78747",
+        GSTIN: "ABCF54FD77",
+        PAN: "GFFG765FFFJ"
+    },
+    invoiceDetails: {
+        invoicePrefix: "INV/YT",
+        invoiceNo: "22",
+        invoiceDate: getCurrentDate(),
+        GSTIN: "JDHG577G6",
+        PAN: "PAFH87FG56F",
+        HSN: "55",
+        stateCode: "22"
+    },
+    invoiceProducts: [
+        {
+            sku: "",
+            description: '',
+            price: 0,
+            qty: 1,
+            cgst: 0,
+            sgst: 0,
+            totalAmount: 0
+        }
+    ],
 };
 
 function InvoiceForm() {
@@ -58,14 +126,14 @@ function InvoiceForm() {
             }}
         >
             {(formik: FormikProps<typeof initialValues>) => (
-                <Tabs defaultValue="Preview" className="md:w-full md:mx-40">
+                <Tabs defaultValue="Edit" className="md:w-full md:mx-40">
                     <div className="flex justify-between items-center">
                         <TabsList className="grid grid-cols-2 w-[25%] no-print h-12 mb-1 rounded-none">
-                            <TabsTrigger value="Preview" className="h-10 rounded-none">
-                                Preview
-                            </TabsTrigger>
                             <TabsTrigger value="Edit" className="h-10 rounded-none">
                                 Edit
+                            </TabsTrigger>
+                            <TabsTrigger value="Preview" className="h-10 rounded-none">
+                                Preview
                             </TabsTrigger>
                         </TabsList>
                         <div className="flex no-print">
@@ -80,7 +148,7 @@ function InvoiceForm() {
                         </div>
                     </div>
                     <TabsContent value="Preview">
-                        <div id="invoice" className="bg-white invoice text-black px-4 md:px-32 flex-col space-y-8 py-10 border">
+                        <div id="invoice" className="bg-white invoice text-black px-4 md:px-28 flex-col space-y-8 py-10 border">
                             <InvoiceHeading
                                 businessName={formik.values.Inoviceheading.heading}
                                 buisnessType={formik.values.Inoviceheading.subHeading}
@@ -116,13 +184,15 @@ export { InvoiceForm };
 
 const InvoiceDataForm = (formik: FormikProps<InvoiceConfig>) => {
     return (
-        <div id="invoice" className="bg-white invoice h-screen text-black px-4 md:px-20 flex-col space-y-8 py-10 border">
-            <form
-                onSubmit={formik.handleSubmit}
-                className="flex flex-col items-center space-y-4 pb-10"
-                autoComplete="off"
-            >
-                <div className='flex justify-between w-full p-4 border '>
+        <form
+            onSubmit={formik.handleSubmit}
+            className="flex flex-col  space-y-4 pb-10"
+            autoComplete="off"
+        >
+            <div id="invoice" className="bg-white invoice  text-black px-4 md:px-20 flex-col space-y-8 py-10 border">
+
+                <div className='flex justify-between w-full p-4  '>
+                    {/* Invoice Header */}
                     <div className='w-full md:w-1/2 '>
                         <div className='text-2xl w-full md:text-4xl font-medium text-custome-textBlue'>
                             <Field
@@ -134,7 +204,7 @@ const InvoiceDataForm = (formik: FormikProps<InvoiceConfig>) => {
                         </div>
                         <div className='text-sm text-gray-600 italic'>
                             <Field
-                                className="w-auto"
+                                className="text-sm w-auto"
                                 name="Inoviceheading.subHeading"
                                 placeholder="Transport"
                                 component={CustomInput}
@@ -145,7 +215,7 @@ const InvoiceDataForm = (formik: FormikProps<InvoiceConfig>) => {
                         <div className='w-1/2'>
                             <div className='text-2xl w-full font-extrabold text-custome-textVoilate'>
                                 <Field
-                                    className="w-auto"
+                                    className=" w-auto"
                                     name="Inoviceheading.title"
                                     placeholder="INVOICE"
                                     component={CustomInput}
@@ -154,62 +224,187 @@ const InvoiceDataForm = (formik: FormikProps<InvoiceConfig>) => {
                         </div>
                     </div>
                 </div>
-                <div className="flex justify-between w-full border p-4">
+                <div className="flex justify-between w-full  p-4">
                     {/* Sender Details */}
                     <div className="w-full md:w-1/2">
+                        <div className="ml-2 font-bold text-sm">FROM</div>
+                        {/* Invoice From */}
                         <div className="font-sans">
                             <Field
-                                className="w-auto" name="invoiceFrom.street" placeholder="INVOICE"
+                                className="text-sm w-auto" name="invoiceFrom.street" placeholder="INVOICE"
                                 component={CustomInput}
                             />
                             <Field
-                                className="w-auto" name="invoiceFrom.street2" placeholder="INVOICE"
+                                className="text-sm w-auto" name="invoiceFrom.street2" placeholder="INVOICE"
                                 component={CustomInput}
                             />
                             <div className="flex gap-1">
                                 <Field
-                                    className="w-auto" name="invoiceFrom.city" placeholder="INVOICE"
+                                    className="text-sm w-1/2" name="invoiceFrom.city" placeholder="INVOICE"
                                     component={CustomInput}
                                 />
                                 <Field
-                                    className="w-auto" name="invoiceFrom.state" placeholder="INVOICE"
+                                    className="text-sm w-1/2" name="invoiceFrom.state" placeholder="INVOICE"
                                     component={CustomInput}
                                 />
                             </div>
                             <Field
-                                className="w-auto" name="invoiceFrom.postalCode" placeholder="INVOICE"
+                                className="text-sm w-auto" name="invoiceFrom.postalCode" placeholder="INVOICE"
                                 component={CustomInput}
                             />
                             <Field
-                                className="w-auto" name="invoiceFrom.phone" placeholder="INVOICE"
+                                className="text-sm w-auto" name="invoiceFrom.phone" placeholder="INVOICE"
                                 component={CustomInput}
                             />
                         </div>
-                        <div className="mt-7 font-sans">
-                            <div className="font-serif text-custome-textBlue">TO:</div>
-                            <p>#5678 Moonlight Street</p>
-                            <p>Hill View Post</p>
-                            <p>Mysore, Karnataka, 570001</p>
-                            <p>Phone: +91 9876543211</p>
-                            <p>GSTIN: 29ABCDE1234FZ1</p>
+                        {/* Invoice To */}
+                        <div className="ml-2 mt-7 font-bold text-sm">TO</div>
+                        <div className="font-sans ">
+                            <Field
+                                className="text-sm w-auto" name="invoiceTo.street" placeholder="INVOICE"
+                                component={CustomInput}
+                            />
+                            <Field
+                                className="text-sm w-auto" name="invoiceTo.street2" placeholder="INVOICE"
+                                component={CustomInput}
+                            />
+                            <div className="flex gap-1">
+                                <Field
+                                    className="text-sm w-1/2" name="invoiceTo.city" placeholder="INVOICE"
+                                    component={CustomInput}
+                                />
+                                <Field
+                                    className="text-sm w-1/2" name="invoiceTo.state" placeholder="INVOICE"
+                                    component={CustomInput}
+                                />
+                            </div>
+                            <Field
+                                className="text-sm w-auto" name="invoiceTo.postalCode" placeholder="INVOICE"
+                                component={CustomInput}
+                            />
+                            <Field
+                                className="text-sm w-auto" name="invoiceTo.phone" placeholder="INVOICE"
+                                component={CustomInput}
+                            />
+                            <Field
+                                className="text-sm w-auto" name="invoiceTo.GSTIN" placeholder="FASD76FSAF6"
+                                component={CustomInput}
+                            />
+                            <Field
+                                className="text-sm w-auto" name="invoiceTo.PAN" placeholder="BHJ766FASD"
+                                component={CustomInput}
+                            />
                         </div>
                     </div>
                     {/* Invoice Details */}
                     <div className="w-full md:w-1/2 flex items-start justify-end font-sans">
                         <div className="max-w-[70%]">
-                            <p>INVOICE NO: INV/2023/001</p>
-                            <p>Date: 01-11-2024</p>
-                            <p>GSTIN: 29XYZ9876PL0</p>
-                            <p>PAN: ABCDE1234F</p>
-                            <p>HSN: 1234</p>
-                            <p>State Code: 29</p>
-                            <p>State: Karnataka</p>
+
+                            <div className="flex items-center gap-1">
+                                <div className="text-sm w-[40%] font-bold">InoviceNo</div>
+                                <div className="flex w-[60%]">
+                                    <Field
+                                        className="text-sm " name="invoiceDetails.invoicePrefix" placeholder="INX"
+                                        component={CustomInput}
+                                    />
+                                    <Field
+                                        className="text-sm w-auto" name="invoiceDetails.invoiceNo" placeholder="INVOICE"
+                                        component={CustomInput}
+                                    />
+                                </div>
+                            </div>
+                            <div className="flex items-center gap-1">
+                                <div className="text-sm w-[40%] font-bold">InvoiceDate</div>
+                                <div className="flex w-[60%]">
+                                    <Field
+                                        className="text-sm " name="invoiceDetails.invoicePrefix" placeholder="INX"
+                                        component={CustomInput}
+                                    />
+                                </div>
+                            </div>
+                            <div className="flex items-center gap-1">
+                                <div className="text-sm w-[40%] font-bold">GSTIN</div>
+                                <div className="flex w-[60%]">
+                                    <Field
+                                        className="text-sm " name="invoiceDetails.GSTIN" placeholder="INX"
+                                        component={CustomInput}
+                                    />
+                                </div>
+                            </div>
+                            <div className="flex items-center gap-1">
+                                <div className="text-sm w-[40%] font-bold">PAN</div>
+                                <div className="flex w-[60%]">
+                                    <Field
+                                        className="text-sm " name="invoiceDetails.PAN" placeholder="INX"
+                                        component={CustomInput}
+                                    />
+                                </div>
+                            </div>
+                            <div className="flex items-center gap-1">
+                                <div className="text-sm w-[40%] font-bold">HSN</div>
+                                <div className="flex w-[60%]">
+                                    <Field
+                                        className="text-sm " name="invoiceDetails.HSN" placeholder="44"
+                                        component={CustomInput}
+                                    />
+                                </div>
+                            </div>
+                            <div className="flex items-center gap-1">
+                                <div className="text-sm w-[40%] font-bold">State Code</div>
+                                <div className="flex w-[60%]">
+                                    <Field
+                                        className="text-sm " name="invoiceDetails.stateCode" placeholder="22"
+                                        component={CustomInput}
+                                    />
+                                </div>
+                            </div>
+
                         </div>
                     </div>
                 </div>
-                <Button type="submit">Save password</Button>
-            </form>
-        </div>
+                {/* Invoice Products  */}
+                <div>
+                    <div className="flex  w-full">
+                        <div className="flex w-1/2 text-sm">
+                            <span className="w-1/4">SKU</span>
+                            <span className="w-full">Description</span>
+                        </div>
+                        <div className="flex w-1/2 text-sm">
+                            <span className="w-full">Price</span>
+                            <span className="w-full">QTY</span>
+                            <span className="w-full">CGST</span>
+                            <span className="w-full">SGST</span>
+                            <span className="w-full">Total</span>
+                        </div>
+                    </div>
+                    <div className="font-bold text-sm">
+                        <FieldArray name="invoiceProducts">
+                            {({ remove, push }) => (
+                                <div className="">
+                                    {formik.values.invoiceProducts.map((_, idx) => (
+                                        <InvoiceProductRow
+                                            key={idx}
+                                            idx={idx}
+                                            handleChange={formik.handleChange}
+                                            values={formik.values}
+                                            removeRow={remove}
+                                        />
+                                    ))}
+                                    <div className="mt-2">
+                                        <div
+                                            onClick={() => push({ sku: "", description: "", qty: 1, cgst: 0, sgst: 0, totalAmount: 0 })}
+                                        >
+                                            <div className="w-1/12 flex items-center border gap-2 p-1 cursor-pointer"><PlusCircledIcon />  Add</div>
+                                        </div>
+                                    </div> 
+                                </div>
+                            )}
+                        </FieldArray>
+                    </div>
+                </div>
+                <Button type="submit" className="w-1/3 rounded-none">Save</Button>
+            </div >
+        </form>
     )
 }
 

@@ -1,7 +1,6 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { numberToWords } from "@/lib/utils";
 import { Trash2 } from "lucide-react";
 import { useState } from "react";
@@ -62,48 +61,48 @@ const DynamicTable = () => {
 
     return (
         <div className="bg-white text-black">
-            <table className="w-full border border-gray-300">
+            <table className="w-full ">
                 <thead className="">
                     <tr className="bg-gray-100 text-left " id="t-head">
-                        <th className="border border-gray-300 px-2">SKU</th>
-                        <th className="border border-gray-300 px-2">Name</th>
-                        <th className="border border-gray-300 px-2 text-right">Price</th>
-                        <th className="border border-gray-300 px-2 text-right">Quantity</th>
-                        <th className="border border-gray-300 px-2 text-right">GST (%)</th>
-                        <th className="border border-gray-300 px-2 text-right">Amount</th>
-                        <th className="border border-gray-300 px-2 no-print"></th>
+                        <th className=" px-2">SKU</th>
+                        <th className=" px-2">Name</th>
+                        <th className=" px-2 text-right">Price</th>
+                        <th className=" px-2 text-right">Quantity</th>
+                        <th className=" px-2 text-right">GST (%)</th>
+                        <th className=" px-2 text-right">Amount</th>
+                        <th className="px-2 no-print bg-white"></th>
                     </tr>
                 </thead>
                 <tbody>
                     {rows.map((row, index) => (
-                        <tr key={index} className="hover:bg-gray-100">
-                            <td className="border border-gray-300 p-0">
-                                <Input
+                        <tr key={index} className="border-b">
+                            <td className="p-0">
+                                <input
                                     value={row.sku}
                                     onChange={(e) => handleInputChange(index, "sku", e.target.value)}
                                     placeholder="Enter SKU"
-                                    className="w-full h-full rounded-none shadow-none border-none"
+                                    className="focus:outline-none focus:border-none focus:border-transparent focus:ring-0 w-full  rounded-none shadow-none border-none px-2 py-0"
                                 />
                             </td>
-                            <td className="border border-gray-300 p-0">
-                                <Input
+                            <td className=" p-0">
+                                <input
                                     value={row.productName}
                                     onChange={(e) => handleInputChange(index, "productName", e.target.value)}
                                     placeholder="Product Name"
-                                    className="w-full h-full rounded-none shadow-none border-none"
+                                    className="w-full h-full rounded-none shadow-none border-none px-2"
                                 />
                             </td>
-                            <td className="border border-gray-300 p-0">
-                                <Input
+                            <td className=" p-0">
+                                <input
                                     type="number"
                                     value={row.price}
                                     onChange={(e) => handleInputChange(index, "price", Number(e.target.value))}
                                     placeholder="0"
-                                    className="w-full h-full rounded-none shadow-none border-none text-right    "
+                                    className="w-full h-full rounded-none shadow-none border-none text-right"
                                 />
                             </td>
-                            <td className="border border-gray-300 p-0">
-                                <Input
+                            <td className=" p-0">
+                                <input
                                     type="number"
                                     value={row.quantity}
                                     onChange={(e) => handleInputChange(index, "quantity", Number(e.target.value))}
@@ -111,8 +110,8 @@ const DynamicTable = () => {
                                     className="w-full h-full rounded-none shadow-none border-none text-right"
                                 />
                             </td>
-                            <td className="border border-gray-300 p-0">
-                                <Input
+                            <td className=" p-0">
+                                <input
                                     type="number"
                                     value={row.gst}
                                     onChange={(e) => handleInputChange(index, "gst", Number(e.target.value))}
@@ -120,10 +119,11 @@ const DynamicTable = () => {
                                     className="w-full h-full rounded-none shadow-none border-none text-right"
                                 />
                             </td>
-                            <td className="border border-gray-300 text-right">{row.total.toFixed(2)}</td>
-                            <td className="border border-gray-300 no-print">
+                            <td className=" text-right">{row.total.toFixed(2)}</td>
+                            <td className=" no-print ">
                                 <Trash2
                                     onClick={() => deleteRow(index)}
+                                    size={10}
                                     className="cursor-pointer hover:text-red-500"
                                 />
                             </td>

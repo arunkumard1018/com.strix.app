@@ -29,7 +29,7 @@ const CustomInput: React.FC<CustomInputProps> = ({ field, form, placeholder, add
                 autoComplete="off"
                 {...field}
                 className={classNames(
-                    'w-full py-2 px-2 border rounded-md  outline-none', // Base styles
+                    'w-full py-2 px-2 border   outline-none', // Base styles
                     {
                         // Default state styles
                         'bg-white': !hasError || isFieldActive,

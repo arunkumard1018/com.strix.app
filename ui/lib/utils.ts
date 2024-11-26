@@ -42,3 +42,12 @@ export const numberToWords = (num: number): string => {
 
   return num === 0 ? 'Zero' : inWords(num);
 };
+
+export const getCurrentDate = () => {
+  const date = new Date();
+  const day = String(date.getDate()).padStart(2, '0'); // Adds leading zero if day is single digit
+  const month = date.toLocaleString('default', { month: 'short' }); 
+  const year = date.getFullYear();
+  const formattedDate = `${day}-${month}-${year}`;
+  return formattedDate;
+}
