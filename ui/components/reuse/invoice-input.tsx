@@ -1,16 +1,17 @@
-import React from 'react';
-import { FieldProps, ErrorMessage } from 'formik';
-import classNames from 'classnames';
 import { cn } from '@/lib/utils';
+import classNames from 'classnames';
+import { ErrorMessage, FieldProps } from 'formik';
+import React from 'react';
 
 interface CustomInputProps extends FieldProps {
     placeholder: string;
     label: string;
     additionalInfo?: string;
     className?: string;
+    inputClassName ? : string;
 }
 
-const CustomInput: React.FC<CustomInputProps> = ({ field, form, placeholder, additionalInfo, label, className }) => {
+const CustomInput: React.FC<CustomInputProps> = ({ field, form, placeholder, additionalInfo,inputClassName, label, className }) => {
     const hasError = form.touched[field.name] && form.errors[field.name];
     const isFieldActive = form.values[field.name] !== ''; // Field is active if it has a value
 
@@ -29,7 +30,7 @@ const CustomInput: React.FC<CustomInputProps> = ({ field, form, placeholder, add
                 autoComplete="off"
                 {...field}
                 className={classNames(
-                    'w-full py-2 px-2 border   outline-none', // Base styles
+                    'w-full py-2 px-2 border outline-none',inputClassName, // Base styles
                     {
                         // Default state styles
                         'bg-white': !hasError || isFieldActive,

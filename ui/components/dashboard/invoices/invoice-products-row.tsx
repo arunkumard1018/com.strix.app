@@ -1,10 +1,12 @@
+import CustomInput from "@/components/reuse/invoice-input";
 import { Field, FormikProps } from "formik";
+import { Trash2Icon } from "lucide-react";
 import { InvoiceConfig } from "./invoices-form";
 
 export const InvoiceProductRow = ({
     idx,
-    handleChange,
     values,
+    removeRow,
 }: {
     idx: number;
     handleChange: FormikProps<InvoiceConfig>["handleChange"];
@@ -19,56 +21,73 @@ export const InvoiceProductRow = ({
     const totalAmount = product.price && product.qty ? product.price * product.qty : 0;
 
     return (
-        <div className="flex">
-            {/* <div
-                onClick={() => removeRow(idx)}
-                className="text-red-500 flex items-center pr-2"
-            ><Trash2Icon className="w-4" /></div> */}
-            <div className="flex w-1/2">
+        <tr className="text-sm">
+            <td className="text-center">
                 <Field
+                    className="text-sm border-none shadow-none w-full text-center"
                     name={`invoiceProducts[${idx}].sku`}
-                    placeholder="SKU"
-                    className="p-1 border w-1/4 outline-none"
-                    onChange={handleChange}
+                    placeholder={idx + 1}
+                    component={CustomInput}
                 />
+            </td>
+            <td className="text-xs break-words whitespace-normal leading-tight">
                 <Field
+                    className="text-sm border-none shadow-none w-full"
                     name={`invoiceProducts[${idx}].description`}
                     placeholder="Description"
-                    className="w-full p-1 border"
-                    onChange={handleChange}
+                    component={CustomInput}
                 />
-            </div>
-            <div className="flex w-1/2 ">
+            </td>
+            <td className="">
                 <Field
+                    className="text-sm border-none shadow-none w-full"
                     name={`invoiceProducts[${idx}].price`}
-                    placeholder="Price"
-                    className="border w-full pl-1"
-                    onChange={handleChange}
-                    type="number"
+                    placeholder="200.00"
+                    step="0.01"
+                    min="0"
+                    component={CustomInput}
                 />
+            </td>
+            <td className="">
                 <Field
+                    className="text-sm border-none shadow-none w-full"
                     name={`invoiceProducts[${idx}].qty`}
-                    placeholder="qty"
-                    className="border w-full pl-1"
-                    onChange={handleChange}
-                    type="number"
+                    placeholder="2"
+                    maxLength={2}
+                    component={CustomInput}
                 />
+            </td>
+            <td className="">
                 <Field
+                    className="text-sm border-none shadow-none w-full"
                     name={`invoiceProducts[${idx}].cgst`}
-                    placeholder="CGST (%)"
-                    className="w-full border pl-1"
-                    onChange={handleChange}
-                    type="number"
+                    placeholder="12"
+                    maxLength={2}
+                    component={CustomInput}
                 />
+            </td>
+            <td className="">
                 <Field
+                    className="text-sm border-none shadow-none w-full "
                     name={`invoiceProducts[${idx}].sgst`}
-                    placeholder="SGST (%)"
-                    className="w-full border pl-1"
-                    onChange={handleChange}
-                    type="number"
+                    placeholder="12"
+                    maxLength={2}
+                    component={CustomInput}
                 />
-                <div className="p-2 w-full">{totalAmount?.toFixed(2)}</div>
-            </div>
-        </div>
+                
+            </td>
+            <td className="text-center">
+                {totalAmount.toFixed(2)}
+            </td>
+            <td className=" px-2 text-center" onClick={() => removeRow(idx)}>
+                <Trash2Icon className="w-3 h-3  cursor-pointer transition-transform transform hover:scale-110 focus:outline-none" />
+            </td>
+        </tr>
     );
 };
+
+
+// <div
+//     onClick={() => removeRow(idx)}
+//     className="text-red-500 flex items-center pr-2"
+// ><Trash2Icon className="w-4" /></div>
