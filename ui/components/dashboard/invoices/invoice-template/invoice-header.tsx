@@ -1,3 +1,5 @@
+import { formatDateDDMMYY } from "@/lib/utils";
+import { InvoiceDetails, InvoiceFrom, InvoiceTo } from "../invoices-form";
 
 interface InvoiceHeadingProps {
     businessName: string;
@@ -24,37 +26,39 @@ export const InvoiceHeading = (business: InvoiceHeadingProps) => {
 }
 
 
-export const InvoiceDetails = () => {
+export const InvoiceInfo = ({ invoiceFrom, invoiceTo, invoiceDetails }:
+    { invoiceFrom: InvoiceFrom, invoiceTo: InvoiceTo,invoiceDetails:InvoiceDetails }) => {
     return (
         <div className="flex justify-between w-full">
             {/* Sender Details */}
             <div className="w-full md:w-1/2">
                 <div className="font-sans">
-                    <p>#1234 Sunshine Avenue</p>
-                    <p>Green Valley Post</p>
-                    <p>Bangalore, Karnataka, 560001</p>
-                    <p>Phone: +91 9876543210</p>
+                    <p>{invoiceFrom.street}</p>
+                    <p>{invoiceFrom.street2}</p>
+                    <p>{invoiceFrom.city} {invoiceFrom.state} {invoiceFrom.postalCode}</p>
+                    <p>Phone: {invoiceFrom.phone}</p>
                 </div>
+                {/* Invoice To */}
                 <div className="mt-7 font-sans">
                     <div className="font-serif text-custome-textBlue">TO:</div>
-                    <p>#5678 Moonlight Street</p>
-                    <p>Hill View Post</p>
-                    <p>Mysore, Karnataka, 570001</p>
-                    <p>Phone: +91 9876543211</p>
-                    <p>GSTIN: 29ABCDE1234FZ1</p>
+                    <p>{invoiceTo.street}</p>
+                    <p>{invoiceTo.street2}</p>
+                    <p>{invoiceTo.city} {invoiceTo.state} {invoiceTo.postalCode}</p>
+                    <p>Phone: {invoiceTo.phone}</p>
+                    <p>PAN: {invoiceTo.PAN}</p>
+                    <p>GSTIN: {invoiceTo.GSTIN}</p>
                 </div>
             </div>
 
             {/* Invoice Details */}
             <div className="w-full md:w-1/2 flex items-start justify-end font-sans">
                 <div className="max-w-[70%]">
-                    <p>INVOICE NO: INV/2023/001</p>
-                    <p>Date: 01-11-2024</p>
-                    <p>GSTIN: 29XYZ9876PL0</p>
-                    <p>PAN: ABCDE1234F</p>
-                    <p>HSN: 1234</p>
-                    <p>State Code: 29</p>
-                    <p>State: Karnataka</p>
+                    <p>INVOICE NO: {invoiceDetails.invoicePrefix+invoiceDetails.invoiceNo}</p>
+                    <p>Date: {formatDateDDMMYY(invoiceDetails.invoiceDate.toDateString())}</p>
+                    <p>GSTIN: {invoiceDetails.GSTIN}</p>
+                    <p>PAN: {invoiceDetails.PAN}</p>
+                    <p>HSN: {invoiceDetails.HSN}</p>
+                    <p>State Code: {invoiceDetails.stateCode}</p>
                 </div>
             </div>
         </div>
