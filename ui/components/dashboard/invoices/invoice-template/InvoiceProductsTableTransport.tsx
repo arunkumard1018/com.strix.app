@@ -1,12 +1,12 @@
 import { formatCurrency, formatDateDDMMYY, formatRupee, numberToWordsIndian } from "@/lib/utils";
 import '../invoice.css';
-import { InvoiceConfig } from "../invoices-form";
 import { calculateInvoiceSummaryForProductsTransport, formatToTwoDecimalPlaces } from "./form-components/calculations";
+import { InvoiceFormData } from "../types";
 
 
-function InvoiceProductsTableTransport({ invoiceConfig }: { invoiceConfig: InvoiceConfig }) {
+function InvoiceProductsTableTransport({ invoiceConfig: invoiceFormData }: { invoiceConfig: InvoiceFormData }) {
     // Format prices, CGST, SGST and calculate amounts
-    invoiceConfig.invoiceProductsTransport = invoiceConfig.invoiceProductsTransport.map((product) => {
+    invoiceFormData.invoiceProductsTransport = invoiceFormData.invoiceProductsTransport.map((product) => {
         // Parse and format inputs to floats with 2 decimal places
         const price = formatToTwoDecimalPlaces(product.price);
         const cgst = formatToTwoDecimalPlaces(product.cgst);
@@ -22,8 +22,8 @@ function InvoiceProductsTableTransport({ invoiceConfig }: { invoiceConfig: Invoi
         };
     });
     // Calculate the summary totals (subtotal, GST, and grand total)
-    invoiceConfig.invoicesummary = calculateInvoiceSummaryForProductsTransport(invoiceConfig.invoiceProductsTransport);
-    const { totalPrice, cgst, sgst, invoiceAmount } = invoiceConfig.invoicesummary;
+    invoiceFormData.invoicesummary = calculateInvoiceSummaryForProductsTransport(invoiceFormData.invoiceProductsTransport);
+    const { totalPrice, cgst, sgst, invoiceAmount } = invoiceFormData.invoicesummary;
 
     return (
         <div className="bg-background w-full">
@@ -41,7 +41,7 @@ function InvoiceProductsTableTransport({ invoiceConfig }: { invoiceConfig: Invoi
                     </tr>
                 </thead>
                 <tbody>
-                    {invoiceConfig.invoiceProductsTransport.map((product, index) => (
+                    {invoiceFormData.invoiceProductsTransport.map((product, index) => (
                         <tr key={index} className="border-b border-b-gray-300 py-1">
                             <td className="p-1 px-1">{formatDateDDMMYY(product.date.toLocaleDateString())}</td>
                             <td className="p-1 px-1">{product.vehicleNo}</td>

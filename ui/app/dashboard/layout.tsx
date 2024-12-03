@@ -32,7 +32,8 @@ export function Dashboardlayout({ children }: { children: React.ReactNode }) {
                 dispatch(setActiveBusiness(JSON.parse(activeBusiness)))
             }
         }
-    }, [authContext.user, dispatch])
+    }, [authContext.user, dispatch]);
+    
     return (
         <>
             {authContext.user === undefined ? <div className="flex items-center h-screen justify-center"><LoadingGif /></div> :

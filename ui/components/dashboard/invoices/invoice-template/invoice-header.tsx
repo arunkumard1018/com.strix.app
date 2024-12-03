@@ -1,5 +1,6 @@
-import { formatDateDDMMYY } from "@/lib/utils";
-import { InvoiceDetails, InvoiceFrom, InvoiceTo } from "../invoices-form";
+import { cn, formatDateDDMMYY } from "@/lib/utils";
+import React from 'react';
+import { BankDetails, InvoiceDetails, InvoiceFrom, InvoiceTo } from "../types";
 
 interface InvoiceHeadingProps {
     businessName: string;
@@ -8,28 +9,27 @@ interface InvoiceHeadingProps {
 }
 export const InvoiceHeading = (business: InvoiceHeadingProps) => {
     return (
-        <div>
+        <div className="">
             <div className='flex justify-between w-full pb-1'>
                 <div className='w-full md:w-1/2 '>
-                    <div className='text-2xl md:text-4xl font-medium text-custome-textBlue'>{business.businessName}</div>
+                    <div className='text-2xl font-bold text-custome-textBlue'>{business.businessName}</div>
                     <p className='text-sm text-gray-600 italic'>{business.buisnessType}</p>
                 </div>
                 <div className='w-full md:w-1/2 flex items-start justify-end'>
-                    <div className='md:w-[55%]'>
+                    <div className='md:w-[45%] text-right'>
                         <div className='text-2xl font-extrabold text-custome-textVoilate'>{business.invoiceTitle}</div>
                     </div>
                 </div>
             </div>
-            <hr />
+            <hr className="border-t border-gray-400 " />
         </div>
     )
 }
 
-
 export const InvoiceInfo = ({ invoiceFrom, invoiceTo, invoiceDetails }:
-    { invoiceFrom: InvoiceFrom, invoiceTo: InvoiceTo,invoiceDetails:InvoiceDetails }) => {
+    { invoiceFrom: InvoiceFrom, invoiceTo: InvoiceTo, invoiceDetails: InvoiceDetails }) => {
     return (
-        <div className="flex justify-between w-full">
+        <div className="flex justify-between w-full text-sm">
             {/* Sender Details */}
             <div className="w-full md:w-1/2">
                 <div className="font-sans">
@@ -49,12 +49,11 @@ export const InvoiceInfo = ({ invoiceFrom, invoiceTo, invoiceDetails }:
                     <p>GSTIN: {invoiceTo.GSTIN}</p>
                 </div>
             </div>
-
             {/* Invoice Details */}
             <div className="w-full md:w-1/2 flex items-start justify-end font-sans">
-                <div className="max-w-[70%]">
-                    <p>INVOICE NO: {invoiceDetails.invoicePrefix+invoiceDetails.invoiceNo}</p>
-                    <p>Date: {formatDateDDMMYY(invoiceDetails.invoiceDate.toDateString())}</p>
+                <div className="md:max-w-[70%]">
+                    <p>INVOICE NO: {invoiceDetails.invoicePrefix + invoiceDetails.invoiceNo}</p>
+                    <p>Date: {formatDateDDMMYY(invoiceDetails.invoiceDate)}</p>
                     <p>GSTIN: {invoiceDetails.GSTIN}</p>
                     <p>PAN: {invoiceDetails.PAN}</p>
                     <p>HSN: {invoiceDetails.HSN}</p>
@@ -65,24 +64,35 @@ export const InvoiceInfo = ({ invoiceFrom, invoiceTo, invoiceDetails }:
     );
 };
 
-export const InvoiceFooter = () => {
-    return (
-        <div className="flex justify-between w-full pt-10">
-            {/* Bank Details */}
-            <div className="w-full md:w-1/2">
-                <div className="font-sans">
-                    <div className="font-serif text-xl text-green-400 uppercase font-bold">Bank Details:</div>
-                    <p>Name: ABC Logistics Pvt Ltd</p>
-                    <p>Bank Name: State Bank of India</p>
-                    <p>A/C No: 123456789012</p>
-                    <p>IFSC Code: SBIN0001234</p>
-                    <p>Branch: Bangalore Main Branch</p>
-                </div>
-            </div>
 
+interface InvoiceFooterProps {
+    bankDetails: BankDetails;
+    isBankDetails: boolean;
+    thankYouMessage?: string;
+}
+
+export const InvoiceFooter: React.FC<InvoiceFooterProps> = ({
+    bankDetails,
+    isBankDetails,
+    thankYouMessage = 'THANK YOU FOR YOUR BUSINESS!',
+}) => {
+    return (
+        <div className="flex justify-between w-full font-serif">
+            {/* Bank Details */}
+            {isBankDetails &&
+                (<div className="w-full md:w-1/2">
+                    <div className="font-sans">
+                        <div className="font-serif  text-green-400 uppercase font-bold">Bank Details:</div>
+                        <p>Name: {bankDetails.accountName}</p>
+                        <p>Bank Name: {bankDetails.bankName}</p>
+                        <p >ACC No: <span className="font-medium">{bankDetails.accountNumber}</span></p>
+                        <p>IFSC Code: {bankDetails.ifscCode}</p>
+                        <p>Branch: {bankDetails.branch}</p>
+                    </div>
+                </div>)}
             {/* Thank You Message */}
-            <div className="w-full md:w-1/2 flex flex-col items-end justify-end font-sans text-custome-textVoilate">
-                <div>THANK YOU FOR YOUR BUSINESS!</div>
+            <div className={cn("w-full md:w-1/2 flex flex-col font-sans text-custome-textVoilate mt-10",isBankDetails && "items-end justify-end")}>
+                <div>{thankYouMessage}</div>
             </div>
         </div>
     );

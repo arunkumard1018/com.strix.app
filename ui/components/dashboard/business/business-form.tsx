@@ -12,8 +12,8 @@ export interface BusinessFormData {
     catagory: string;
     GSTIN: string;
     hsn: string;
-    phone:string;
-    invoicePrefix:string
+    phone: string;
+    invoicePrefix: string
     stateCode: string;
     street: string;
     city: string;
@@ -32,7 +32,13 @@ const BusinessFormSchema = Yup.object().shape({
     street: Yup.string().required("Street Required"),
     city: Yup.string().required("City Required"),
     state: Yup.string().required("State Required"),
-    postalCode: Yup.number().integer().required("Postal Code Required")
+    postalCode: Yup.number()
+        .transform((originalValue) =>
+            /^\d+$/.test(originalValue) ? parseInt(originalValue, 10) : NaN
+        )
+        .required("Postal Code is required")
+        .typeError("Postal Code must be a valid number")
+        .integer("Postal Code must be an integer"),
 });
 
 interface OnBoardingFormProps {
@@ -48,6 +54,7 @@ export const BusinessForm = ({ handleBusinessFormData, initialValues, className,
             initialValues={initialValues}
             validationSchema={BusinessFormSchema}
             onSubmit={(values) => {
+                console.log(values)
                 handleBusinessFormData(values);
             }}
         >

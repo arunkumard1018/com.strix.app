@@ -1,4 +1,5 @@
 import { getLatestInvoices } from "@/api/latestData";
+import { LatestInvoiceSkelton } from "@/components/skeltons/latest-invoices";
 import {
     Table,
     TableBody,
@@ -21,13 +22,15 @@ import { useDispatch, useSelector } from "react-redux"
 
 export function LatestInvoicesTable() {
     const latestData = useSelector((state: RootState) => state.latestData);
+    const [loading, setloading] = useState(true)
     const dispatch = useDispatch();
     const [totalAmount, setTotalAmount] = useState(0);
     useEffect(() => {
         const loadLatestInvoices = async () => {
             if (!latestData.invoices) {
                 const response: ApiResponse<Invoices[]> = await getLatestInvoices();
-                if (response.result) dispatch(addLatestInvoices(response.result))
+                if (response.result) dispatch(addLatestInvoices(response.result));
+                setloading(false)
             }
         }
         if (latestData.invoices && latestData.invoices.length > 0) {
@@ -36,7 +39,7 @@ export function LatestInvoicesTable() {
         }
         loadLatestInvoices();
     }, [latestData.invoices, dispatch])
-
+    if (loading) return <LatestInvoiceSkelton />
     return (
         <Table>
             {!latestData.invoices || latestData.invoices.length === 0 ?
@@ -54,17 +57,17 @@ export function LatestInvoicesTable() {
             <TableBody>
                 {latestData.invoices?.map((invoice) => (
                     <TableRow key={invoice._id}>
-                        <TableCell className="font-medium">{invoice.invoiceNo}</TableCell>
-                        <TableCell>{invoice.invoiceTo.name}</TableCell>
-                        <TableCell>{formatDateDDMMYY(invoice.invoiceDate)}</TableCell>
-                        <TableCell className="text-right">{formatCurrency(invoice.invoiceAmount)}</TableCell>
+                        <TableCell className="font-medium px-2">{invoice.invoiceNo}</TableCell>
+                        <TableCell className="px-2">{invoice.invoiceTo.name}</TableCell>
+                        <TableCell className="px-2">{formatDateDDMMYY(invoice.invoiceDate)}</TableCell>
+                        <TableCell className="text-right px-2">{formatCurrency(invoice.invoiceAmount)}</TableCell>
                     </TableRow>
                 ))}
             </TableBody>
             <TableFooter>
                 <TableRow>
-                    <TableCell colSpan={3}>Total</TableCell>
-                    <TableCell className="text-right">{formatCurrency(totalAmount)}</TableCell>
+                    <TableCell colSpan={3} className="px-2">Total</TableCell>
+                    <TableCell className="text-right px-2">{formatCurrency(totalAmount)}</TableCell>
                 </TableRow>
             </TableFooter>
         </Table>

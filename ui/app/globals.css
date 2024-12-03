@@ -101,45 +101,8 @@ input:-webkit-autofill:active {
 
 
 @media print {
-
-  /* Hide print button */
-  .show {
-    display: none;
-  }
-
-  /* Ensure invoice fills the page */
-  /* #invoice {
-    width: 100%;
-  } */
-  .no-print {
-    display: none;
-  }
-
+/* to Remove Nav bar Space While Priniting */
   .mt-20 {
     margin-top: 0 !important;
   }
-
-  .text-2xl {
-    font-size: 2.5rem;
-    line-height: 1;
-  }
-  .px-4{
-    padding-left: 2.5rem /* 40px */;
-    padding-right: 2.5rem
-  }
-  .invoice{
-    border: none;
-  }
-  .py-10{
-    padding-top: 1rem !important/* 40px */;
-    padding-bottom: 0 !important/* 40px */;
-  }
-  th,td, table{
-    border: none;
-  }
-  #t-head{
-    border-bottom: 1px solid black;
-    padding-bottom: 5px;
-  }
-  
 }

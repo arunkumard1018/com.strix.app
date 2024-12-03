@@ -26,11 +26,11 @@ const latestDataSlice = createSlice({
         addLatestInvoices(state, action: PayloadAction<Invoices[]>) {
             state.invoices = action.payload;
         },
-        addInvoicesStats(state, action: PayloadAction<InvoiceStats>){
+        addInvoicesStats(state, action: PayloadAction<InvoiceStats>) {
             state.invoiceStats = action.payload;
         }
     },
 });
-export const { addLatestInvoices ,addInvoicesStats} = latestDataSlice.actions;
+export const { addLatestInvoices, addInvoicesStats } = latestDataSlice.actions;
 export default latestDataSlice.reducer;
 

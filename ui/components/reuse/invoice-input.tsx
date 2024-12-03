@@ -16,7 +16,7 @@ const CustomInput: React.FC<CustomInputProps> = ({ field, form, placeholder, add
     const isFieldActive = form.values[field.name] !== ''; // Field is active if it has a value
 
     return (
-        <div className={cn("flex flex-col items-start justify-center w-[320px]  space-y-1 bg-white", className)}>
+        <div className={cn("flex flex-col items-start justify-center w-[320px]  space-y-1 bg-background", className)}>
             <label className="font-medium capitalize" htmlFor={field.name}>
                 {label}
             </label>
@@ -30,14 +30,14 @@ const CustomInput: React.FC<CustomInputProps> = ({ field, form, placeholder, add
                 autoComplete="off"
                 {...field}
                 className={classNames(
-                    'w-full py-2 px-2 border outline-none',inputClassName, // Base styles
+                    'w-full py-2 px-1 border outline-none',inputClassName, // Base styles
                     {
                         // Default state styles
-                        'bg-white': !hasError || isFieldActive,
+                        'bg-background': !hasError || isFieldActive,
                         // Focus state styles
-                        'focus:border-blue-500 focus:bg-white': true,
+                        'focus:border-blue-500 focus:bg-muted': true,
                         // Error state styles
-                        'bg-white border-[#5e1f1d] text-[#7d141b]': hasError && !isFieldActive,
+                        'bg-background border-[#5e1f1d] text-[#7d141b]': hasError && !isFieldActive,
                     }
                 )}
             />

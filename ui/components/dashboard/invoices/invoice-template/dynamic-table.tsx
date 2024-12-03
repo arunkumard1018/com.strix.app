@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { numberToWords } from "@/lib/utils";
+import { numberToWordsIndian } from "@/lib/utils";
 import { Trash2 } from "lucide-react";
 import { useState } from "react";
 
@@ -136,7 +136,7 @@ const DynamicTable = () => {
                     <div><Button onClick={addRow} className="no-print rounded-none bg-blue-500 text-white hover:bg-blue-600">
                         Add Row
                     </Button></div>
-                    {grandTotal > 0 && <div className="pb-1 w-[85%] text-xs">{numberToWords(Math.ceil(grandTotal))} Only.</div>}
+                    {grandTotal > 0 && <div className="pb-1 w-[85%] text-xs">{numberToWordsIndian(Math.ceil(grandTotal))} Only.</div>}
                 </div>
                 <table className="w-[40%]">
                     <tbody>

@@ -1,78 +1,88 @@
-import { numberToWords } from "@/lib/utils";
-import React from "react";
-import { InvoiceProduct } from "../invoices-form";
+import { formatCurrency, formatRupee, numberToWordsIndian } from "@/lib/utils";
+import '../invoice.css';
+import { calculateInvoiceSummaryForProducts, formatToTwoDecimalPlaces } from "./form-components/calculations";
+import { InvoiceFormData } from "../types";
 
-
-
-function InvoiceProductsTable({ invoiceProducts }: { invoiceProducts: InvoiceProduct[] }) {
-    // Calculate summary totals (subtotal, GST, and grand total)
-    const calculateSummary = () => {
-        return invoiceProducts.reduce(
-            (acc, product) => {
-                const subtotal = product.price * product.qty;
-                const gstAmount = (subtotal * (product.cgst + product.sgst)) / 100;
-                const total = subtotal + gstAmount;
-                acc.total += subtotal;
-                acc.gst += gstAmount;
-                acc.grandTotal += total;
-                return acc;
-            },
-            { total: 0, gst: 0, grandTotal: 0 }
-        );
-    };
-
-    const { total, gst, grandTotal } = calculateSummary();
-
+function InvoiceProductsTable({ invoiceConfig: invoiceFormData }: { invoiceConfig: InvoiceFormData }) {
+    // Format prices, CGST, SGST and calculate amounts
+    invoiceFormData.invoiceProducts = invoiceFormData.invoiceProducts.map((product) => {
+        // Parse and format inputs to floats with 2 decimal places
+        const price = formatToTwoDecimalPlaces(product.price);  
+        const qty = formatToTwoDecimalPlaces(product.qty);  
+        const cgst = formatToTwoDecimalPlaces(product.cgst);
+        const sgst = formatToTwoDecimalPlaces(product.sgst);
+        // Calculate the amount for each product
+        const amount = (price + (price * cgst) / 100 + (price * sgst) / 100) * qty;
+        return {
+            ...product,
+            price,
+            qty,
+            cgst,
+            sgst,
+            amount: formatToTwoDecimalPlaces(amount), // Ensure 2 decimal places
+        };
+    });
+    // Calculate the summary totals (subtotal, GST, and grand total)
+    invoiceFormData.invoicesummary = calculateInvoiceSummaryForProducts(invoiceFormData.invoiceProducts);
+    const { totalPrice, cgst, sgst, invoiceAmount } = invoiceFormData.invoicesummary;
     return (
-        <div className="bg-white text-black w-full">
-            <table className="table-auto w-full">
-                <thead>
-                    <tr className="bg-gray-100 text-left border-b border-black" id="t-head">
-                        {/* <th className="px-2">SKU</th> */}
-                        <th className="w-1/2">Description</th>
-                        <th className="px-2 text-right">Price</th>
-                        <th className="px-2 text-right">Quantity</th>
-                        <th className="px-2 text-right">CGST </th>
-                        <th className="px-2 text-right">SGST</th>
-                        <th className="px-2 text-right">Total</th>
+        <div className="bg-background  w-full">
+            <table className="table-auto w-full text-sm">
+                <thead className="bg-muted-foreground/20">
+                    <tr className="text-left" id="t-head">
+                        <th className="px-1 py-1">ID</th>
+                        <th className="w-1/2 px-1 py-1">Description</th>
+                        <th className="px-1 text-left">Price</th>
+                        <th className="px-1 text-center">Qty</th>
+                        <th className="px-1 text-center">CGST</th>
+                        <th className="px-1 text-center">SGST</th>
+                        <th className="px-1 text-right">Amount</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {invoiceProducts.map((product, index) => (
-                        <tr key={index} className="border-b">
-                            {/* <td className="p-2">{product.sku}</td> */}
-                            <td className="w-1/2">{product.description}</td>
-                            <td className="p-2 text-right">{product.price}</td>
-                            <td className="p-2 text-right">{product.qty}</td>
-                            <td className="p-2 text-right">{product.cgst}%</td>
-                            <td className="p-2 text-right">{product.sgst}%</td>
-                            <td className="p-2 text-right">{(product.price * product.qty).toFixed(2)}</td>
+                    {invoiceFormData.invoiceProducts.map((product, index) => (
+                        <tr key={index} className="border-b border-b-gray-300 py-1">
+                            <td className="p-1">{product.sku}</td>
+                            <td className="w-1/2 px-1">{product.description}</td>
+                            <td className="p-1 text-left">{formatRupee(product.price)}</td>
+                            <td className="p-1 text-center">{product.qty}</td>
+                            <td className="p-1 text-center">{product.cgst}%</td>
+                            <td className="p-1 text-center">{product.sgst}%</td>
+                            <td className="p-1 text-right">{formatRupee(product.price * product.qty)}</td>
                         </tr>
                     ))}
+                    <tr id="summary" className="bg-muted-foreground/20">
+                        <td colSpan={5} className="px-1">
+                            {totalPrice > 0 && (
+                                <div className="text-xs">
+                                    <span className="font-medium mx-2">Rupees:</span>
+                                    {numberToWordsIndian(Math.ceil(invoiceAmount))} Only.
+                                </div>
+                            )}
+                        </td>
+                        <td className="text-right font-bold">Gross:</td>
+                        <td className="text-right  p-1">{formatCurrency(invoiceAmount)}</td>
+                    </tr>
                 </tbody>
             </table>
-
-            <div className="mt-4 flex justify-between">
-                <div className="flex flex-col justify-between w-full">
-                    {grandTotal > 0 && (
-                        <div className="pb-1 w-[85%] text-xs">
-                            {numberToWords(Math.ceil(grandTotal))} Only.
-                        </div>
-                    )}
-                </div>
-                <table className="w-[40%]">
+            <div className="flex justify-end mt-2">
+                <table className="w-[35%] text-sm">
                     <tbody>
                         <tr>
-                            <td className="font-semibold">Sub Total</td>
-                            <td className="text-right">{total.toFixed(2)}</td>
+                            <td className="font-semibold border-r border-r-muted-foreground/30">Total Price</td>
+                            <td className="text-right pr-2">{formatRupee(totalPrice)}</td>
                         </tr>
                         <tr>
-                            <td className="font-semibold">GST</td>
-                            <td className="text-right">{gst.toFixed(2)}</td>
+                            <td className="font-semibold border-r border-r-muted-foreground/30">CGST</td>
+                            <td className="text-right pr-2">{formatRupee(cgst)}</td>
+                        </tr>
+                        <tr className="border-b border-b-muted-foreground/30">
+                            <td className="font-semibold border-r border-r-muted-foreground/30">SGST</td>
+                            <td className="text-right pr-2">{formatRupee(sgst)}</td>
                         </tr>
                         <tr>
-                            <td className="font-semibold">Grand Total</td>
-                            <td className="text-right">{Math.ceil(grandTotal).toFixed(2)}</td>
+                            <td className="font-semibold border-r border-r-muted-foreground/30">Total Amount</td>
+                            <td className="text-right pr-2">{formatCurrency(invoiceAmount)}</td>
                         </tr>
                     </tbody>
                 </table>
