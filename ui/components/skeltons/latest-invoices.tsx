@@ -10,16 +10,16 @@ function LatestInvoiceSkelton() {
             <TableHeader>
                 <TableRow>
                     <TableHead className="w-[100px]">
-                        <Skeleton className={clsx('w-24 h-5 px-0', 'bg-gray-300 rounded-none px-2')} />
+                        <Skeleton className={clsx('w-24 h-6 px-0', 'bg-gray-300 rounded-none px-2')} />
                     </TableHead>
                     <TableHead>
-                        <Skeleton className={clsx('w-36 h-full', 'bg-gray-300 rounded-none px-2')} />
+                        <Skeleton className={clsx('w-36 h-6', 'bg-gray-300 rounded-none px-2')} />
                     </TableHead>
                     <TableHead>
-                        <Skeleton className={clsx('w-20  h-full', 'bg-gray-300 rounded-none px-2')} />
+                        <Skeleton className={clsx('w-20  h-6', 'bg-gray-300 rounded-none px-2')} />
                     </TableHead>
                     <TableHead className="text-right">
-                        <Skeleton className={clsx('w-32 h-full', 'bg-gray-300 rounded-none px-2')} />
+                        <Skeleton className={clsx('w-32 h-6', 'bg-gray-300 rounded-none px-2')} />
                     </TableHead>
                 </TableRow>
             </TableHeader>

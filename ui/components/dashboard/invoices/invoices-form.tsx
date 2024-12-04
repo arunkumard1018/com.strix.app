@@ -22,6 +22,7 @@ import InvoiceProductsTable from "./invoice-template/invoiceProductsTable";
 import { InvoiceProductsTableTransport } from "./invoice-template/InvoiceProductsTableTransport";
 import "./invoice.css";
 import { InvoiceFormData } from "./types";
+import { InvoicePage } from "./InvoicePage";
 
 
 
@@ -73,30 +74,7 @@ function InvoiceForm({ initialValues }: { initialValues: InvoiceFormData }) {
                             </TabsContent>
                         </div>
                     </div>
-                    <TabsContent value="Preview" className="border p-2 md:p-20 bg-background" id="preview">
-                        <div id="invoice" className="bg-background w-full space-y-5">
-                            <InvoiceHeading
-                                businessName={formik.values.inoviceheading.heading}
-                                buisnessType={formik.values.inoviceheading.subHeading}
-                                invoiceTitle={formik.values.inoviceheading.title}
-                            />
-                            <InvoiceInfo
-                                invoiceFrom={formik.values.invoiceFrom}
-                                invoiceTo={formik.values.invoiceTo}
-                                invoiceDetails={formik.values.invoiceDetails}
-                            />
-                            <div className="flex justify-between w-full">
-                                {activeBusiness.catagory === "Transport"
-                                    ? <InvoiceProductsTableTransport invoiceConfig={formik.values} />
-                                    : <InvoiceProductsTable invoiceConfig={formik.values} />}
-                            </div>
-                            <InvoiceFooter
-                                isBankDetails={formik.values.additionlInfo.isBankDetails}
-                                bankDetails={formik.values.bankDetails}
-                                thankYouMessage={formik.values.additionlInfo.thankyouNote}
-                            />
-                        </div>
-                    </TabsContent>
+                    <InvoicePage formik={formik} />
                     <TabsContent value="Edit" >
                         <InvoiceDataForm {...formik} />
                     </TabsContent>
