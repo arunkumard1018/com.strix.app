@@ -137,7 +137,6 @@ const handleInvoiceData = async (req: Request, res: Response) => {
     }
 }
 
-
 export {
     handleCreateInvoices,
     handleDeleteInvoices,

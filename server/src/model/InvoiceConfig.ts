@@ -32,7 +32,7 @@ const invoiceConfigSchema = new mongoose.Schema({
     additionlInfo: {
         thankyouNote: { type: String },
     },
-    owner: { type: mongoose.Schema.Types.ObjectId, ref: "users", required: true },
+    user: { type: mongoose.Schema.Types.ObjectId, ref: "users", required: true },
     business: { type: mongoose.Schema.Types.ObjectId, ref: "business", required: true },
 }, { timestamps: true })
 

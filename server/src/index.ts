@@ -11,6 +11,7 @@ import { customersRouter } from "./routes/customers";
 import { invoiceRoute } from "./routes/invoice";
 import { latestDataRoute } from "./routes/latestData";
 import logger from "./lib/logConfig";
+import { invoiceConfigRoute } from "./routes/invoiceConfig";
 dotenv.config()
 
 
@@ -31,7 +32,7 @@ const allowedOrigins = process.env.CORS_ORIGINS ? process.env.CORS_ORIGINS.split
 app.use(cors({
     origin: allowedOrigins,
     // origin:true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE','PATCH'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
 }));
@@ -50,6 +51,7 @@ app.use("/", apiRouter);
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/users/business", businessRouter);
 app.use("/api/v1/business/:businessId/customers", customersRouter);
+app.use("/api/v1/business/:businessId/invoice-config", invoiceConfigRoute);
 app.use("/api/v1/business/:businessId/invoices", invoiceRoute);
 app.use("/api/v1/users/latest", latestDataRoute)
 
