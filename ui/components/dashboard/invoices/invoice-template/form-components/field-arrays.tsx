@@ -104,36 +104,38 @@ const ProductsFieldArray: React.FC<ProductsFieldArrayProps> = ({ formik }) => {
 
 const AddRowBtn = ({ ...props }) => {
     return (
-        <div className="py-1 px-1 " {...props}>
+        <div className="py-1 px-1" {...props}>
             <Button
                 type="button"
                 variant="outline"
-                size={"sm"}
+                size="sm"
                 className="rounded-none"
             >
-                <PlusCircledIcon className="" /> Add
+                <PlusCircledIcon /> Add
             </Button>
         </div>
-    )
-}
+    );
+};
+
 
 const TransportHeader = () => {
     return (
         <thead className="text-left text-sm bg-muted py-10">
             <tr>
-                <th className="w-[10%]  px-2">Date</th> {/* ~16% */}
-                <th className="w-[16%]  px-2">Vehicle No</th> {/* ~16% */}
-                <th className="w-1/6  px-2">Source</th> {/* ~16% */}
-                <th className="w-1/6  px-2">Destination</th> {/* ~16% */}
-                <th className="w-[15%]  px-2">Price</th> {/* ~16% */}
-                <th className="w-1/12  px-2">CGST</th> {/* Small width */}
-                <th className="w-1/12  px-2">SGST</th> {/* Small width */}
-                <th className="w-1/6  px-2 text-center">Amount</th> {/* ~16% */}
-                <th className="w-fit  text-center"></th> {/* Fit for icon */}
+                <th className="w-[10%] px-2">Date</th>
+                <th className="w-[16%] px-2">Vehicle No</th>
+                <th className="w-1/6 px-2">Source</th>
+                <th className="w-1/6 px-2">Destination</th>
+                <th className="w-[15%] px-2">Price</th>
+                <th className="w-1/12 px-2">CGST</th>
+                <th className="w-1/12 px-2">SGST</th>
+                <th className="w-1/6 px-2 text-center">Amount</th>
+                <th className="w-fit text-center"></th>
             </tr>
         </thead>
-    )
-}
+    );
+};
+
 const ProductsHeader = () => {
     return (
         <thead className="text-left text-sm bg-muted py-10">

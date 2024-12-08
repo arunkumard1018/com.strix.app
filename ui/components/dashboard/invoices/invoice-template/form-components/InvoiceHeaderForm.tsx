@@ -15,7 +15,7 @@ const InvoiceHeaderForm: React.FC<InvoiceHeaderFormProps> = () => {
                 <div className='text-2xl w-full md:text-4xl font-medium '>
                     <Field
                         className="w-auto border-none outline-none"
-                        name="inoviceheading.heading"
+                        name="invoiceHeading.heading"
                         placeholder="Strix Invoice"
                         component={CustomInput}
                     />
@@ -23,7 +23,7 @@ const InvoiceHeaderForm: React.FC<InvoiceHeaderFormProps> = () => {
                 <div className='text-sm italic'>
                     <Field
                         className="text-sm w-auto"
-                        name="inoviceheading.subHeading"
+                        name="invoiceHeading.subHeading"
                         placeholder="Transport"
                         component={CustomInput}
                     />
@@ -34,7 +34,7 @@ const InvoiceHeaderForm: React.FC<InvoiceHeaderFormProps> = () => {
                     <div className='text-2xl w-full font-extrabold text-custome-textVoilate'>
                         <Field
                             className=" w-auto"
-                            name="inoviceheading.title"
+                            name="invoiceHeading.title"
                             placeholder="INVOICE"
                             component={CustomInput}
                         />

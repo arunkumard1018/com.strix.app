@@ -4,7 +4,7 @@ import userReducer from './slices/userSlice';
 import customersReducer from './slices/customersSlice'
 import invoicesReducer from './slices/invoicesSlice'
 import latestDataReducer from './slices/latestDataSlice'
-import invoiceConfigReducer from './slices/invoiceConfigSlice'
+import configReducer from './slices/configSlice'
 
 export const store = configureStore({
     reducer: {
@@ -12,7 +12,7 @@ export const store = configureStore({
         customers: customersReducer,
         invoices: invoicesReducer,
         latestData: latestDataReducer,
-        invoiceConfig: invoiceConfigReducer,
+        config: configReducer,
     },
 });
 

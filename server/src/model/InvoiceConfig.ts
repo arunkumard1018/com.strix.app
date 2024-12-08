@@ -1,7 +1,7 @@
 import mongoose, { InferSchemaType } from "mongoose";
 
 const invoiceConfigSchema = new mongoose.Schema({
-    inoviceheading: {
+    invoiceHeading: {
         heading: { type: String },
         subHeading: { type: String },
         title: { type: String },
@@ -16,6 +16,7 @@ const invoiceConfigSchema = new mongoose.Schema({
     },
     invoiceDetails: {
         invoicePrefix: { type: String },
+        invoiceDate: { type: Date },
         invoiceNo: { type: Number },
         GSTIN: { type: String },
         PAN: { type: String },

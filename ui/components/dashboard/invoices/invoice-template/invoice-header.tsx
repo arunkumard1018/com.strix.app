@@ -33,16 +33,16 @@ export const InvoiceInfo = ({ invoiceFrom, invoiceTo, invoiceDetails }:
             {/* Sender Details */}
             <div className="w-full md:w-1/2">
                 <div className="font-sans">
+                    <p>{invoiceFrom.name}</p>
                     <p>{invoiceFrom.street}</p>
-                    <p>{invoiceFrom.street2}</p>
                     <p>{invoiceFrom.city} {invoiceFrom.state} {invoiceFrom.postalCode}</p>
                     <p>Phone: {invoiceFrom.phone}</p>
                 </div>
                 {/* Invoice To */}
                 <div className="mt-7 font-sans">
                     <div className="font-serif text-custome-textBlue">TO:</div>
+                    <p>{invoiceTo.name}</p>
                     <p>{invoiceTo.street}</p>
-                    <p>{invoiceTo.street2}</p>
                     <p>{invoiceTo.city} {invoiceTo.state} {invoiceTo.postalCode}</p>
                     <p>Phone: {invoiceTo.phone}</p>
                     <p>PAN: {invoiceTo.PAN}</p>
@@ -53,7 +53,7 @@ export const InvoiceInfo = ({ invoiceFrom, invoiceTo, invoiceDetails }:
             <div className="w-full md:w-1/2 flex items-start justify-end font-sans">
                 <div className="md:max-w-[70%]">
                     <p>INVOICE NO: {invoiceDetails.invoicePrefix + invoiceDetails.invoiceNo}</p>
-                    <p>Date: {formatDateDDMMYY(invoiceDetails.invoiceDate)}</p>
+                    <p>Date: {formatDateDDMMYY(invoiceDetails.invoiceDate.toString())}</p>
                     <p>GSTIN: {invoiceDetails.GSTIN}</p>
                     <p>PAN: {invoiceDetails.PAN}</p>
                     <p>HSN: {invoiceDetails.HSN}</p>

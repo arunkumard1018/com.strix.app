@@ -2,7 +2,7 @@ import Joi from "joi";
 
 /** Joi Schema for invoiceConfig validation */
 const invoiceConfigJoiSchema = Joi.object({
-    invoiceheading: Joi.object({
+    invoiceHeading: Joi.object({
         heading: Joi.string().required().messages({
             "string.empty": "Heading is required",
         }),
@@ -44,6 +44,10 @@ const invoiceConfigJoiSchema = Joi.object({
         invoiceNo: Joi.number().required().messages({
             "number.base": "Invoice number must be a number",
             "any.required": "Invoice number is required",
+        }),
+        invoiceDate: Joi.date().required().messages({
+            'date.base': '"invoiceDate" should be a valid date',
+            'any.required': '"invoiceDate" is a required field',
         }),
         GSTIN: Joi.string().allow(null, "").messages({
             "string.base": "GSTIN must be a string",

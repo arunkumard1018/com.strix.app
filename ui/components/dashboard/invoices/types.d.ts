@@ -1,19 +1,19 @@
-export interface Inoviceheading {
+export interface InvoiceHeading {
     heading: string;
     subHeading: string;
     title: string;
 }
 export interface InvoiceFrom {
+    name: string;
     street: string;
-    street2: string;
     city: string;
     state: string;
     postalCode: string;
     phone: string;
 }
 export interface InvoiceTo {
+    name: string;
     street: string;
-    street2: string;
     city: string;
     state: string;
     postalCode: string;
@@ -24,7 +24,7 @@ export interface InvoiceTo {
 export interface InvoiceDetails {
     invoicePrefix: string
     invoiceNo: string;
-    invoiceDate: string;
+    invoiceDate: Date;
     GSTIN: string;
     PAN: string;
     HSN: string;
@@ -69,7 +69,7 @@ export interface Invoicesummary {
 }
 
 export interface InvoiceFormData {
-    inoviceheading: Inoviceheading;
+    invoiceHeading: InvoiceHeading;
     invoiceFrom: InvoiceFrom;
     invoiceTo: InvoiceTo;
     invoiceDetails: InvoiceDetails;
@@ -81,7 +81,7 @@ export interface InvoiceFormData {
 }
 
 export interface InvoiceConfig {
-    inoviceheading: Inoviceheading;
+    invoiceHeading: InvoiceHeading;
     invoiceFrom: InvoiceFrom;
     invoiceDetails: InvoiceDetails;
     additionlInfo: AdditionlInfo;

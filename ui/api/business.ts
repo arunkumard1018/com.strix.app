@@ -1,11 +1,8 @@
-import { axiosClient } from "./axiosClient"
-import { BusinessData, BusinessModel } from "@/types/definetions";
-import { ApiResponse } from "@/types/api-responses";
-import { Business } from "@/store/slices/userSlice";
 import { BusinessFormData } from "@/components/dashboard/business/business-form";
-import { delay } from "@/lib/utils";
-import { invoiceConfig } from "@/config/invoice";
-import { InvoiceConfig } from "@/components/dashboard/invoices/types";
+import { Business } from "@/store/slices/userSlice";
+import { ApiResponse } from "@/types/api-responses";
+import { BusinessData, BusinessModel } from "@/types/definetions";
+import { axiosClient } from "./axiosClient";
 
 const createBusiness = async (businessData: BusinessFormData) => {
     const data: BusinessModel = {
@@ -65,15 +62,5 @@ const deleteBusiness = async (businessId: string) => {
     }
 }
 
-const getInvoiceConfig = async (businessId: string) => {
-    console.log("Accessing Invoice Config to Be Implemented for Business id", businessId);
-    await delay(2000)
-    const response: ApiResponse<InvoiceConfig> = {
-        status: 'success',
-        time: new Date().toISOString(),
-        message: "Invoice Config",
-        result: invoiceConfig,
-    }
-    return response;
-}
-export { createBusiness, getBusinessInfo, updateBusiness, deleteBusiness, getInvoiceConfig }
+
+export { createBusiness, deleteBusiness, getBusinessInfo, updateBusiness };
