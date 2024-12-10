@@ -16,7 +16,6 @@ const invoiceConfigSchema = new mongoose.Schema({
     },
     invoiceDetails: {
         invoicePrefix: { type: String },
-        invoiceDate: { type: Date },
         invoiceNo: { type: Number },
         GSTIN: { type: String },
         PAN: { type: String },

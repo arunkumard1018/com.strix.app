@@ -79,11 +79,19 @@ export interface InvoiceFormData {
     additionlInfo: AdditionlInfo;
     invoicesummary: Invoicesummary;
 }
+export interface InvoiceDetailsConfig {
+    invoicePrefix: string
+    invoiceNo: string;
+    GSTIN: string;
+    PAN: string;
+    HSN: string;
+    stateCode: string;
+}
 
 export interface InvoiceConfig {
     invoiceHeading: InvoiceHeading;
     invoiceFrom: InvoiceFrom;
-    invoiceDetails: InvoiceDetails;
+    invoiceDetails: InvoiceDetailsConfig;
     additionlInfo: AdditionlInfo;
     bankDetails: BankDetails;
 }

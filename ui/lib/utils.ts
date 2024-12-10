@@ -6,14 +6,15 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function formatCurrency(amount: number | string) {
-  const formatedAmount = new Intl.NumberFormat('en-IN', {
+  const formattedAmount = new Intl.NumberFormat('en-IN', {
     style: 'currency',
     currency: 'INR',
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   }).format(Number(amount));
-  return formatedAmount;
+  return `₹${formattedAmount}`;
 }
+
 export function formatRupee(amount: number | string) {
   const formatedAmount = new Intl.NumberFormat('en-IN', {
     currency: 'INR',

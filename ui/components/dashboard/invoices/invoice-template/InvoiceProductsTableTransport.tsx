@@ -1,4 +1,4 @@
-import { formatCurrency, formatDateDDMMYY, formatRupee, numberToWordsIndian } from "@/lib/utils";
+import { cn, formatCurrency, formatDateDDMMYY, formatRupee, numberToWordsIndian } from "@/lib/utils";
 import '../invoice.css';
 import { calculateInvoiceSummaryForProductsTransport, formatToTwoDecimalPlaces } from "./form-components/calculations";
 import { InvoiceFormData } from "../types";
@@ -28,29 +28,29 @@ function InvoiceProductsTableTransport({ invoiceConfig: invoiceFormData }: { inv
     return (
         <div className="bg-background w-full">
             <table className="w-full text-sm table-fixed border-collapse">
-                <thead className="bg-muted-foreground/20">
-                    <tr className="text-left" id="t-head">
-                        <th className="px-1 py-1 w-24">Date</th>
-                        <th className="px-1 py-1 w-28">Vehicle No</th>
-                        <th className="px-1 py-1 w-28">Source</th>
-                        <th className="px-1 py-1 w-28">Destination</th>
-                        <th className="px-1 text-left w-20">Price</th>
-                        <th className="px-1 text-center w-16">CGST</th>
-                        <th className="px-1 text-center w-16">SGST</th>
-                        <th className="px-1 text-right w-32">Amount</th>
+                <thead className="bg-muted-foreground/20 ">
+                    <tr className="text-left " id="t-head">
+                        <th className="px-2 py-1 w-24 font-medium ">Date</th>
+                        <th className="px-1 py-1 w-28 font-medium">Vehicle No</th>
+                        <th className="px-1 py-1 w-28 font-medium">Source</th>
+                        <th className="px-1 py-1 w-28 font-medium">Destination</th>
+                        <th className="px-1 text-left w-20 font-medium">Price</th>
+                        <th className="px-1 text-center w-16 font-medium">CGST</th>
+                        <th className="px-1 text-center w-16 font-medium">SGST</th>
+                        <th className="px-2 text-right w-32 font-medium">Amount</th>
                     </tr>
                 </thead>
                 <tbody>
                     {invoiceFormData.invoiceProductsTransport.map((product, index) => (
-                        <tr key={index} className="border-b border-b-gray-300 py-1">
-                            <td className="p-1 px-1">{formatDateDDMMYY(product.date.toLocaleDateString())}</td>
+                        <tr key={index} className={cn("py-1",(index!==invoiceFormData.invoiceProductsTransport.length-1)&&"border-b border-b-muted-foreground/20")}>
+                            <td className="p-1 px-2">{formatDateDDMMYY(product.date.toLocaleDateString())}</td>
                             <td className="p-1 px-1">{product.vehicleNo}</td>
                             <td className="p-1 px-1">{product.source}</td>
                             <td className="p-1 px-1">{product.destination}</td>
                             <td className="p-1 text-left">{formatRupee(product.price)}</td>
                             <td className="p-1 text-center">{product.cgst}%</td>
                             <td className="p-1 text-center">{product.sgst}%</td>
-                            <td className="p-1 text-right">{formatRupee(product.amount)}</td>
+                            <td className="p-1 text-right px-2">{formatRupee(product.amount)}</td>
                         </tr>
                     ))}
                     <tr id="summary" className="bg-muted-foreground/20">
@@ -62,29 +62,29 @@ function InvoiceProductsTableTransport({ invoiceConfig: invoiceFormData }: { inv
                                 </div>
                             )}
                         </td>
-                        <td className="text-right font-bold">Gross:</td>
-                        <td className="text-right p-1">{formatCurrency(invoiceAmount)}</td>
+                        <td className="text-center font-medium">Gross:</td>
+                        <td className="text-right p-1 px-2">{formatCurrency(invoiceAmount)}</td>
                     </tr>
                 </tbody>
             </table>
 
-            <div className="flex justify-end mt-2">
-                <table className="w-[35%] text-sm">
+            <div className="flex justify-end mt-4">
+                <table className="w-[37%] text-sm">
                     <tbody>
                         <tr>
-                            <td className="font-semibold border-r border-r-muted-foreground/30">Total Price</td>
+                            <td className="font-medium px-2">Total Price</td>
                             <td className="text-right pr-2">{formatRupee(totalPrice)}</td>
                         </tr>
                         <tr>
-                            <td className="font-semibold border-r border-r-muted-foreground/30">CGST</td>
+                            <td className="font-medium px-2">CGST</td>
                             <td className="text-right pr-2">{formatRupee(cgst)}</td>
                         </tr>
-                        <tr className="border-b border-b-muted-foreground/30">
-                            <td className="font-semibold border-r border-r-muted-foreground/30">SGST</td>
+                        <tr className="py-2">
+                            <td className="font-medium px-2">SGST</td>
                             <td className="text-right pr-2">{formatRupee(sgst)}</td>
                         </tr>
-                        <tr>
-                            <td className="font-semibold border-r border-r-muted-foreground/30">Total Amount</td>
+                        <tr className="bg-muted-foreground/20 py-4">
+                            <td className="font-semibold py-1 px-2">Total Amount</td>
                             <td className="text-right pr-2">{formatCurrency(invoiceAmount)}</td>
                         </tr>
                     </tbody>

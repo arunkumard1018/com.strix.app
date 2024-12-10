@@ -12,11 +12,11 @@ interface BankDetailsProps {
 const BankDetailsForm: React.FC<BankDetailsProps> = ({ isBankDetails }) => {
     return (
         <>
-            <div className="font-serif text-xl text-green-400 uppercase font-bold flex items-center">
+            <div className="font-serif text-xl  font-bold flex items-center">
                 <Field
                     type="checkbox"
                     name="additionlInfo.isBankDetails"
-                    className="h-5 w-5 mr-2 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                    className="h-4  w-4 mr-2 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
                 />
                 Bank Details
             </div>
@@ -73,7 +73,7 @@ const BankDetailsForm: React.FC<BankDetailsProps> = ({ isBankDetails }) => {
                 <div className={cn("w-full md:w-1/2 flex flex-col my-5 md:my-0  md:justify-end  font-sans", isBankDetails && "md:items-end")}>
                     <div className='md:w-[75%]'>Additional Info</div>
                     <Field
-                        className="text-sm md:w-[75%] w-full text-custome-textVoilate" name="additionlInfo.thankyouNote" placeholder="BHJ766FASD"
+                        className="text-sm md:w-[75%] w-full " name="additionlInfo.thankyouNote" placeholder="BHJ766FASD"
                         component={CustomInput}
                     />
                 </div>

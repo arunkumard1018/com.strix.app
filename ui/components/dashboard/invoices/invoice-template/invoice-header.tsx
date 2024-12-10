@@ -10,18 +10,19 @@ interface InvoiceHeadingProps {
 export const InvoiceHeading = (business: InvoiceHeadingProps) => {
     return (
         <div className="">
-            <div className='flex justify-between w-full pb-1'>
+            <div className='flex justify-between w-full pb-2'>
                 <div className='w-full md:w-1/2 '>
-                    <div className='text-2xl font-bold text-custome-textBlue'>{business.businessName}</div>
-                    <p className='text-sm text-gray-600 italic'>{business.buisnessType}</p>
+                    <div className='text-2xl font-medium '>{business.businessName}</div>
+                    <p className='text-sm text-gray-400 italic'>{business.buisnessType}</p>
                 </div>
                 <div className='w-full md:w-1/2 flex items-start justify-end'>
                     <div className='md:w-[45%] text-right'>
-                        <div className='text-2xl font-extrabold text-custome-textVoilate'>{business.invoiceTitle}</div>
+                        <div className='text-2xl font-bold text-gray-500'>{business.invoiceTitle}</div>
                     </div>
+
                 </div>
             </div>
-            <hr className="border-t border-gray-400 " />
+            <hr className="border-t border-muted-foreground/30" />
         </div>
     )
 }
@@ -32,32 +33,34 @@ export const InvoiceInfo = ({ invoiceFrom, invoiceTo, invoiceDetails }:
         <div className="flex justify-between w-full text-sm">
             {/* Sender Details */}
             <div className="w-full md:w-1/2">
-                <div className="font-sans">
+                <div className="font-sans text-xs">
+                    <div className="font-serif text-sm">From</div>
                     <p>{invoiceFrom.name}</p>
                     <p>{invoiceFrom.street}</p>
                     <p>{invoiceFrom.city} {invoiceFrom.state} {invoiceFrom.postalCode}</p>
-                    <p>Phone: {invoiceFrom.phone}</p>
+                    {invoiceFrom.phone && <p>Phone: {invoiceFrom.phone}</p>}
                 </div>
                 {/* Invoice To */}
-                <div className="mt-7 font-sans">
-                    <div className="font-serif text-custome-textBlue">TO:</div>
+                <div className="mt-5 font-sans text-xs">
+                    <div className="font-serif text-sm">To</div>
                     <p>{invoiceTo.name}</p>
                     <p>{invoiceTo.street}</p>
                     <p>{invoiceTo.city} {invoiceTo.state} {invoiceTo.postalCode}</p>
-                    <p>Phone: {invoiceTo.phone}</p>
-                    <p>PAN: {invoiceTo.PAN}</p>
-                    <p>GSTIN: {invoiceTo.GSTIN}</p>
+                    {invoiceTo.phone && <p>Phone: {invoiceTo.phone}</p>}
+                    {invoiceTo.PAN && <p>PAN: {invoiceTo.PAN}</p>}
+                    {invoiceTo.GSTIN && <p>GSTIN: {invoiceTo.GSTIN}</p>}
+
                 </div>
             </div>
             {/* Invoice Details */}
-            <div className="w-full md:w-1/2 flex items-start justify-end font-sans">
+            <div className="w-full md:w-1/2 flex items-start justify-end font-sans text-xs">
                 <div className="md:max-w-[70%]">
                     <p>INVOICE NO: {invoiceDetails.invoicePrefix + invoiceDetails.invoiceNo}</p>
                     <p>Date: {formatDateDDMMYY(invoiceDetails.invoiceDate.toString())}</p>
-                    <p>GSTIN: {invoiceDetails.GSTIN}</p>
-                    <p>PAN: {invoiceDetails.PAN}</p>
-                    <p>HSN: {invoiceDetails.HSN}</p>
-                    <p>State Code: {invoiceDetails.stateCode}</p>
+                    {invoiceDetails.GSTIN && <p>GSTIN: {invoiceDetails.GSTIN}</p>}
+                    {invoiceDetails.PAN && <p>PAN: {invoiceDetails.PAN}</p>}
+                    {invoiceDetails.HSN && <p>HSN: {invoiceDetails.HSN}</p>}
+                    {invoiceDetails.stateCode && <p>State Code: {invoiceDetails.stateCode}</p>}
                 </div>
             </div>
         </div>
@@ -81,17 +84,21 @@ export const InvoiceFooter: React.FC<InvoiceFooterProps> = ({
             {/* Bank Details */}
             {isBankDetails &&
                 (<div className="w-full md:w-1/2">
-                    <div className="font-sans">
-                        <div className="font-serif  text-green-400 uppercase font-bold">Bank Details:</div>
-                        <p>Name: {bankDetails.accountName}</p>
-                        <p>Bank Name: {bankDetails.bankName}</p>
-                        <p >ACC No: <span className="font-medium">{bankDetails.accountNumber}</span></p>
-                        <p>IFSC Code: {bankDetails.ifscCode}</p>
-                        <p>Branch: {bankDetails.branch}</p>
+                    <div className="font-sans text-sm">
+                        <div className="font-serif text-lg  font-medium">Bank Details</div>
+                        {bankDetails.accountName && <p>Account Name: {bankDetails.accountName}</p>}
+                        {bankDetails.bankName && <p>Bank Name: {bankDetails.bankName}</p>}
+                        {bankDetails.accountNumber && (
+                            <p>
+                                Account Number: <span className="font-medium">{bankDetails.accountNumber}</span>
+                            </p>
+                        )}
+                        {bankDetails.ifscCode && <p>IFSC Code: {bankDetails.ifscCode}</p>}
+                        {bankDetails.branch && <p>Branch: {bankDetails.branch}</p>}
                     </div>
                 </div>)}
             {/* Thank You Message */}
-            <div className={cn("w-full md:w-1/2 flex flex-col font-sans text-custome-textVoilate mt-10",isBankDetails && "items-end justify-end")}>
+            <div className={cn("w-full md:w-1/2 flex flex-col font-sans  mt-10", isBankDetails && "items-end justify-end")}>
                 <div>{thankYouMessage}</div>
             </div>
         </div>

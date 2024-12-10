@@ -62,7 +62,7 @@ const ProductsFieldArray: React.FC<ProductsFieldArrayProps> = ({ formik }) => {
     const initialValues = {
         sku: "",
         description: "",
-        price: 280000,
+        price: 0,
         qty: 1,
         cgst: 0,
         sgst: 0,
@@ -75,7 +75,7 @@ const ProductsFieldArray: React.FC<ProductsFieldArrayProps> = ({ formik }) => {
                     {/* Table Header */}
                     <table className="table-auto w-full">
                         <ProductsHeader />
-                        <tbody>
+                        <tbody className=''>
                             {formik.values.invoiceProducts.map((_, idx) => (
                                 <InvoiceProductRow
                                     key={idx}
@@ -86,11 +86,12 @@ const ProductsFieldArray: React.FC<ProductsFieldArrayProps> = ({ formik }) => {
                                 />
                             ))}
                             <tr className="bg-muted">
-                                <td colSpan={5} className="">
-                                    <AddRowBtn onClick={() => push(initialValues)} />
+                                <td className="">
+                                    <div><AddRowBtn onClick={() => push(initialValues)} /></div>
                                 </td>
+                                <td colSpan={3}></td>
                                 <td className="">Gross</td>
-                                <td className="text-right">{formatCurrency(formik.values.invoicesummary.invoiceAmount)}</td>
+                                <td className="text-center">{formatCurrency(formik.values.invoicesummary.invoiceAmount)}</td>
                                 <td></td>
                             </tr>
                         </tbody>
@@ -140,14 +141,13 @@ const ProductsHeader = () => {
     return (
         <thead className="text-left text-sm bg-muted py-10">
             <tr>
-                <th className="w-1/12  text-sm px-2 py-2 ">Id</th> {/* ~16% */}
-                <th className="w-2/5  px-2 ">Description</th> {/* ~40% */}
-                <th className="w-1/6  px-2">Price</th> {/* ~16% */}
-                <th className="w-1/12  px-2">QTY</th> {/* Small width */}
-                <th className="w-1/12  px-2">CGST</th> {/* Small width */}
-                <th className="w-1/12  px-2">SGST</th> {/* Small width */}
-                <th className="w-1/6  px-2 text-center">Amount</th> {/* ~16% */}
-                <th className="w-fit  text-center"></th> {/* Fit for icon */}
+                <th className="w-2/5  px-2 ">Description</th>
+                <th className="w-1/6  px-2">Price</th>
+                <th className="w-1/12  px-2">QTY</th>
+                <th className="w-1/12  px-2">CGST</th>
+                <th className="w-1/12  px-2">SGST</th>
+                <th className="w-1/6  px-2 text-center">Amount</th>
+                <th className="w-fit  text-center"></th>
             </tr>
         </thead>
     )

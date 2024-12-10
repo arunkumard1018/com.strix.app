@@ -31,11 +31,11 @@ const InvoiceHeaderForm: React.FC<InvoiceHeaderFormProps> = () => {
             </div>
             <div className='w-full md:w-1/2 flex items-start md:justify-end'>
                 <div className='md:w-2/3 w-full'>
-                    <div className='text-2xl w-full font-extrabold text-custome-textVoilate'>
+                    <div className='text-2xl w-full font-extrabold '>
                         <Field
                             className=" w-auto"
                             name="invoiceHeading.title"
-                            placeholder="INVOICE"
+                            placeholder="TAX INVOICE"
                             component={CustomInput}
                         />
                     </div>

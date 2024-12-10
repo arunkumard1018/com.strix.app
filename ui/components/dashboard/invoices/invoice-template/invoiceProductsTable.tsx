@@ -1,4 +1,4 @@
-import { formatCurrency, formatRupee, numberToWordsIndian } from "@/lib/utils";
+import { cn, formatCurrency, formatRupee, numberToWordsIndian } from "@/lib/utils";
 import '../invoice.css';
 import { calculateInvoiceSummaryForProducts, formatToTwoDecimalPlaces } from "./form-components/calculations";
 import { InvoiceFormData } from "../types";
@@ -30,29 +30,27 @@ function InvoiceProductsTable({ invoiceConfig: invoiceFormData }: { invoiceConfi
             <table className="table-auto w-full text-sm">
                 <thead className="bg-muted-foreground/20">
                     <tr className="text-left" id="t-head">
-                        <th className="px-1 py-1">ID</th>
-                        <th className="w-1/2 px-1 py-1">Description</th>
-                        <th className="px-1 text-left">Price</th>
-                        <th className="px-1 text-center">Qty</th>
-                        <th className="px-1 text-center">CGST</th>
-                        <th className="px-1 text-center">SGST</th>
-                        <th className="px-1 text-right">Amount</th>
+                        <th className="w-1/2 px-2 py-1 font-medium">Description</th>
+                        <th className="px-1 text-left font-medium border-none">Price</th>
+                        <th className="px-1 text-center font-medium">Qty</th>
+                        <th className="px-1 text-center font-medium">CGST</th>
+                        <th className="px-1 text-center font-medium">SGST</th>
+                        <th className="px-2 text-right font-medium">Amount</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody className="text-xs">
                     {invoiceFormData.invoiceProducts.map((product, index) => (
-                        <tr key={index} className="border-b border-b-gray-300 py-1">
-                            <td className="p-1">{product.sku}</td>
-                            <td className="w-1/2 px-1">{product.description}</td>
+                        <tr key={index} className={cn("border-b border-b-muted-foreground/20 py-1",(index===invoiceFormData.invoiceProducts.length-1) && "border-none")}>
+                            <td className="w-1/2 px-2">{product.description}</td>
                             <td className="p-1 text-left">{formatRupee(product.price)}</td>
                             <td className="p-1 text-center">{product.qty}</td>
                             <td className="p-1 text-center">{product.cgst}%</td>
                             <td className="p-1 text-center">{product.sgst}%</td>
-                            <td className="p-1 text-right">{formatRupee(product.price * product.qty)}</td>
+                            <td className="p-1 text-right px-2">{formatRupee(product.price * product.qty)}</td>
                         </tr>
                     ))}
                     <tr id="summary" className="bg-muted-foreground/20">
-                        <td colSpan={5} className="px-1">
+                        <td colSpan={4} className="px-1">
                             {totalPrice > 0 && (
                                 <div className="text-xs">
                                     <span className="font-medium mx-2">Rupees:</span>
@@ -60,28 +58,28 @@ function InvoiceProductsTable({ invoiceConfig: invoiceFormData }: { invoiceConfi
                                 </div>
                             )}
                         </td>
-                        <td className="text-right font-bold">Gross:</td>
-                        <td className="text-right  p-1">{formatCurrency(invoiceAmount)}</td>
+                        <td className="text-center font-medium">Gross:</td>
+                        <td className="text-right  p-1 px-2">{formatCurrency(invoiceAmount)}</td>
                     </tr>
                 </tbody>
             </table>
-            <div className="flex justify-end mt-2">
-                <table className="w-[35%] text-sm">
+            <div className="flex justify-end mt-5">
+                <table className="w-[37%] text-sm">
                     <tbody>
                         <tr>
-                            <td className="font-semibold border-r border-r-muted-foreground/30">Total Price</td>
-                            <td className="text-right pr-2">{formatRupee(totalPrice)}</td>
+                            <td className="font-medium px-2">Total Price</td>
+                            <td className="text-right pr-2 text-sm">{formatRupee(totalPrice)}</td>
                         </tr>
                         <tr>
-                            <td className="font-semibold border-r border-r-muted-foreground/30">CGST</td>
-                            <td className="text-right pr-2">{formatRupee(cgst)}</td>
+                            <td className="font-medium px-2">CGST</td>
+                            <td className="text-right pr-2 text-sm">{formatRupee(cgst)}</td>
                         </tr>
-                        <tr className="border-b border-b-muted-foreground/30">
-                            <td className="font-semibold border-r border-r-muted-foreground/30">SGST</td>
-                            <td className="text-right pr-2">{formatRupee(sgst)}</td>
+                        <tr className="">
+                            <td className="font-medium px-2">SGST</td>
+                            <td className="text-right pr-2 text-sm">{formatRupee(sgst)}</td>
                         </tr>
-                        <tr>
-                            <td className="font-semibold border-r border-r-muted-foreground/30">Total Amount</td>
+                        <tr className="bg-muted-foreground/20 py-1">
+                            <td className="font-semibold py-1 px-2">Total Amount</td>
                             <td className="text-right pr-2">{formatCurrency(invoiceAmount)}</td>
                         </tr>
                     </tbody>

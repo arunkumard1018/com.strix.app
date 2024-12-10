@@ -49,15 +49,7 @@ export const InvoiceProductRow = ({
 
     return (
         <tr className="text-sm">
-            <td className="text-center">
-                <Field
-                    className="text-sm border-none shadow-none w-full text-center"
-                    name={`invoiceProducts[${idx}].sku`}
-                    placeholder={idx + 1}
-                    component={CustomInput}
-                />
-            </td>
-            <td className="text-xs break-words whitespace-normal leading-tight">
+            <td className="text-xs break-words whitespace-normal leading-tight ">
                 <Field
                     className="text-sm border-none shadow-none w-full"
                     name={`invoiceProducts[${idx}].description`}
@@ -101,7 +93,6 @@ export const InvoiceProductRow = ({
                     maxLength={2}
                     component={CustomInput}
                 />
-
             </td>
             <td className="text-center px-2">
                 {formatRupee(formik.values.invoiceProducts[idx].amount)}

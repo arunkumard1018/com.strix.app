@@ -45,10 +45,6 @@ const invoiceConfigJoiSchema = Joi.object({
             "number.base": "Invoice number must be a number",
             "any.required": "Invoice number is required",
         }),
-        invoiceDate: Joi.date().required().messages({
-            'date.base': '"invoiceDate" should be a valid date',
-            'any.required': '"invoiceDate" is a required field',
-        }),
         GSTIN: Joi.string().allow(null, "").messages({
             "string.base": "GSTIN must be a string",
         }),

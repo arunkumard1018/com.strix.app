@@ -3,11 +3,11 @@ import { InvoiceConfig, InvoiceFormData } from "@/components/dashboard/invoices/
 export const invoiceConfig: InvoiceConfig = {
     invoiceHeading: {
         heading: "Heading 1",
-        subHeading: "",
-        title: ""
+        subHeading: "Sub Heading",
+        title: "TAX INVOICE"
     },
     invoiceFrom: {
-        name: "Strix Invoices",
+        name: "",
         street: "",
         city: "",
         state: "",
@@ -17,7 +17,6 @@ export const invoiceConfig: InvoiceConfig = {
     invoiceDetails: {
         invoicePrefix: "INV",
         invoiceNo: "1",
-        invoiceDate: new Date(),
         GSTIN: "",
         PAN: "",
         HSN: "",
@@ -38,6 +37,10 @@ export const invoiceConfig: InvoiceConfig = {
 
 export const invoiceFormInitialData: InvoiceFormData = {
     ...invoiceConfig,
+    invoiceDetails: {
+        ...invoiceConfig.invoiceDetails,
+        invoiceDate: new Date(),
+    },
     invoiceTo: {
         name: "",
         street: "",
