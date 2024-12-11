@@ -1,4 +1,4 @@
-import { formatCurrency, formatDateDDMMYY, formatRupee, numberToWordsIndian } from "@/lib/utils"; // Make sure these functions work with PDF renderer
+import { formatCurrency, formatRupee, numberToWordsIndian } from "@/lib/utils"; // Make sure these functions work with PDF renderer
 import { Font, StyleSheet, Text, View } from "@react-pdf/renderer";
 import { calculateInvoiceSummaryForProductsTransport, formatToTwoDecimalPlaces } from "../dashboard/invoices/invoice-template/form-components/calculations";
 import { InvoiceProductTransport } from "../dashboard/invoices/types";
@@ -164,7 +164,34 @@ const invoiceProductsTransport: InvoiceProductTransport[] = [
     },
 ];
 
-function PdfInvoiceProductsTableTransport() {
+const dummyInvoiceProducts = [
+    {
+        description: "Laptop",
+        price: 50000,
+        qty: 2,
+        cgst: 9,
+        sgst: 9,
+        amount: 118000,
+    },
+    {
+        description: "Smartphone",
+        price: 20000,
+        qty: 3,
+        cgst: 12,
+        sgst: 12,
+        amount: 67200,
+    },
+    {
+        description: "Tablet",
+        price: 15000,
+        qty: 1,
+        cgst: 5,
+        sgst: 5,
+        amount: 16500,
+    },
+];
+
+function PdfInvoiceProductsTable() {
     // Format prices, CGST, SGST, and calculate amounts
     const invoiceProductsTransportMod = invoiceProductsTransport.map((product) => {
         // Parse and format inputs to floats with 2 decimal places
@@ -190,28 +217,24 @@ function PdfInvoiceProductsTableTransport() {
             {/* Table header */}
             <View style={styles.tableHeader}>
                 <View style={{ flexDirection: "row" }}>
-                    <Text style={[styles.headerCell, { width: "10%" }]}>Date</Text>
-                    <Text style={[styles.headerCell, { width: "15%" }]}>Vehicle No</Text>
-                    <Text style={[styles.headerCell, { width: "20%" }]}>Source</Text>
-                    <Text style={[styles.headerCell, { width: "20%" }]}>Destination</Text>
+                    <Text style={[styles.headerCell, { width: "45%" }]}>Description</Text>
                     <Text style={[styles.headerCell, { width: "15%" }]}>Price</Text>
-                    <Text style={[styles.headerCell, { width: "10%", textAlign: "center" }]}>CGST</Text>
-                    <Text style={[styles.headerCell, { width: "10%", textAlign: "center" }]}>SGST</Text>
-                    <Text style={[styles.headerCell, { width: "20%", textAlign: "right" }]}>Amount</Text>
+                    <Text style={[styles.headerCell, { width: "9%" }]}>Qty</Text>
+                    <Text style={[styles.headerCell, { width: "8%", textAlign: "center" }]}>SGST</Text>
+                    <Text style={[styles.headerCell, { width: "8%", textAlign: "center" }]}>CGST</Text>
+                    <Text style={[styles.headerCell, { width: "15%", textAlign: "right" }]}>Amount</Text>
                 </View>
             </View>
 
             {/* Table rows */}
-            {invoiceProductsTransportMod.map((product, index) => (
+            {dummyInvoiceProducts.map((product, index) => (
                 <View key={index} style={{ flexDirection: "row", }}>
-                    <Text style={[styles.cell, { width: "10%" }]}>{formatDateDDMMYY(product.date.toLocaleDateString())}</Text>
-                    <Text style={[styles.cell, { width: "15%" }]}>{product.vehicleNo}</Text>
-                    <Text style={[styles.cell, { width: "20%" }]}>{product.source}</Text>
-                    <Text style={[styles.cell, { width: "20%" }]}>{product.destination}</Text>
+                    <Text style={[styles.cell, { width: "45%" }]}>{product.description}</Text>
                     <Text style={[styles.cell, { width: "15%" }]}>{formatRupee(product.price)}</Text>
-                    <Text style={[styles.cell, { width: "10%", textAlign: "center" }]}>{product.cgst}%</Text>
-                    <Text style={[styles.cell, { width: "10%", textAlign: "center" }]}>{product.sgst}%</Text>
-                    <Text style={[styles.cell, { width: "20%", textAlign: "right" }]}>{formatRupee(product.amount)}</Text>
+                    <Text style={[styles.cell, { width: "9%" }]}>{formatRupee(product.qty)}</Text>
+                    <Text style={[styles.cell, { width: "8%", textAlign: "center" }]}>{product.sgst}%</Text>
+                    <Text style={[styles.cell, { width: "8%", textAlign: "center" }]}>{product.cgst}%</Text>
+                    <Text style={[styles.cell, { width: "15%", textAlign: "right" }]}>{formatRupee(product.amount)}</Text>
                 </View>
             ))}
 
@@ -254,5 +277,5 @@ function PdfInvoiceProductsTableTransport() {
     );
 }
 
-export { PdfInvoiceProductsTableTransport };
+export { PdfInvoiceProductsTable };
 

@@ -1,8 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import { getInvoiceConfig } from "@/api/invoiceConfig";
 import { Button } from "@/components/ui/button";
+import { invoiceConfig } from "@/config/invoice";
+import { setInvoiceConfig } from "@/store/slices/configSlice";
 import { RootState } from "@/store/store";
 import { FormikProps } from "formik";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { InvoiceFormData } from "../../types";
 import BankDetailsForm from "./BankDetails";
@@ -15,21 +18,64 @@ const InvoiceDataForm = (formik: FormikProps<InvoiceFormData>) => {
     const activeBusiness = useSelector((state: RootState) => state.authContext.activeBusiness);
     const config = useSelector((state: RootState) => state.config);
     const storedInvoiceConfig = config.invoiceConfig;
-    const storedConfigBusinessId = config.businessId;
     const dispatch = useDispatch();
-    const status = "CREATE"
-    // const [loading, setLoading] = useState(false);
+    const storedConfigBusinessId = config.businessId;
+    const [status, setStatus] = useState("CREATE")
+    const [loading, setLoading] = useState(false);
     useEffect(() => {
-        const initializeForm = () => {
-            if (storedInvoiceConfig) {
-                formik.setValues({ ...formik.values, ...storedInvoiceConfig, invoiceDetails: { ...storedInvoiceConfig.invoiceDetails, invoiceDate: new Date() } })
+        const loadData = async () => {
+            if (status !== "CREATE") return;
+            setLoading(true)
+            try {
+                console.log("Loading Data")
+                const response = await getInvoiceConfig(activeBusiness._id);
+                if (response.result) {
+                    formik.setValues({
+                        ...formik.values, ...response.result,
+                        invoiceDetails: {
+                            ...response.result.invoiceDetails,
+                            invoiceDate: new Date()
+                        }
+                    })
+                    dispatch(setInvoiceConfig({ invoiceConfig: response.result, businessId: activeBusiness._id }))
+                }
+            } catch (error) {
+                formik.setValues({
+                    ...formik.values,
+                    ...invoiceConfig,
+                    invoiceDetails: {
+                        ...invoiceConfig.invoiceDetails,
+                        invoiceDate: new Date(),
+                    },
+                })
+                dispatch(setInvoiceConfig({ invoiceConfig: invoiceConfig, businessId: activeBusiness._id }));
+
+            } finally {
+                formik.setFieldValue("additionlInfo.isTransportInvoice",
+                    activeBusiness.catagory === "Transport" ? true : false);
+                setLoading(false)
             }
         }
-        if (activeBusiness._id !== storedConfigBusinessId && status === 'CREATE') {
-            initializeForm()
+        if (activeBusiness._id !== storedConfigBusinessId || storedConfigBusinessId === undefined) {
+            loadData()
+        } else {
+            if (storedInvoiceConfig) {
+                formik.setValues({
+                    ...formik.values,
+                    ...storedInvoiceConfig,
+                    invoiceDetails: {
+                        ...storedInvoiceConfig.invoiceDetails,
+                        invoiceDate: new Date(),
+                    },
+                });
+                formik.setFieldValue("additionlInfo.isTransportInvoice",
+                    activeBusiness.catagory === "Transport" ? true : false);
+            } else {
+                loadData()
+            }
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [activeBusiness._id, storedInvoiceConfig, storedConfigBusinessId]);
+    }, [activeBusiness._id]);
 
 
     return (
@@ -64,7 +110,7 @@ const InvoiceDataForm = (formik: FormikProps<InvoiceFormData>) => {
                         <BankDetailsForm handleChange={formik.handleChange} isBankDetails={formik.values.additionlInfo.isBankDetails} />
                     </div>
                     <div className="px-4">
-                        
+
                         <Button type="submit" className="w-1/4 rounded-none"> Create Invoice</Button>
                     </div>
                 </div>

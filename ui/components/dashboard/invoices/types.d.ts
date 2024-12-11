@@ -60,6 +60,9 @@ export interface BankDetails {
 export interface AdditionlInfo {
     thankyouNote: string;
     isBankDetails: boolean;
+    isTransportInvoice: boolean;
+    paymentStatus: "Paid" | "Processing" | "Due",
+    paymentMethod: "Cash" | "UPI" | "BankTransfer",
 }
 export interface Invoicesummary {
     totalPrice: number;

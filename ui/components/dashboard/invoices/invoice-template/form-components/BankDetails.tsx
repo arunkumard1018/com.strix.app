@@ -1,4 +1,4 @@
-import CustomInput from '@/components/reuse/invoice-input';
+import CustomInput, { CustomSelect } from '@/components/reuse/invoice-input';
 import { cn } from '@/lib/utils';
 import { Field, FormikProps } from 'formik';
 import React from 'react';
@@ -71,7 +71,31 @@ const BankDetailsForm: React.FC<BankDetailsProps> = ({ isBankDetails }) => {
                     </div>
                 </div>)}
                 <div className={cn("w-full md:w-1/2 flex flex-col my-5 md:my-0  md:justify-end  font-sans", isBankDetails && "md:items-end")}>
-                    <div className='md:w-[75%]'>Additional Info</div>
+                    <div className='md:w-[75%] '>
+                        <Field
+                            name="additionlInfo.paymentStatus"
+                            label="Payment Status"
+                            className="w-[75%] rounded-none"
+                            component={CustomSelect}
+                            options={[
+                                { value: 'Paid', label: 'Paid' },
+                                { value: 'Processing', label: 'Processing' },
+                                { value: 'Due', label: 'Due' },
+                            ]}
+                        />
+                        <Field
+                            name="additionlInfo.paymentMethod"
+                            label="Payment Method"
+                            className="w-[75%]"
+                            component={CustomSelect}
+                            options={[
+                                { value: 'cash', label: 'Cash' },
+                                { value: 'upi', label: 'UPI' },
+                                { value: 'bankTransfer', label: 'Bank Transfer' },
+                            ]}
+                        />
+                    </div>
+                    <div className='md:w-[75%] mt-10'>Additional Info</div>
                     <Field
                         className="text-sm md:w-[75%] w-full " name="additionlInfo.thankyouNote" placeholder="BHJ766FASD"
                         component={CustomInput}

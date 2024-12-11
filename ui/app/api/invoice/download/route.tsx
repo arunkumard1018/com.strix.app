@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { renderToStream } from "@react-pdf/renderer";
 import PdfTemplate from "../../../../components/pdf/PdfTemplate";
+import QRCode from "qrcode";
 
 export async function GET(req: NextRequest) {
     const url = new URL(req.url);
@@ -17,7 +18,11 @@ export async function GET(req: NextRequest) {
         invoicesummary: { totalPrice: 200, cgst: 18, sgst: 18, invoiceAmount: 236 },
     };
     try {
-        const stream = await renderToStream(<PdfTemplate invoiceData={mockData} />);
+        const qrData = `www.strixinvoice.in/i/${id}`;
+        const qrCodeBase64 = await QRCode.toDataURL(qrData);
+
+        // Pass QR Code to PDF Template
+        const stream = await renderToStream(<PdfTemplate invoiceData={mockData} qrCode={qrCodeBase64} />);
         const readableStream = new ReadableStream({
             start(controller) {
                 stream.on("data", (chunk) => {
@@ -37,7 +42,7 @@ export async function GET(req: NextRequest) {
         };
         if (!preview) {
             // For download
-            headers["Content-Disposition"] = `attachment; filename="Invoice-${mockData.invoiceDetails.invoiceNo}.pdf"`;
+            headers["Content-Disposition"] = `attachment; filename="strix/Invoice-${mockData.invoiceDetails.invoiceNo}.pdf"`;
         } else {
             // For inline preview
             headers["Content-Disposition"] = `inline; filename="Invoice-${mockData.invoiceDetails.invoiceNo}.pdf"`;

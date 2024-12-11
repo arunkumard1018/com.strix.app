@@ -19,31 +19,39 @@ function Page() {
   const storedConfigBusinessId = config.businessId;
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    const loadData = async () => {
-      setLoading(true)
-      try {
-        const response = await getInvoiceConfig(activeBusiness._id);
-        if (response.result) {
-          const config: InvoiceConfig = {
-            ...response.result,
-            additionlInfo: {
-              ...response.result.additionlInfo,
-              isBankDetails: true
-            }
-          }
-          dispatch(setInvoiceConfig({ invoiceConfig: config, businessId: activeBusiness._id }));
-          setInitialValues({ ...initialValues, ...config, invoiceDetails: { ...config.invoiceDetails, invoiceDate: new Date() } })
-        }
-      } catch (_error) {
-      } finally {
-        setLoading(false)
-      }
-    };
-    if (!storedInvoiceConfig || activeBusiness._id !== storedConfigBusinessId) {
-      loadData();
-    }
-  }, [activeBusiness._id, dispatch, storedConfigBusinessId, storedInvoiceConfig, initialValues])
+  // useEffect(() => {
+  //   const loadData = async () => {
+  //     setLoading(true)
+  //     try {
+  //       const response = await getInvoiceConfig(activeBusiness._id);
+  //       console.log("Res Result",response.result)
+  //       if (response.result) {
+  //         const config: InvoiceConfig = {
+  //           ...response.result,
+  //           additionlInfo: {
+  //             ...response.result.additionlInfo,
+  //             isBankDetails: true
+  //           }
+  //         }
+  //         dispatch(setInvoiceConfig({ invoiceConfig: config, businessId: activeBusiness._id }));
+  //         setInitialValues({
+  //           ...initialValues, invoiceDetails: { ...config.invoiceDetails, invoiceDate: new Date() }
+  //         })
+  //       }
+  //     } catch (_error) {
+  //       setInitialValues({
+  //         ...initialValues, invoiceDetails: { ...initialValues.invoiceDetails, invoiceDate: new Date() }
+  //       })
+  //     } finally {
+  //       setLoading(false)
+  //     }
+  //     console.log("Calling Api");
+  //     setLoading(false)
+  //   };
+  //   loadData();
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [activeBusiness._id])
+
 
   return (
     <div className='flex items-center justify-center mt-0 mb-10'>

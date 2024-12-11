@@ -5,7 +5,7 @@ import { InvoiceFormData } from '../../types';
 
 const InvoiceDetailsForm = ({ formik }: { formik: FormikProps<InvoiceFormData> }) => {
     return (
-        <div className="w-full md:w-1/2 flex items-start justify-end font-sans mt-5">
+        <div className="w-full md:w-1/2 flex items-start md:justify-end font-sans mt-5">
             <div className="md:max-w-[70%] space-y-2">
                 <div className="flex items-center space-y-1">
                     <div className="text-sm w-[40%] font-bold">InvoiceDate</div>

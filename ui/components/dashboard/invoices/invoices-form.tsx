@@ -2,13 +2,12 @@
 "use client";
 import { Tabs, TabsContent, TabsList, TabsTrigger, } from "@/components/ui/tabs";
 import { Formik, FormikProps } from "formik";
-import { Printer, Save, SaveAllIcon, SaveIcon } from "lucide-react";
+import { Printer } from "lucide-react";
 import { useState } from "react";
+import { InvoiceDataForm } from "./invoice-template/form-components/InvoiceDataForm";
 import "./invoice.css";
 import { InvoicePage } from "./InvoicePage";
 import { InvoiceFormData } from "./types";
-import { InvoiceDataForm } from "./invoice-template/form-components/InvoiceDataForm";
-
 
 
 function InvoiceForm({ initialValues }: { initialValues: InvoiceFormData, }) {
@@ -22,6 +21,7 @@ function InvoiceForm({ initialValues }: { initialValues: InvoiceFormData, }) {
         };
         document.title = originalTitle;
     };
+    
     return (
         <Formik
             initialValues={{ ...initialValues }}
@@ -50,16 +50,6 @@ function InvoiceForm({ initialValues }: { initialValues: InvoiceFormData, }) {
                                     <div className="flex items-center justify-center gap-2">
                                         <Printer />
                                         Print Invoice
-                                    </div>
-                                </button>
-                            </TabsContent>
-                            <TabsContent value="Edit">
-                                <button onClick={() => {
-                                }}
-                                    className="rounded-none shadow-sm border p-2">
-                                    <div className="flex items-center justify-center gap-2">
-                                        <Save />
-                                        Save Invoice
                                     </div>
                                 </button>
                             </TabsContent>

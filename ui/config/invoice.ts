@@ -25,6 +25,10 @@ export const invoiceConfig: InvoiceConfig = {
     additionlInfo: {
         thankyouNote: "Thank You For Your Business!",
         isBankDetails: true,
+        isTransportInvoice: false,
+        paymentMethod: "Cash",
+        paymentStatus: "Processing"
+
     },
     bankDetails: {
         bankName: '',
