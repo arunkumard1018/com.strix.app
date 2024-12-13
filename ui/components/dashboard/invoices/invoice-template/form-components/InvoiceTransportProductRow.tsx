@@ -46,9 +46,9 @@ export const InvoiceTransportProductRow = ({
     }, [formik.values.invoiceProductsTransport[idx].amount])
     return (
         <tr className="text-sm">
-            <td className="text-center ">
+            <td className="text-center my-4">
                 <DatePicker
-                    className=" mt-1 mx-0 px-1"
+                    className=" mt-1 mx-0 px-1 shadow-none border"
                     value={formik.values.invoiceProductsTransport[idx].date}
                     onChange={(date) => formik.setFieldValue(`invoiceProductsTransport[${idx}].date`, date)}
                 />

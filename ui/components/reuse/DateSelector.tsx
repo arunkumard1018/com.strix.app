@@ -38,13 +38,12 @@ export function DatePicker({ value, onChange,className }: DatePickerProps) {
         <Popover open={isPickerOpen} onOpenChange={setIsPickerOpen}>
             <PopoverTrigger asChild>
                 <Button
-                    variant={"outline"}
+                    variant={"calander"}
                     className={cn(
                         "w-full justify-start items-center text-left font-normal rounded-none",
                         !date && "text-muted-foreground",className
                     )}
                 >
-                    <CalendarIcon />
                     {date ? format(date, "dd-MM-yyyy") : <span>Select Date</span>}
                 </Button>
             </PopoverTrigger>

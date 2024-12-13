@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { invoiceConfig } from "@/config/invoice";
 import { setInvoiceConfig } from "@/store/slices/configSlice";
 import { RootState } from "@/store/store";
-import { FormikProps } from "formik";
+import { Form, FormikProps } from "formik";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { InvoiceFormData } from "../../types";
@@ -77,16 +77,26 @@ const InvoiceDataForm = (formik: FormikProps<InvoiceFormData>) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [activeBusiness._id]);
 
-
+    
     return (
         <div>
-            <form
+            <Form
                 onSubmit={formik.handleSubmit}
                 className="flex flex-col  space-y-4 pb-10 border md:px-10"
                 autoComplete="off"
             >
                 <div className="">
                     <p className="text-sm px-4 mt-4 text-blue-500">Note: Some fields are optional. Leave them blank if not applicable.</p>
+                    {/* Error Summary */}
+                    <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4 text-xs" role="alert">
+                        <ul>
+                            {Object.keys(formik.errors).length > 0 &&
+                                Object.entries(flattenErrors(formik.errors)).map(([key, value]) => (
+                                    <span key={key}>{`${value}, `}</span>
+                                ))}
+                        </ul>
+                    </div>
+
                     <div id="invoice" className=" invoice   flex-col space-y-8 py-8 ">
                         {/* Invoice Header Form  */}
                         <InvoiceHeaderForm handleChange={formik.handleChange} />
@@ -114,10 +124,26 @@ const InvoiceDataForm = (formik: FormikProps<InvoiceFormData>) => {
                         <Button type="submit" className="w-1/4 rounded-none"> Create Invoice</Button>
                     </div>
                 </div>
-            </form>
+            </Form>
         </div>
     )
 }
 
 export { InvoiceDataForm };
 
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const flattenErrors = (errors: Record<string, any>, prefix = ''): Record<string, string> => {
+    let flatErrors: Record<string, string> = {};
+    for (const key in errors) {
+        if (typeof errors[key] === 'object' && errors[key] !== null) {
+            flatErrors = {
+                ...flatErrors,
+                ...flattenErrors(errors[key], `${prefix}${key}.`),
+            };
+        } else {
+            flatErrors[`${prefix}${key}`] = errors[key];
+        }
+    }
+    return flatErrors;
+};

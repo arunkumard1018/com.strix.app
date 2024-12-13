@@ -8,7 +8,7 @@ import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { Toaster } from "@/components/ui/toaster";
 import { setActiveBusiness, setUserData } from "@/store/slices/userSlice";
 import { RootState, store } from "@/store/store";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Provider, useDispatch, useSelector } from 'react-redux';
 export default function Layout({ children }: { children: React.ReactNode }): React.JSX.Element {
     return (
@@ -21,18 +21,24 @@ export default function Layout({ children }: { children: React.ReactNode }): Rea
 export function Dashboardlayout({ children }: { children: React.ReactNode }) {
     const dispatch = useDispatch();
     const authContext = useSelector((state: RootState) => state.authContext);
+
     useEffect(() => {
         if (typeof window !== undefined && authContext.user === undefined) {
-            const data = window.localStorage.getItem("userData");
-            if (data && data !== undefined) {
-                dispatch(setUserData(JSON.parse(data)))
-            }
-            const activeBusiness = window.localStorage.getItem("activeBusiness");
-            if (activeBusiness && activeBusiness != undefined) {
-                dispatch(setActiveBusiness(JSON.parse(activeBusiness)))
+            try {
+                const data = window.localStorage.getItem("userData");
+                if (data) {
+                    dispatch(setUserData(JSON.parse(data)));
+                }
+                const activeBusiness = window.localStorage.getItem("activeBusiness");
+                if (activeBusiness) {
+                    dispatch(setActiveBusiness(JSON.parse(activeBusiness)));
+                }
+            } catch (error) {
+                console.error("Error fetching user data:", error);
             }
         }
     }, [authContext.user, dispatch]);
+
     
     return (
         <>

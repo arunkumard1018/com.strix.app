@@ -8,10 +8,10 @@ interface CustomInputProps extends FieldProps {
     label: string;
     additionalInfo?: string;
     className?: string;
-    inputClassName ? : string;
+    inputClassName?: string;
 }
 
-const CustomInput: React.FC<CustomInputProps> = ({ field, form, placeholder, additionalInfo,inputClassName, label, className }) => {
+const CustomInput: React.FC<CustomInputProps> = ({ field, form, placeholder, additionalInfo, inputClassName, label, className }) => {
     const hasError = form.touched[field.name] && form.errors[field.name];
     const isFieldActive = form.values[field.name] !== ''; // Field is active if it has a value
 
@@ -23,6 +23,7 @@ const CustomInput: React.FC<CustomInputProps> = ({ field, form, placeholder, add
             {additionalInfo &&
                 <span className='text-[0.6rem] text-left text-gray-500'>{additionalInfo}</span>
             }
+            <ErrorMessage name={field.name} component="span" className="text-[#fdafa8]" />
             <input
                 id={field.name}
                 type={field.name === "password" ? "password" : "text"}
@@ -30,7 +31,7 @@ const CustomInput: React.FC<CustomInputProps> = ({ field, form, placeholder, add
                 autoComplete="off"
                 {...field}
                 className={classNames(
-                    'w-full py-2 px-1 border outline-none',inputClassName, // Base styles
+                    'w-full py-2 px-1 border-b  outline-none', inputClassName, // Base styles
                     {
                         // Default state styles
                         'bg-background': !hasError || isFieldActive,
@@ -41,11 +42,13 @@ const CustomInput: React.FC<CustomInputProps> = ({ field, form, placeholder, add
                     }
                 )}
             />
-            <ErrorMessage name={field.name} component="span" className="text-[#fdafa8]" />
+
         </div>
     );
 };
 export default CustomInput;
+
+
 
 
 interface CustomSelectProps extends FieldProps {
@@ -68,7 +71,7 @@ const CustomSelect: React.FC<CustomSelectProps> = ({ field, form, label, options
                 id={field.name}
                 {...field}
                 className={classNames(
-                    'w-full py-2 px-1 border outline-none', 
+                    'w-full py-2 px-1 border outline-none',
                     selectClassName,
                     {
                         // Default state styles
@@ -92,4 +95,4 @@ const CustomSelect: React.FC<CustomSelectProps> = ({ field, form, label, options
     );
 };
 
-export  {CustomSelect}
+export { CustomSelect }

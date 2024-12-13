@@ -1,9 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
+import { useSidebar } from "@/components/ui/sidebar";
 import { Tabs, TabsContent, TabsList, TabsTrigger, } from "@/components/ui/tabs";
 import { Formik, FormikProps } from "formik";
 import { Printer } from "lucide-react";
 import { useState } from "react";
+import { InvoiceSchema } from "./form-validation-schema";
 import { InvoiceDataForm } from "./invoice-template/form-components/InvoiceDataForm";
 import "./invoice.css";
 import { InvoicePage } from "./InvoicePage";
@@ -21,16 +23,17 @@ function InvoiceForm({ initialValues }: { initialValues: InvoiceFormData, }) {
         };
         document.title = originalTitle;
     };
-    
+    const { state, setOpen } = useSidebar();
     return (
         <Formik
             initialValues={{ ...initialValues }}
+            validationSchema={InvoiceSchema}
             onSubmit={(values) => {
                 console.log("Submited Invoice Value", values);
             }}
         >
             {(formik: FormikProps<typeof initialValues>) => (
-                <Tabs defaultValue="Edit" className="md:w-full md:px-40">
+                <Tabs defaultValue="Edit" className="md:w-full md:px-10 lg:px-36">
                     <div className="flex justify-between items-center">
                         <TabsList className="grid grid-cols-2 md:w-[25%] no-print h-12 mb-1 rounded-none">
                             <TabsTrigger value="Edit" className="h-10 rounded-none">

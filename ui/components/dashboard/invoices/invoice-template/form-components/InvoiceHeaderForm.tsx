@@ -12,9 +12,10 @@ const InvoiceHeaderForm: React.FC<InvoiceHeaderFormProps> = () => {
     return (
         <div className='md:flex justify-between w-full p-4'>
             <div className='w-full md:w-1/2 '>
-                <div className='text-2xl w-full md:text-4xl font-medium '>
+                <div className='text-2xl w-full  font-medium '>
                     <Field
                         className="w-auto border-none outline-none"
+                        inputClassName="md:text-4xl"
                         name="invoiceHeading.heading"
                         placeholder="Strix Invoice"
                         component={CustomInput}

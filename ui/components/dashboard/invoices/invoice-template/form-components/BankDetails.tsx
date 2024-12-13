@@ -89,9 +89,9 @@ const BankDetailsForm: React.FC<BankDetailsProps> = ({ isBankDetails }) => {
                             className="w-[75%]"
                             component={CustomSelect}
                             options={[
-                                { value: 'cash', label: 'Cash' },
-                                { value: 'upi', label: 'UPI' },
-                                { value: 'bankTransfer', label: 'Bank Transfer' },
+                                { value: 'Cash', label: 'Cash' },
+                                { value: 'UPI', label: 'UPI' },
+                                { value: 'BankTransfer', label: 'Bank Transfer' },
                             ]}
                         />
                     </div>
