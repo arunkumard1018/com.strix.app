@@ -44,6 +44,7 @@ export const invoiceFormInitialData: InvoiceFormData = {
     invoiceDetails: {
         ...invoiceConfig.invoiceDetails,
         invoiceDate: new Date(),
+        dueDate: new Date(),
     },
     invoiceTo: {
         name: "",

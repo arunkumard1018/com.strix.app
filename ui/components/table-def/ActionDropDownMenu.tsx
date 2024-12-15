@@ -2,18 +2,18 @@
 
 import { Button } from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { MoreHorizontal } from "lucide-react"
-import Link from "next/link"
-import { useState } from "react"
-import { useRouter } from "next/navigation"
-import { ConfirmationDialog } from "./ConfirmationDialog"
-import { ToastAction } from "../ui/toast"
 import { useToast } from "@/hooks/use-toast"
+import { MoreHorizontal } from "lucide-react"
+import { useRouter } from "next/navigation"
+import { useState } from "react"
+import { ToastAction } from "../ui/toast"
+import { ConfirmationDialog } from "./ConfirmationDialog"
 
-export function ActionsDropDownRow({ id, name, path, itemName, deleteFunction }:
+export function ActionsDropDownRow({ id, name, itemName, deleteFunction, handleUpdate }:
     {
         id: string, name: string, path: string, itemName?: string,
         deleteFunction: (id: string) => Promise<boolean>,
+        handleUpdate: (id: string) => void,
     }) {
 
     const [isDialogOpen, setDialogOpen] = useState(false); // State to control dialog visibility
@@ -57,13 +57,12 @@ export function ActionsDropDownRow({ id, name, path, itemName, deleteFunction }:
                         Copy {name} ID
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
-                    <Link href={`${path}/add-${name.toLowerCase()}/${id}`}>
-                        <DropdownMenuItem>Update {name}</DropdownMenuItem>
-                    </Link>
+                    {/* <Link href={`${path}/add-${name.toLowerCase()}/${id}`}> */}
+                    <DropdownMenuItem onClick={() => handleUpdate(id)}>Update {name}</DropdownMenuItem>
+                    {/* </Link> */}
                     <DropdownMenuItem onClick={() => setDialogOpen(true)}>Delete {name}</DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>
-
 
             {/* Alert Dialog for Deletion */}
             <ConfirmationDialog
@@ -75,7 +74,6 @@ export function ActionsDropDownRow({ id, name, path, itemName, deleteFunction }:
                 cancelText="Cancel"
                 onConfirm={handleDelete}
             />
-
         </div>
     )
 }

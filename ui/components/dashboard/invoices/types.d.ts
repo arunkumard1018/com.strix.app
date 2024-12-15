@@ -25,6 +25,7 @@ export interface InvoiceDetails {
     invoicePrefix: string
     invoiceNo: string;
     invoiceDate: Date;
+    dueDate:Date;
     GSTIN: string;
     PAN: string;
     HSN: string;

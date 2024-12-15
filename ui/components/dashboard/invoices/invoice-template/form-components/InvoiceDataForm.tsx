@@ -34,7 +34,8 @@ const InvoiceDataForm = (formik: FormikProps<InvoiceFormData>) => {
                         ...formik.values, ...response.result,
                         invoiceDetails: {
                             ...response.result.invoiceDetails,
-                            invoiceDate: new Date()
+                            invoiceDate: new Date(),
+                            dueDate: new Date(),
                         }
                     })
                     dispatch(setInvoiceConfig({ invoiceConfig: response.result, businessId: activeBusiness._id }))
@@ -46,6 +47,7 @@ const InvoiceDataForm = (formik: FormikProps<InvoiceFormData>) => {
                     invoiceDetails: {
                         ...invoiceConfig.invoiceDetails,
                         invoiceDate: new Date(),
+                        dueDate: new Date(),
                     },
                 })
                 dispatch(setInvoiceConfig({ invoiceConfig: invoiceConfig, businessId: activeBusiness._id }));
@@ -66,6 +68,7 @@ const InvoiceDataForm = (formik: FormikProps<InvoiceFormData>) => {
                     invoiceDetails: {
                         ...storedInvoiceConfig.invoiceDetails,
                         invoiceDate: new Date(),
+                        dueDate: new Date(),
                     },
                 });
                 formik.setFieldValue("additionlInfo.isTransportInvoice",
@@ -77,7 +80,7 @@ const InvoiceDataForm = (formik: FormikProps<InvoiceFormData>) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [activeBusiness._id]);
 
-    
+
     return (
         <div>
             <Form
@@ -105,7 +108,7 @@ const InvoiceDataForm = (formik: FormikProps<InvoiceFormData>) => {
                         <div className="md:flex md:flex-row-reverse space-y-5  w-full p-4">
                             <InvoiceDetailsForm formik={formik} />
                             {/* Sender Details Includes FROM and TO */}
-                            <InvoiceSecondaryHeaderForm handleChange={formik.handleChange} />
+                            <InvoiceSecondaryHeaderForm formik={formik} />
                         </div>
                     </div >
                     {/* Invoice Products  */}

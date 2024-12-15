@@ -8,7 +8,7 @@ import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { Toaster } from "@/components/ui/toaster";
 import { setActiveBusiness, setUserData } from "@/store/slices/userSlice";
 import { RootState, store } from "@/store/store";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Provider, useDispatch, useSelector } from 'react-redux';
 export default function Layout({ children }: { children: React.ReactNode }): React.JSX.Element {
     return (

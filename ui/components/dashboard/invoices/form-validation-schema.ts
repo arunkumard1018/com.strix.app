@@ -8,7 +8,7 @@ export const InvoiceSchema = Yup.object().shape({
     }),
     invoiceFrom: Yup.object().shape({
         name: Yup.string().required('Name is required'),
-        street: Yup.string().required('Street is required'),
+        street: Yup.string().required('Address is required'),
         city: Yup.string().required('City is required'),
         state: Yup.string().required('State is required'),
         postalCode: Yup.string().required('Postal code is required'),
@@ -26,7 +26,7 @@ export const InvoiceSchema = Yup.object().shape({
     }),
 
     invoiceDetails: Yup.object().shape({
-        invoicePrefix: Yup.string().required('Invoice prefix is required'),
+        invoicePrefix: Yup.string().required('Prefix is required'),
         invoiceNo: Yup.string().required('Invoice number is required'),
         invoiceDate: Yup.date().required('Invoice date is required'),
         GSTIN: Yup.string().nullable(), // Optional

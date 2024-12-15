@@ -43,8 +43,8 @@ const handleUpdateCustomer = async (req: Request, res: Response) => {
         const customer: CreateCustomers = req.body;
         customer.business = businessId;
         customer.user = userId;
-        const updatedCustomer = await updateCustomers(userId,customersId, customer);
-        res.status(HttpStatusCode.CREATED).json(ResponseEntity("success", "Customer Updated Successfully!", updatedCustomer));
+        await updateCustomers(userId, customersId, customer);
+        res.status(HttpStatusCode.CREATED).json(ResponseEntity("success", "Customer Updated Successfully!", { ...customer, _id: customersId }));
     } catch (error) {
         const message = (error as Error).message;
         logger.error(message)

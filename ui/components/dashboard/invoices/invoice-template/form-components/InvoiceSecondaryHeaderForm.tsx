@@ -2,14 +2,16 @@ import CustomInput from '@/components/reuse/invoice-input';
 import { Field, FormikProps } from 'formik';
 import React from 'react';
 import { InvoiceFormData } from '../../types';
+import { ComboboxDemo } from './SelectCustomers';
+import { Customers } from '@/types/definetions';
 
 
 interface InvoiceSecondaryHeaderFormProps {
-    handleChange: FormikProps<InvoiceFormData>["handleChange"];
+    formik: FormikProps<InvoiceFormData>
 }
 
 
-const InvoiceSecondaryHeaderForm: React.FC<InvoiceSecondaryHeaderFormProps> = () => {
+const InvoiceSecondaryHeaderForm: React.FC<InvoiceSecondaryHeaderFormProps> = ({ formik }) => {
     return (
         <div className="w-full md:w-1/2 ">
             <div className="ml-2 font-bold text-sm">From</div>
@@ -44,6 +46,13 @@ const InvoiceSecondaryHeaderForm: React.FC<InvoiceSecondaryHeaderFormProps> = ()
             </div>
             {/* Invoice To */}
             <div className="ml-2 mt-7 font-bold text-sm">To</div>
+            <div className=" mt-2 font-bold text-sm">
+                <ComboboxDemo
+                    onSelectCustomer={(customers: Customers) => {
+                        formik.setFieldValue("invoiceTo", { ...customers })
+                    }}
+                />
+            </div>
             <div className="font-sans ">
                 <Field
                     className="text-sm w-auto" name="invoiceTo.name" placeholder="Customer Name"

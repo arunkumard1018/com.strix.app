@@ -106,3 +106,11 @@ input:-webkit-autofill:active {
     margin-top: 0 !important;
   }
 }
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none; /* For Chrome, Safari, and Opera */
+}
+.no-scrollbar {
+  -ms-overflow-style: none; /* For Internet Explorer and Edge */
+  scrollbar-width: none; /* For Firefox */
+}
