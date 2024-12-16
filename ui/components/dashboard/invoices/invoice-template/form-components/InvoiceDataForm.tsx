@@ -27,7 +27,6 @@ const InvoiceDataForm = (formik: FormikProps<InvoiceFormData>) => {
             if (status !== "CREATE") return;
             setLoading(true)
             try {
-                console.log("Loading Data")
                 const response = await getInvoiceConfig(activeBusiness._id);
                 if (response.result) {
                     formik.setValues({

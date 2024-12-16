@@ -16,40 +16,36 @@ const CustomInput: React.FC<CustomInputProps> = ({ field, form, placeholder, add
     const isFieldActive = form.values[field.name] !== ''; // Field is active if it has a value
 
     return (
-        <div className={cn("flex flex-col items-start justify-center w-[320px]  space-y-1 bg-background", className)}>
+        <div className={cn("flex flex-col items-start justify-center w-[320px]  space-y-1", className)}>
             <label className="font-medium capitalize" htmlFor={field.name}>
                 {label}
             </label>
             {additionalInfo &&
-                <span className='text-[0.6rem] text-left text-gray-500'>{additionalInfo}</span>
+                <span className='text-sm text-left text-gray-500'>{additionalInfo}</span>
             }
             <ErrorMessage name={field.name} component="span" className="text-[#fdafa8]" />
             <input
                 id={field.name}
-                type={field.name === "password" ? "password" : "text"}
+                type='text'
                 placeholder={placeholder}
                 autoComplete="off"
                 {...field}
                 className={classNames(
-                    'w-full py-2 px-1 border-b  outline-none', inputClassName, // Base styles
+                    'w-full py-1 px-1 border-b border-b-muted-foreground/30  outline-none', inputClassName, // Base styles
                     {
                         // Default state styles
                         'bg-background': !hasError || isFieldActive,
                         // Focus state styles
-                        'focus:border-blue-500 focus:bg-muted': true,
+                        'focus:border-blue-500': true,
                         // Error state styles
-                        'bg-background border-[#5e1f1d] text-[#7d141b]': hasError && !isFieldActive,
+                        'border-[#5e1f1d] text-[#7d141b]': hasError && !isFieldActive,
                     }
                 )}
             />
-
         </div>
     );
 };
 export default CustomInput;
-
-
-
 
 interface CustomSelectProps extends FieldProps {
     label: string;

@@ -1,8 +1,6 @@
 "use client"
 
-import { Check, ChevronsUpDown } from "lucide-react"
-import * as React from "react"
-
+import { getCustomersList } from "@/api/customers"
 import { Button } from "@/components/ui/button"
 import {
     Command,
@@ -10,7 +8,7 @@ import {
     CommandGroup,
     CommandInput,
     CommandItem,
-    CommandList,
+    CommandList
 } from "@/components/ui/command"
 import {
     Popover,
@@ -18,47 +16,47 @@ import {
     PopoverTrigger,
 } from "@/components/ui/popover"
 import { cn } from "@/lib/utils"
+import { setCustomers } from "@/store/slices/customersSlice"
 import { RootState } from "@/store/store"
-import { useSelector } from "react-redux"
+import { ApiResponse } from "@/types/api-responses"
 import { Customers } from "@/types/definetions"
-
-// const customers = [
-//     {
-//         value: "next.js",
-//         label: "Next.js",
-//     },
-//     {
-//         value: "sveltekit",
-//         label: "SvelteKit",
-//     },
-//     {
-//         value: "nuxt.js",
-//         label: "Nuxt.js",
-//     },
-//     {
-//         value: "remix",
-//         label: "Remix",
-//     },
-//     {
-//         value: "astro",
-//         label: "Astro",
-//     },
-// ]
+import { Check, ChevronsUpDown } from "lucide-react"
+import { useRouter } from "next/navigation"
+import { useEffect, useState } from "react"
+import { useDispatch, useSelector } from "react-redux"
 
 export function ComboboxDemo({ onSelectCustomer }: { onSelectCustomer: (customers: Customers) => void }) {
-    const [open, setOpen] = React.useState(false);
-    const [value, setValue] = React.useState("");
-
-    // Select customers from Redux state
+    const [open, setOpen] = useState(false);
+    const [value, setValue] = useState("");
+    const dispatch = useDispatch();
+    const businessId = useSelector((state: RootState) => state.authContext.activeBusiness._id);
     const customers = useSelector((state: RootState) => state.customers);
+    const router = useRouter()
+    useEffect(() => {
+        const loadCustomers = async (Id: string) => {
+            try {
+                const customers: ApiResponse<Customers[]> = await getCustomersList(Id);
+                if (customers.result) {
+                    dispatch(setCustomers(customers.result));
+                }
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            } catch (_error: unknown) {
+            }
+        };
+        if (customers.length === 0) loadCustomers(businessId);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [businessId, dispatch]);
 
-    // Transform customers for combobox (id as key, name as value)
     const customerOptions = customers.map((customer) => ({
         value: customer._id,
         label: customer.name,
         details: customer,
     }));
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const handleShortCut = () => {
+        router.push("/dashboard/customers?createCustomer=true")
+    }
     return (
         <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
@@ -66,7 +64,7 @@ export function ComboboxDemo({ onSelectCustomer }: { onSelectCustomer: (customer
                     variant="outline"
                     role="combobox"
                     aria-expanded={open}
-                    className="w-full justify-between rounded-none"
+                    className="w-[320px] justify-between rounded-none"
                 >
                     {value
                         ? customerOptions.find((option) => option.value === value)?.label
@@ -74,7 +72,7 @@ export function ComboboxDemo({ onSelectCustomer }: { onSelectCustomer: (customer
                     <ChevronsUpDown className="opacity-50" />
                 </Button>
             </PopoverTrigger>
-            <PopoverContent className="min-w-full p-0 rounded-none">
+            <PopoverContent className="min-w-[320px] p-0 rounded-none">
                 <Command>
                     <CommandInput placeholder="Search Customer..." />
                     <CommandList>
@@ -105,6 +103,9 @@ export function ComboboxDemo({ onSelectCustomer }: { onSelectCustomer: (customer
                                 </CommandItem>
                             ))}
                         </CommandGroup>
+                        {/* <CommandShortcut onClick={handleShortCut}>
+                            <CommandItem className="px-3"><Plus/> Create Customer</CommandItem>
+                        </CommandShortcut> */}
                     </CommandList>
                 </Command>
             </PopoverContent>

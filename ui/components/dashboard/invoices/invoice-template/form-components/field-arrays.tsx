@@ -39,8 +39,8 @@ const TransportProductFieldArray: React.FC<TransportFieldArrayProps> = ({ formik
                                     removeRow={remove}
                                 />
                             ))}
-                            <tr className="bg-muted">
-                                <td colSpan={6} className="">
+                            <tr className="">
+                                <td colSpan={6} className="py-5">
                                     <AddRowBtn onClick={() => push(initialValues)} />
                                 </td>
                                 <td className="">Gross</td>

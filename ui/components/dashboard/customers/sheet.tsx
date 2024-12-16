@@ -169,7 +169,7 @@ export function CustomersSheet({
             setIsSheetOpen(!isSheetOpen);
             router.push("customers")
         }}>
-            <SheetContent className="bg-custome-sheet border border-muted-foreground/30 sm:min-w-[30vw] overflow-scroll no-scrollbar shadow-none">
+            <SheetContent className="border border-muted-foreground/30 sm:min-w-[30vw] overflow-scroll no-scrollbar shadow-none">
                 <SheetHeader className="">
 
                     <div className="flex justify-between items-center">

@@ -60,8 +60,8 @@ const FormInput: React.FC<FormInputProps> = ({ field, form, placeholder, additio
     // const isFieldActive = form.values[field.name] !== ''; // Field is active if it has a value
 
     return (
-        <div className={classNames("flex flex-col  items-start justify-center bg-custome-sheet space-y-1", className)}>
-            <label className="text-xs capitalize bg-custome-sheet" htmlFor={field.name}>
+        <div className={classNames("flex flex-col  items-start justify-center  space-y-1", className)}>
+            <label className="text-xs capitalize " htmlFor={field.name}>
                 {label}
             </label>
             {additionalInfo &&
@@ -73,7 +73,7 @@ const FormInput: React.FC<FormInputProps> = ({ field, form, placeholder, additio
                 placeholder={placeholder}
                 {...field}
                 className={classNames(
-                    "w-full px-2 py-1 bg-custome-sheet border border-muted-foreground/30 outline-none  text-sm font-normal", // Base styles with background color
+                    "w-full px-2 py-1  border border-muted-foreground/30 outline-none  text-sm font-normal", // Base styles with background color
                     {
                         "border-red-500": hasError, // Error styles
                     }

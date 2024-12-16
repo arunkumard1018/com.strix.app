@@ -49,7 +49,7 @@ const InvoiceSecondaryHeaderForm: React.FC<InvoiceSecondaryHeaderFormProps> = ({
             <div className=" mt-2 font-bold text-sm">
                 <ComboboxDemo
                     onSelectCustomer={(customers: Customers) => {
-                        formik.setFieldValue("invoiceTo", { ...customers })
+                        formik.setFieldValue("invoiceTo", { ...customers, ...customers.address })
                     }}
                 />
             </div>
