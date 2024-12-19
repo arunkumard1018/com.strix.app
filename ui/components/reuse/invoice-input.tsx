@@ -23,7 +23,7 @@ const CustomInput: React.FC<CustomInputProps> = ({ field, form, placeholder, add
             {additionalInfo &&
                 <span className='text-sm text-left text-gray-500'>{additionalInfo}</span>
             }
-            <ErrorMessage name={field.name} component="span" className="text-[#fdafa8]" />
+            <ErrorMessage name={field.name} component="span" className="text-[#fdafa8] px-1" />
             <input
                 id={field.name}
                 type='text'

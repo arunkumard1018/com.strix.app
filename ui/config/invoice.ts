@@ -2,7 +2,7 @@ import { InvoiceConfig, InvoiceFormData } from "@/components/dashboard/invoices/
 
 export const invoiceConfig: InvoiceConfig = {
     invoiceHeading: {
-        heading: "Heading 1",
+        heading: "Heading",
         subHeading: "Sub Heading",
         title: "TAX INVOICE"
     },

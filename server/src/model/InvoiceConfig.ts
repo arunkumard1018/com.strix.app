@@ -8,11 +8,12 @@ const invoiceConfigSchema = new mongoose.Schema({
     },
     invoiceFrom: {
         name: { type: String },
-        street: { type: String },
+        address: { type: String },
         city: { type: String },
         state: { type: String },
         postalCode: { type: Number },
         phone: { type: Number },
+        email: { type: String },
     },
     invoiceDetails: {
         invoicePrefix: { type: String },
@@ -31,6 +32,10 @@ const invoiceConfigSchema = new mongoose.Schema({
     },
     additionlInfo: {
         thankyouNote: { type: String },
+        paymentMethod: { type: String },
+        paymentStatus: { type: String },
+        isBankDetails: { type: Boolean },
+        isTransportInvoice: { type: Boolean },
     },
     user: { type: mongoose.Schema.Types.ObjectId, ref: "users", required: true },
     business: { type: mongoose.Schema.Types.ObjectId, ref: "business", required: true },

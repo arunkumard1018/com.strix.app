@@ -14,11 +14,12 @@ const invoiceConfigJoiSchema = Joi.object({
         }),
     }),
 
+
     invoiceFrom: Joi.object({
         name: Joi.string().required().messages({
             "string.empty": "Name is required",
         }),
-        street: Joi.string().required().messages({
+        address: Joi.string().required().messages({
             "string.empty": "Street is required",
         }),
         city: Joi.string().required().messages({
@@ -27,13 +28,14 @@ const invoiceConfigJoiSchema = Joi.object({
         state: Joi.string().required().messages({
             "string.empty": "State is required",
         }),
-        postalCode: Joi.number().required().messages({
+        postalCode: Joi.number().messages({
             "number.base": "Postal code must be a number",
-            "any.required": "Postal code is required",
         }),
-        phone: Joi.number().required().messages({
+        phone: Joi.number().messages({
             "number.base": "Phone number must be a number",
-            "any.required": "Phone number is required",
+        }),
+        email: Joi.string().email().allow(null, "").messages({
+            'string.email': 'Email is not valid',
         }),
     }),
 
@@ -81,7 +83,11 @@ const invoiceConfigJoiSchema = Joi.object({
         thankyouNote: Joi.string().allow(null, "").messages({
             "string.base": "Thank you note must be a string",
         }),
-    }).optional(),
+        isBankDetails: Joi.boolean().required(),
+        isTransportInvoice: Joi.boolean().required(),
+        paymentStatus: Joi.string().valid('Paid', 'Processing', 'Due').required(),
+        paymentMethod: Joi.string().valid('Cash', 'UPI', 'BankTransfer').required(),
+    }),
 });
 
 export default invoiceConfigJoiSchema;

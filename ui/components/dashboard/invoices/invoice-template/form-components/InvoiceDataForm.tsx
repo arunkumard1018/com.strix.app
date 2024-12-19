@@ -43,13 +43,28 @@ const InvoiceDataForm = (formik: FormikProps<InvoiceFormData>) => {
                 formik.setValues({
                     ...formik.values,
                     ...invoiceConfig,
+                    invoiceHeading: {
+                        ...invoiceConfig.invoiceHeading,
+                        heading: activeBusiness.name,
+                        subHeading: activeBusiness.catagory,
+                    },
                     invoiceDetails: {
                         ...invoiceConfig.invoiceDetails,
                         invoiceDate: new Date(),
                         dueDate: new Date(),
                     },
                 })
-                dispatch(setInvoiceConfig({ invoiceConfig: invoiceConfig, businessId: activeBusiness._id }));
+                dispatch(setInvoiceConfig({
+                    invoiceConfig: {
+                        ...invoiceConfig,
+                        invoiceHeading: {
+                            ...invoiceConfig.invoiceHeading,
+                            heading: activeBusiness.name,
+                            subHeading: activeBusiness.catagory,
+                        }
+                    },
+                    businessId: activeBusiness._id
+                }));
 
             } finally {
                 formik.setFieldValue("additionlInfo.isTransportInvoice",
@@ -98,7 +113,6 @@ const InvoiceDataForm = (formik: FormikProps<InvoiceFormData>) => {
                                 ))}
                         </ul>
                     </div>
-
                     <div id="invoice" className=" invoice   flex-col space-y-8 py-8 ">
                         {/* Invoice Header Form  */}
                         <InvoiceHeaderForm handleChange={formik.handleChange} />
