@@ -32,8 +32,6 @@ const invoiceConfigSchema = new mongoose.Schema({
     },
     additionlInfo: {
         thankyouNote: { type: String },
-        paymentMethod: { type: String },
-        paymentStatus: { type: String },
         isBankDetails: { type: Boolean },
         isTransportInvoice: { type: Boolean },
     },

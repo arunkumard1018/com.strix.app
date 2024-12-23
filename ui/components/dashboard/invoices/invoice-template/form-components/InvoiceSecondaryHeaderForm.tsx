@@ -22,7 +22,7 @@ const InvoiceSecondaryHeaderForm: React.FC<InvoiceSecondaryHeaderFormProps> = ({
                     component={CustomInput}
                 />
                 <Field
-                    className="text-sm w-auto" name="invoiceFrom.street" placeholder="Address"
+                    className="text-sm w-auto" name="invoiceFrom.address" placeholder="Address"
                     component={CustomInput}
                 />
                 <div className="flex gap-1">
@@ -59,7 +59,7 @@ const InvoiceSecondaryHeaderForm: React.FC<InvoiceSecondaryHeaderFormProps> = ({
                     component={CustomInput}
                 />
                 <Field
-                    className="text-sm w-auto" name="invoiceTo.street" placeholder="Address"
+                    className="text-sm w-auto" name="invoiceTo.address" placeholder="Address"
                     component={CustomInput}
                 />
                 <div className="flex gap-1">

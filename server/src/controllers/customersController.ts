@@ -4,7 +4,7 @@ import logger from "../lib/logConfig";
 import { HttpStatusCode } from "../lib/status-codes";
 import { ResponseEntity } from "../lib/ApiResponse";
 import { CreateCustomers } from "../model/customers";
-import { createCustomer, deleteCustomer, getAllCustomersForBusiness, getCustomer, updateCustomers } from "../service/customers";
+import { createCustomer, deleteCustomer, getAllCustomersForBusiness, getCustomer, updateCustomers } from "../services/customersService";
 
 const handleCreateCustomer = async (req: Request, res: Response) => {
     const userId: Id = req.authContext.userId;

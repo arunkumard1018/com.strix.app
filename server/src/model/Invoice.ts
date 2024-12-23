@@ -1,94 +1,125 @@
-import { required } from "joi";
 import mongoose, { InferSchemaType } from "mongoose";
 
 // Define sub-schema for TransportInvoiceDetails
 const InvoiceProductsTransportSchema = new mongoose.Schema({
+    date: { type: Date, required: true },
     vehicleNo: { type: String, required: true },
-    source: { type: String },
-    destination: { type: String },
-    amount: { type: Number }
-});
+    source: { type: String, required: true },
+    destination: { type: String, required: true },
+    price: { type: Number, required: true },
+    cgst: { type: Number, required: true },
+    sgst: { type: Number, required: true },
+    amount: { type: Number, required: true },
+}, { _id: false });
 
 // Define sub-schema for ProductInvoiceDetails
 const InvoiceProductsSchema = new mongoose.Schema({
     sku: { type: String, required: true },
-    productName: { type: String, required: true },
-    price: { type: Number, required: true }
+    description: { type: String, required: true },
+    price: { type: Number, required: true },
+    qty: { type: Number, required: true },
+    cgst: { type: Number, required: true },
+    sgst: { type: Number, required: true },
+    amount: { type: Number, required: true },
+}, { _id: false });
+
+const InvoiceHeadingSchema = new mongoose.Schema({
+    heading: { type: String, required: true },
+    subHeading: { type: String, default: "" },
+    title: { type: String, default: "" },
+}, { _id: false });
+
+const InvoiceFromSchema = new mongoose.Schema({
+    name: { type: String, required: true },
+    address: { type: String, required: true },
+    city: { type: String, required: true },
+    state: { type: String, required: true },
+    postalCode: { type: Number, required: true },
+    phone: { type: Number },
+    email: { type: String },
+}, { _id: false });
+
+const InvoiceToSchema = new mongoose.Schema({
+    name: { type: String, required: true },
+    address: { type: String, required: true },
+    city: { type: String, required: true },
+    state: { type: String, required: true },
+    postalCode: { type: Number, required: true },
+    phone: { type: Number },
+    email: { type: String },
+    GSTIN: { type: String, default: "" },
+    PAN: { type: String, default: "" },
+}, { _id: false });
+
+const InvoiceDetailsSchema = new mongoose.Schema({
+    invoicePrefix: { type: String, required: true },
+    invoiceNo: { type: Number, required: true },
+    invoiceDate: { type: Date, required: true },
+    dueDate: { type: Date, required: true },
+    GSTIN: { type: String, default: "" },
+    PAN: { type: String, default: "" },
+    HSN: { type: Number },
+    stateCode: { type: Number },
+}, { _id: false });
+
+const BankDetailsSchema = new mongoose.Schema({
+    bankName: { type: String, default: "" },
+    accountName: { type: String, default: "" },
+    accountNumber: { type: Number },
+    ifscCode: { type: String, default: "" },
+    branch: { type: String, default: "" },
+}, { _id: false });
+
+const AdditionlInfoSchema = new mongoose.Schema({
+    thankyouNote: { type: String, default: "" },
+    isBankDetails: { type: Boolean, required: true },
+    isTransportInvoice: { type: Boolean, required: true },
+    paymentStatus: { type: String, enum: ["Paid", "Processing", "Due"], required: true },
+    paymentMethod: { type: String, enum: ["Cash", "UPI", "BankTransfer", "CardPayment"], required: true },
+}, { _id: false });
+
+const InvoiceSummarySchema = new mongoose.Schema({
+    totalPrice: { type: Number, required: true },
+    cgst: { type: Number, required: true },
+    sgst: { type: Number, required: true },
+    invoiceAmount: { type: Number, required: true },
 });
+
+// Infer types for transport and product schemas
 type InvoiceProductsTransport = InferSchemaType<typeof InvoiceProductsTransportSchema>;
 type InvoiceProducts = InferSchemaType<typeof InvoiceProductsSchema>;
 
-
-const invoiceSchema = new mongoose.Schema({
-    invoiceNo: { type: String, required: true },
-    invoiceDate: { type: Date, required: true },
-    invoiceBy: {
-        name: { type: String, required: true },
-        GSTIN: { type: String },
-        HSN: { type: Number },
-        stateCode: { type: Number },
-        PAN: { type: String },
-        phone: {type:Number, required:true},
-        address: {
-            street: { type: String, required: true },
-            city: { type: String, required: true },
-            postalCode: { type: Number, required: true },
-            state: { type: String, required: true }
-        }
-    },
-    invoiceTo: {
-        name: { type: String, required: true },
-        GSTIN: { type: String },
-        HSN: { type: Number },
-        stateCode: { type: Number },
-        PAN: { type: String },
-        phone: { type: Number , required:true},
-        email: { type: String },
-        address: {
-            street: { type: String, required: true },
-            city: { type: String, required: true },
-            postalCode: { type: Number, required: true },
-            state: { type: String, required: true }
-        }
-    },
-
-    /**Custom Validator For Invoice Details */
-    invoiceDetails: {
-        type: [mongoose.Schema.Types.Mixed],  // Allow either array structure
+// Define the main schema with a custom validator for invoiceDetails
+const InvoiceSchema = new mongoose.Schema({
+    invoiceHeading: InvoiceHeadingSchema,
+    invoiceFrom: InvoiceFromSchema,
+    invoiceTo: InvoiceToSchema,
+    invoiceDetails: InvoiceDetailsSchema,
+    invoiceProducts: {
+        type: [mongoose.Schema.Types.Mixed], // Allow mixed structure
         required: true,
         validate: {
             validator: function (value: Array<InvoiceProductsTransport | InvoiceProducts>) {
-                // Ensure only one type of structure is present in the array
-                return (
-                    value.every((item) => 'vehicleNo' in item) ||
-                    value.every((item) => 'sku' in item)
-                );
+                // Check if all items are of one type
+                const isTransport = value.every(item => 'vehicleNo' in item);
+                const isProduct = value.every(item => 'sku' in item);
+
+                // Only one type should exist
+                return isTransport || isProduct;
             },
-            message: 'invoiceDetails should contain either only Transport or Product details.',
+            message: 'invoiceDetails should contain either only Transport or only Product details.',
         },
     },
-    paymentStatus: { 
-        type: String, 
-        enum: ["PROCESSING", "PAID", "DUE"],
-        required: true 
-    },
-    paymentMethod: { 
-        type: String, 
-        enum: ["NEFT", "RTGS", "CASH","UPI","DEBIT/CREDIT CARD"],
-        required: true 
-    },
-    invoiceAmount: { type: Number, required: true },
-    CGST: { type: Number },
-    SGST: { type: Number },
-
-    business: { type: mongoose.Schema.Types.ObjectId, ref: "business", required: true },
-    customers: { type: mongoose.Schema.Types.ObjectId, ref: "customers", required: true },
+    bankDetails: BankDetailsSchema,
+    additionlInfo: AdditionlInfoSchema,
+    invoicesummary: InvoiceSummarySchema,
     user: { type: mongoose.Schema.Types.ObjectId, ref: "users", required: true },
-}, { timestamps: true })
+    business: { type: mongoose.Schema.Types.ObjectId, ref: "business", required: true },
+    customers: { type: mongoose.Schema.Types.ObjectId, ref: "customers", },
+}, { timestamps: true });
 
+// Export model and types
+type Invoice = InferSchemaType<typeof InvoiceSchema>;
+const InvoiceModel = mongoose.model<Invoice>("invoice", InvoiceSchema);
 
-type Invoice = InferSchemaType<typeof invoiceSchema>;
-type CreateInvoice = Omit<Invoice, 'createdAt' | 'updatedAt'>;
-const InvoiceModel = mongoose.model<Invoice>("invoices", invoiceSchema);
-
-export { CreateInvoice, Invoice, InvoiceModel };
+export { InvoiceProductsTransport, InvoiceProducts, Invoice, InvoiceModel };

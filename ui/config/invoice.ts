@@ -8,7 +8,7 @@ export const invoiceConfig: InvoiceConfig = {
     },
     invoiceFrom: {
         name: "",
-        street: "",
+        address: "",
         city: "",
         state: "",
         postalCode: "",
@@ -48,7 +48,7 @@ export const invoiceFormInitialData: InvoiceFormData = {
     },
     invoiceTo: {
         name: "",
-        street: "",
+        address: "",
         city: "",
         state: "",
         postalCode: "",

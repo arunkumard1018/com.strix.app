@@ -5,7 +5,7 @@ export interface InvoiceHeading {
 }
 export interface InvoiceFrom {
     name: string;
-    street: string;
+    address: string;
     city: string;
     state: string;
     postalCode: string;
@@ -13,7 +13,7 @@ export interface InvoiceFrom {
 }
 export interface InvoiceTo {
     name: string;
-    street: string;
+    address: string;
     city: string;
     state: string;
     postalCode: string;

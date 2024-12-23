@@ -4,8 +4,7 @@ import { ResponseEntity } from "../lib/ApiResponse";
 import logger from "../lib/logConfig";
 import invoiceConfigJoiSchema from "../schemas/InvoiceConfigSchema";
 import { CreateInvoiceConfig, InvoiceConfig } from "../model/InvoiceConfig";
-import { createInvoiceConfig, deleteInvoiceConfig, getInvoiceConfig, updateInvoiceConfig } from "../service/invoiceConfig";
-
+import { createInvoiceConfig, deleteInvoiceConfig, getInvoiceConfig, updateInvoiceConfig } from "../services/invoiceConfigService";
 
 const handleCreateInvoiceConfig = async (req: Request, res: Response) => {
     const userId: Id = req.authContext.userId;

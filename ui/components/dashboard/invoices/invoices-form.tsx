@@ -1,17 +1,17 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
+import { createInvoiceConfig, updateInvoiceConfig } from "@/api/invoiceConfig";
 import { Tabs, TabsContent, TabsList, TabsTrigger, } from "@/components/ui/tabs";
 import { RootState } from "@/store/store";
 import { Formik, FormikProps } from "formik";
 import { Printer } from "lucide-react";
 import { useState } from "react";
 import { useSelector } from "react-redux";
-import { hasConfigChanged, InvoiceSchema } from "./form-validation-schema";
+import { hasConfigChanged } from "./form-validation-schema";
 import { InvoiceDataForm } from "./invoice-template/form-components/InvoiceDataForm";
 import "./invoice.css";
 import { InvoicePage } from "./InvoicePage";
 import { InvoiceConfig, InvoiceFormData } from "./types";
-import { createInvoiceConfig, updateInvoiceConfig } from "@/api/invoiceConfig";
 
 
 function InvoiceForm({ initialValues }: { initialValues: InvoiceFormData, }) {
@@ -35,8 +35,8 @@ function InvoiceForm({ initialValues }: { initialValues: InvoiceFormData, }) {
             additionlInfo: values.additionlInfo,
             bankDetails: values.bankDetails,
         };
-        if (previouesConfig && hasConfigChanged(currentConfig, previouesConfig)) {
-            try {
+        try {
+            if (previouesConfig && hasConfigChanged(currentConfig, previouesConfig)) {
                 if (previouesConfig.invoiceDetails.invoiceNo === "1") {
                     console.log("create Invoice Config and Invoice")
                     await createInvoiceConfig(activeBusinessId, currentConfig);
@@ -50,19 +50,20 @@ function InvoiceForm({ initialValues }: { initialValues: InvoiceFormData, }) {
                         }
                     });
                 }
-                // if Config Prefix Changed check if Pref already exists and update max value else set to 1
-                // Note If Config Not Changed
-                // if CurrentinvNo < prevNoCheck For inv No Availability if Yes Create invoice Dont Update Config Val to Next
-                if (currentConfig.invoiceDetails.invoiceNo < previouesConfig.invoiceDetails.invoiceNo) {
-                    // check for Inv No avaliablity if yes proceed
-                } else {
-                    // if currentInvNo > preInvNo Create Inv and Update Config with Next value ++
-                    
-                }
-                // create Invoice will Receive next available Id with Created Details update next Id in Redux
-            } catch (error) {
-                console.log("Alert Error While Creating InvoiceConfig")
             }
+            // if Config Prefix Changed check if Pref already exists and update max value else set to 1
+            // Note If Config Not Changed
+            // if CurrentinvNo < prevNo  Check For inv No Availability if Yes Create invoice Dont Update Config Val to Next
+            if (previouesConfig && currentConfig.invoiceDetails.invoiceNo < previouesConfig.invoiceDetails.invoiceNo) {
+                // check for Inv No avaliablity if yes proceed
+                console.log("Create Invoice with Chicking No")
+            } else {
+                console.log("Create Invoice")
+                // if currentInvNo > preInvNo Create Inv and Update Config with Next value ++
+            }
+            // create Invoice will Receive next available Id with Created Details update next Id in Redux
+        } catch (error) {
+            console.log("Alert Error While Creating InvoiceConfig")
         }
     }
 

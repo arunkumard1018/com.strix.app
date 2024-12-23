@@ -5,8 +5,7 @@ import logger from "../lib/logConfig";
 import { HttpStatusCode } from "../lib/status-codes";
 import { Business, CreateBusiness } from "../model/business";
 import { businessSchema } from "../schemas/businessShema";
-import { createBusiness, deleteBusinessWithID, getAllBusinessForUser, getBusinessWithId, updateBusiness, } from "../service/business";
-
+import { createBusiness, deleteBusinessWithID, getAllBusinessForUser, getBusinessWithId, updateBusiness, } from "../services/businessService";
 const handleAddBusiness = async (req: Request, res: Response) => {
     const userId = req.authContext.userId;
     try {
