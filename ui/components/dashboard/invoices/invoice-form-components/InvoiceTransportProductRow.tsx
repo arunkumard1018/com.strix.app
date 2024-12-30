@@ -4,7 +4,7 @@ import { Field, FormikProps } from "formik";
 import { Trash2Icon } from "lucide-react";
 import { useEffect } from "react";
 import { formatRupee } from "@/lib/utils";
-import { InvoiceFormData } from "../../types";
+import { InvoiceFormData } from "../form-data";
 
 export const InvoiceTransportProductRow = ({
     idx,

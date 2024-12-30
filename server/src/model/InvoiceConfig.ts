@@ -30,7 +30,7 @@ const invoiceConfigSchema = new mongoose.Schema({
         ifscCode: { type: String },
         branch: { type: String },
     },
-    additionlInfo: {
+    additionalInfo: {
         thankyouNote: { type: String },
         isBankDetails: { type: Boolean },
         isTransportInvoice: { type: Boolean },

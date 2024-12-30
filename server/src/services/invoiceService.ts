@@ -1,8 +1,9 @@
 import mongoose from "mongoose";
+import { InvoiceNotFoundError } from "../errors";
 import logger from "../lib/logConfig";
 import { InvoiceModel } from "../model/Invoice";
-import { InvoiceConfigModel } from "../model/InvoiceConfig";
-import { DuplicateInvoiceNumberError, InvoiceNotFoundError } from "../errors";
+import { validateInvoiceNumber } from '../utils/invoiceValidator';
+import { createOrUpdateInvoiceConfig } from './invoiceConfigService';
 
 const createInvoice = async (invoiceSchema: Invoice, businessId: Id) => {
     const session = await mongoose.startSession();
@@ -10,57 +11,20 @@ const createInvoice = async (invoiceSchema: Invoice, businessId: Id) => {
     logger.debug(`Starting invoice creation for business: ${businessId}`);
 
     try {
-        // Get current invoice config
-        logger.debug(`Fetching invoice config for business: ${businessId}`);
-        const invoiceConfig = await InvoiceConfigModel.findOne({ 
-            business: businessId 
-        }).session(session);
-
-
-        if (!invoiceConfig || !invoiceConfig.invoiceDetails?.invoiceNo || !invoiceConfig.invoiceDetails?.invoicePrefix) {
-            logger.debug(`Invalid invoice config found: ${JSON.stringify(invoiceConfig)}`);
-            throw new Error("Invalid invoice configuration: missing invoice number or prefix");
-        }
-
-        const userEnteredNo = invoiceSchema.invoiceDetails.invoiceNo;
-        const configAvailableNo = invoiceConfig.invoiceDetails.invoiceNo;
-        const prefix = invoiceConfig.invoiceDetails.invoicePrefix;
+        // Handle invoice config creation/updates using centralized function
+        const invoiceConfig = await createOrUpdateInvoiceConfig(invoiceSchema, businessId, session);
         
-        logger.debug(`Invoice numbers - User entered: ${userEnteredNo}, Config available: ${configAvailableNo}, Prefix: ${prefix}`);
+        // Validate invoice number uniqueness
+        const userEnteredNo = invoiceSchema.invoiceDetails.invoiceNo;
+        const prefix = invoiceConfig?.invoiceDetails?.invoicePrefix ?? 'INV';
+        await validateInvoiceNumber(userEnteredNo, prefix, businessId, session);
 
-        // Case 1: User entered number >= available number
-        if (userEnteredNo >= configAvailableNo) {
-            logger.debug(`Creating invoice with number >= available number: ${userEnteredNo}`);
-            // Create invoice
-            const invoiceModel = new InvoiceModel({ ...invoiceSchema });
-            await invoiceModel.save({ session });
-
-            // Update config with next available number
-            invoiceConfig.invoiceDetails.invoiceNo = userEnteredNo + 1;
-            await invoiceConfig.save({ session });
-
-            await session.commitTransaction();
-            logger.debug(`Successfully created invoice with number: ${prefix}${userEnteredNo}`);
-            return invoiceModel;
-        }
-
-        // Case 2: User entered number < available number
-        // Check if invoice number with prefix already exists
-        logger.debug(`Checking for existing invoice with number: ${prefix}${userEnteredNo}`);
-        const existingInvoice = await InvoiceModel.findOne({
-            'invoiceDetails.invoicePrefix': prefix,
-            'invoiceDetails.invoiceNo': userEnteredNo,
-            business: businessId
-        }).session(session);
-
-        if (existingInvoice) {
-            logger.debug(`Found existing invoice with number: ${prefix}${userEnteredNo}`);
-            throw new DuplicateInvoiceNumberError(`Invoice number ${prefix}${userEnteredNo} already exists`);
-        }
-
-        // Create invoice without updating config
-        logger.debug(`Creating invoice with number < available number: ${userEnteredNo}`);
-        const invoiceModel = new InvoiceModel({ ...invoiceSchema });
+        // Create invoice
+        const invoiceModel = new InvoiceModel({
+            ...invoiceSchema,
+            createdAt: new Date(),
+            updatedAt: new Date()
+        });
         await invoiceModel.save({ session });
 
         await session.commitTransaction();
@@ -73,7 +37,7 @@ const createInvoice = async (invoiceSchema: Invoice, businessId: Id) => {
         throw error;
     } finally {
         session.endSession();
-        logger.debug(`Ended invoice creation session`);
+        logger.debug('Ended invoice creation session');
     }
 }
 
@@ -93,49 +57,25 @@ const updateInvoice = async (invoiceSchema: Invoice, invoiceId: Id, userId: Id) 
             throw new Error("Invoice not found");
         }
 
-        if (!existingInvoice.invoiceDetails?.invoiceNo) {
-            throw new Error("Invalid invoice: missing invoice number");
-        }
+        // Handle invoice config updates using centralized function
+        const invoiceConfig = await createOrUpdateInvoiceConfig(invoiceSchema, invoiceSchema.business, session);
+        
+        const userEnteredNo = invoiceSchema.invoiceDetails.invoiceNo;
+        const prefix = invoiceConfig?.invoiceDetails?.invoicePrefix ?? 'INV';
 
         // If invoice number is being changed, validate it
-        if (existingInvoice.invoiceDetails.invoiceNo !== invoiceSchema.invoiceDetails.invoiceNo) {
-            logger.debug(`Invoice number change detected: ${existingInvoice.invoiceDetails.invoiceNo} -> ${invoiceSchema.invoiceDetails.invoiceNo}`);
-            
-            // Get invoice config
-            const invoiceConfig = await InvoiceConfigModel.findOne({ 
-                business: invoiceSchema.business 
-            }).session(session);
-
-            if (!invoiceConfig?.invoiceDetails?.invoiceNo || !invoiceConfig.invoiceDetails.invoicePrefix) {
-                throw new Error("Invalid invoice configuration");
-            }
-
-            const newInvoiceNo = invoiceSchema.invoiceDetails.invoiceNo;
-            const prefix = invoiceConfig.invoiceDetails.invoicePrefix;
-
-            // Check for duplicate invoice number
-            const duplicateInvoice = await InvoiceModel.findOne({
-                _id: { $ne: invoiceId }, // Exclude current invoice
-                'invoiceDetails.invoicePrefix': prefix,
-                'invoiceDetails.invoiceNo': newInvoiceNo,
-                business: invoiceSchema.business
-            }).session(session);
-
-            if (duplicateInvoice) {
-                throw new DuplicateInvoiceNumberError(`Invoice number ${prefix}${newInvoiceNo} already exists`);
-            }
-
-            // Update config's next number if necessary
-            if (newInvoiceNo >= invoiceConfig.invoiceDetails.invoiceNo) {
-                invoiceConfig.invoiceDetails.invoiceNo = newInvoiceNo + 1;
-                await invoiceConfig.save({ session });
-            }
+        if (existingInvoice.invoiceDetails?.invoiceNo !== userEnteredNo) {
+            logger.debug(`Invoice number change detected: ${existingInvoice.invoiceDetails?.invoiceNo} -> ${userEnteredNo}`);
+            await validateInvoiceNumber(userEnteredNo, prefix, invoiceSchema.business, session, invoiceId);
         }
 
         // Update invoice
         const updatedInvoice = await InvoiceModel.findOneAndUpdate(
             { _id: invoiceId, user: userId },
-            { ...invoiceSchema },
+            { 
+                ...invoiceSchema,
+                updatedAt: new Date()
+            },
             { new: true, runValidators: true, session }
         );
 
@@ -199,15 +139,70 @@ const getInvoiceDetails = async (invoiceId: Id, userId: Id, businessId: Id) => {
     }
 };
 
-const getAllInvoicesInfo = async (businessId: Id, userId: Id) => {
-    logger.debug(`Retrieving all invoices info for business: ${businessId} and user: ${userId}`);
+interface SearchFilters {
+    invoiceNumber?: string;
+    customerName?: string;
+    customerCity?: string;
+}
+const getAllInvoicesInfo = async (
+    businessId: Id, 
+    userId: Id, 
+    page = 1, 
+    limit = 10,
+    search?: SearchFilters
+) => {
+    logger.debug(`Retrieving invoices for business: ${businessId}, user: ${userId}, page: ${page}, limit: ${limit}, search:`, search);
     
     try {
+        // Build search query
+        const baseQuery = { 
+            business: businessId, 
+            user: userId 
+        };
+
+        if (search) {
+            const searchQuery: any = { ...baseQuery };
+            
+            if (search.invoiceNumber) {
+                // Match various invoice number patterns:
+                // Examples: INV-001, inv/001, ABC123, INV_001, etc.
+                const match = search.invoiceNumber.match(/^([A-Za-z-/_]*)?(\d+)$/i);
+                if (match) {
+                    const [, prefix, number] = match;
+                    if (prefix) {
+                        // If prefix exists, search with case-insensitive regex
+                        searchQuery['invoiceDetails.invoicePrefix'] = new RegExp('^' + prefix.replace(/[-\/_]/g, '[-\\/_]'), 'i');
+                    }
+                    searchQuery['invoiceDetails.invoiceNo'] = parseInt(number);
+                } else {
+                    // If no clear number part or just searching for prefix
+                    searchQuery['$or'] = [
+                        { 'invoiceDetails.invoicePrefix': new RegExp(search.invoiceNumber, 'i') },
+                        { 'invoiceDetails.invoiceNo': isNaN(parseInt(search.invoiceNumber)) ? null : parseInt(search.invoiceNumber) }
+                    ];
+                }
+            }
+
+            if (search.customerName) {
+                searchQuery['invoiceTo.name'] = new RegExp(search.customerName, 'i');
+            }
+
+            if (search.customerCity) {
+                searchQuery['invoiceTo.city'] = new RegExp(search.customerCity, 'i');
+            }
+
+            Object.assign(baseQuery, searchQuery);
+        }
+
+        // Calculate skip value for pagination
+        const skip = (page - 1) * limit;
+
+        // Get total count for pagination
+        const totalCount = await InvoiceModel.countDocuments(baseQuery);
+
+        // Get paginated invoices
         const invoices = await InvoiceModel.find(
-            { 
-                business: businessId, 
-                user: userId 
-            },
+            baseQuery,
             {
                 'invoiceDetails.invoicePrefix': 1,
                 'invoiceDetails.invoiceNo': 1,
@@ -217,14 +212,27 @@ const getAllInvoicesInfo = async (businessId: Id, userId: Id) => {
                 'invoiceFrom.city': 1,
                 'invoiceTo.name': 1,
                 'invoiceTo.city': 1,
-                'additionlInfo.paymentStatus': 1,
-                'additionlInfo.paymentMethod': 1,
-                'invoicesummary': 1
+                'additionalInfo.paymentStatus': 1,
+                'additionalInfo.paymentMethod': 1,
+                'invoiceSummary': 1
             }
-        ).sort({ 'invoiceDetails.invoiceDate': -1 }); // Sort by invoice date, newest first
+        )
+        .sort({ 'invoiceDetails.invoiceDate': -1 })
+        .skip(skip)
+        .limit(limit);
 
-        logger.debug(`Successfully retrieved ${invoices.length} invoices`);
-        return invoices;
+        const totalPages = Math.ceil(totalCount / limit);
+
+        logger.debug(`Retrieved ${invoices.length} invoices (page ${page}/${totalPages})`);
+        return {
+            invoices,
+            pagination: {
+                currentPage: page,
+                totalPages,
+                totalItems: totalCount,
+                itemsPerPage: limit
+            }
+        };
 
     } catch (error: unknown) {
         logger.error(`Error in getAllInvoicesInfo: ${error instanceof Error ? error.stack : error}`);
@@ -232,22 +240,24 @@ const getAllInvoicesInfo = async (businessId: Id, userId: Id) => {
     }
 };
 
-const getLatestInvoices = async (userId: Id) => {
+const getLatestInvoices = async (userId: Id, businessId: Id) => {
     logger.debug(`Fetching latest 5 invoices for user: ${userId}`);
     
     try {
         const latestInvoices = await InvoiceModel.find(
             { 
                 user: userId,
-                'additionlInfo.paymentStatus': 'Paid' // Only fetch paid invoices
+                business: businessId,
+                // 'additionalInfo.paymentStatus': 'Paid' // Only fetch paid invoices
             },
             {
                 'invoiceDetails.invoicePrefix': 1,
                 'invoiceDetails.invoiceNo': 1,
                 'invoiceDetails.invoiceDate': 1,
                 'invoiceTo.name': 1,
-                'additionlInfo.paymentMethod': 1,
-                'invoicesummary': 1
+                'additionalInfo.paymentMethod': 1,
+                'additionalInfo.paymentStatus': 1,
+                'invoiceSummary': 1
             }
         )
         .sort({ 'invoiceDetails.invoiceDate': -1 }) // Sort by date, newest first
@@ -259,8 +269,9 @@ const getLatestInvoices = async (userId: Id) => {
             invoiceNumber: `${invoice.invoiceDetails?.invoicePrefix ?? ''}${invoice.invoiceDetails?.invoiceNo ?? ''}`,
             customerName: invoice.invoiceTo?.name ?? '',
             invoiceDate: invoice.invoiceDetails?.invoiceDate,
-            paymentMethod: invoice.additionlInfo?.paymentMethod ?? '',
-            invoiceAmount: invoice.invoicesummary?.invoiceAmount ?? 0
+            paymentMethod: invoice.additionalInfo?.paymentMethod ?? '',
+            paymentStatus: invoice.additionalInfo?.paymentStatus ?? '',
+            invoiceAmount: invoice.invoiceSummary?.invoiceAmount ?? 0
         }));
 
         logger.debug(`Successfully retrieved ${formattedInvoices.length} latest invoices`);
@@ -272,11 +283,28 @@ const getLatestInvoices = async (userId: Id) => {
     }
 };
 
-export {
-    createInvoice,
-    updateInvoice,
-    deleteInvoice,
-    getInvoiceDetails,
-    getAllInvoicesInfo,
-    getLatestInvoices
+const getInvoiceView = async (invoiceId: Id) => {
+    logger.debug(`Retrieving invoice view for invoice: ${invoiceId}`);
+    
+    try {
+        const invoice = await InvoiceModel.findOne({ 
+            _id: invoiceId,
+        });
+
+        if (!invoice) {
+            throw new InvoiceNotFoundError(`Invoice with id ${invoiceId} not found`);
+        }
+
+        logger.debug(`Successfully retrieved invoice view: ${invoiceId}`);
+        return invoice;
+
+    } catch (error: unknown) {
+        logger.error(`Error in getInvoiceView: ${error instanceof Error ? error.stack : error}`);
+        throw error;
+    }
 };
+
+export {
+    createInvoice, deleteInvoice, getAllInvoicesInfo, getInvoiceDetails, getLatestInvoices, updateInvoice, getInvoiceView
+};
+

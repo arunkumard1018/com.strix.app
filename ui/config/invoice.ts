@@ -1,4 +1,4 @@
-import { InvoiceConfig, InvoiceFormData } from "@/components/dashboard/invoices/types";
+import { InvoiceConfig, InvoiceFormData } from "@/components/dashboard/invoices/form-data";
 
 export const invoiceConfig: InvoiceConfig = {
     invoiceHeading: {
@@ -22,7 +22,7 @@ export const invoiceConfig: InvoiceConfig = {
         HSN: "",
         stateCode: ""
     },
-    additionlInfo: {
+    additionalInfo: {
         thankyouNote: "Thank You For Your Business!",
         isBankDetails: true,
         isTransportInvoice: false,
@@ -41,6 +41,7 @@ export const invoiceConfig: InvoiceConfig = {
 
 export const invoiceFormInitialData: InvoiceFormData = {
     ...invoiceConfig,
+    customers:"",
     invoiceDetails: {
         ...invoiceConfig.invoiceDetails,
         invoiceDate: new Date(),
@@ -60,11 +61,11 @@ export const invoiceFormInitialData: InvoiceFormData = {
         {
             sku: "",
             description: "",
-            price: 0,
-            qty: 1,
-            cgst: 0,
-            sgst: 0,
-            amount: 0
+            price: "",
+            qty: "",
+            cgst: "",
+            sgst: "",
+            amount: ""
         }
     ],
     invoiceProductsTransport: [
@@ -73,13 +74,13 @@ export const invoiceFormInitialData: InvoiceFormData = {
             vehicleNo: "",
             source: "",
             destination: "",
-            price: 0,
-            cgst: 0,
-            sgst: 0,
-            amount: 0,
+            price: "",
+            cgst: "",
+            sgst: "",
+            amount: "",
         }
     ],
-    invoicesummary: {
+    invoiceSummary: {
         totalPrice: 0,
         cgst: 0,
         sgst: 0,

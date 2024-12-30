@@ -1,35 +1,41 @@
+// Common interfaces
 export interface InvoiceHeading {
     heading: string;
-    subHeading: string;
-    title: string;
+    subHeading?: string;
+    title?: string;
 }
+
 export interface InvoiceFrom {
     name: string;
     address: string;
     city: string;
     state: string;
-    postalCode: string;
-    phone: string;
+    postalCode: number;
+    phone?: number;
+    email?: string;
 }
+
 export interface InvoiceTo {
     name: string;
     address: string;
     city: string;
     state: string;
-    postalCode: string;
-    phone: string;
-    GSTIN: string;
-    PAN: string;
+    postalCode: number;
+    phone?: number;
+    email?: string;
+    GSTIN?: string;
+    PAN?: string;
 }
+
 export interface InvoiceDetails {
-    invoicePrefix: string
-    invoiceNo: string;
+    invoicePrefix: string;
+    invoiceNo: number;
     invoiceDate: Date;
-    dueDate:Date;
-    GSTIN: string;
-    PAN: string;
-    HSN: string;
-    stateCode: string;
+    dueDate: Date;
+    GSTIN?: string;
+    PAN?: string;
+    HSN?: number;
+    stateCode?: number;
 }
 
 export interface InvoiceProduct {
@@ -41,6 +47,7 @@ export interface InvoiceProduct {
     sgst: number;
     amount: number;
 }
+
 export interface InvoiceProductTransport {
     date: Date;
     vehicleNo: string;
@@ -51,40 +58,33 @@ export interface InvoiceProductTransport {
     sgst: number;
     amount: number;
 }
+
 export interface BankDetails {
-    bankName: string;
-    accountName: string;
-    accountNumber: string;
-    ifscCode: string;
-    branch: string;
+    bankName?: string;
+    accountName?: string;
+    accountNumber?: number;
+    ifscCode?: string;
+    branch?: string;
 }
+
 export interface AdditionlInfo {
-    thankyouNote: string;
+    thankyouNote?: string;
     isBankDetails: boolean;
     isTransportInvoice: boolean;
-    paymentStatus: "Paid" | "Processing" | "Due",
-    paymentMethod: "Cash" | "UPI" | "BankTransfer",
+    paymentStatus: "Paid" | "Processing" | "Due";
+    paymentMethod: "Cash" | "UPI" | "BankTransfer" | "CardPayment";
 }
-export interface Invoicesummary {
+
+export interface InvoiceSummary {
     totalPrice: number;
     cgst: number;
     sgst: number;
     invoiceAmount: number;
 }
 
-export interface InvoiceFormData {
-    invoiceHeading: InvoiceHeading;
-    invoiceFrom: InvoiceFrom;
-    invoiceTo: InvoiceTo;
-    invoiceDetails: InvoiceDetails;
-    invoiceProducts: InvoiceProduct[];
-    invoiceProductsTransport: InvoiceProductTransport[];
-    bankDetails: BankDetails;
-    additionlInfo: AdditionlInfo;
-    invoicesummary: Invoicesummary;
-}
+// Config interfaces
 export interface InvoiceDetailsConfig {
-    invoicePrefix: string
+    invoicePrefix: string;
     invoiceNo: string;
     GSTIN: string;
     PAN: string;
@@ -92,10 +92,19 @@ export interface InvoiceDetailsConfig {
     stateCode: string;
 }
 
-export interface InvoiceConfig {
+export interface Invoice {
+    _id?: string;
     invoiceHeading: InvoiceHeading;
     invoiceFrom: InvoiceFrom;
-    invoiceDetails: InvoiceDetailsConfig;
-    additionlInfo: AdditionlInfo;
+    invoiceTo: InvoiceTo;
+    invoiceDetails: InvoiceDetails;
+    invoiceProducts: Array<InvoiceProductTransport | InvoiceProduct>;
     bankDetails: BankDetails;
+    additionalInfo: AdditionlInfo;
+    invoiceSummary: InvoiceSummary;
+    createdAt?: Date;
+    updatedAt?: Date;
+    user?: string;
+    business?: string;
+    customers?: string;
 }

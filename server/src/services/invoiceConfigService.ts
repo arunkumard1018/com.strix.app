@@ -1,6 +1,9 @@
 import logger from "../lib/logConfig";
 import { InvoiceModel } from "../model/Invoice";
 import { CreateInvoiceConfig, InvoiceConfigModel } from "../model/InvoiceConfig";
+import { ClientSession } from 'mongoose';
+import { validateInvoiceConfig } from "../utils/invoiceValidator";
+import { getConfigUpdates, shouldUpdateConfig } from "../utils/invoiceConfigUpdater";
 
 const createInvoiceConfig = async (invoiceConfigData: CreateInvoiceConfig) => {
     const config = new InvoiceConfigModel({
@@ -100,6 +103,80 @@ const incrementInvoiceNo = async (businessId: Id, usersId: Id) => {
     return updatedInvoiceNo;
 };
 
+/**
+ * Creates or updates invoice configuration based on invoice data
+ */
+const createOrUpdateInvoiceConfig = async (
+    invoiceSchema: Invoice, 
+    businessId: Id, 
+    session: ClientSession
+) => {
+    // Get invoice config with user check
+    let invoiceConfig = await InvoiceConfigModel.findOne({ 
+        business: businessId,
+        user: invoiceSchema.user
+    }).session(session);
+
+    // If config doesn't exist, create new one
+    if (!invoiceConfig) {
+        logger.debug('Invoice config not found, creating new config');
+        const newConfig: CreateInvoiceConfig = {
+            invoiceHeading: invoiceSchema.invoiceHeading,
+            invoiceFrom: invoiceSchema.invoiceFrom,
+            invoiceDetails: {
+                invoicePrefix: invoiceSchema.invoiceDetails.invoicePrefix || 'INV',
+                invoiceNo: invoiceSchema.invoiceDetails.invoiceNo + 1,
+                GSTIN: invoiceSchema.invoiceDetails.GSTIN,
+                PAN: invoiceSchema.invoiceDetails.PAN,
+                HSN: invoiceSchema.invoiceDetails.HSN,
+                stateCode: invoiceSchema.invoiceDetails.stateCode,
+            },
+            bankDetails: invoiceSchema.bankDetails,
+            additionalInfo: invoiceSchema.additionalInfo,
+            user: invoiceSchema.user,
+            business: businessId
+        };
+
+        // Create new config and get first document from array
+        const [newInvoiceConfig] = await InvoiceConfigModel.create([newConfig], { session });
+        invoiceConfig = newInvoiceConfig;
+    } else {
+        // Handle config updates for existing config
+        const configUpdates = getConfigUpdates(invoiceSchema);
+        validateInvoiceConfig(invoiceConfig);
+
+        const userEnteredNo = invoiceSchema.invoiceDetails.invoiceNo;
+        // After validation, we can safely assert these values exist
+        const { invoiceDetails } = invoiceConfig as { invoiceDetails: { invoiceNo: number, invoicePrefix: string } };
+        const { invoiceNo: configAvailableNo, invoicePrefix: prefix } = invoiceDetails;
+        
+        const needsConfigUpdate = shouldUpdateConfig(configUpdates) || userEnteredNo >= configAvailableNo;
+
+        if (needsConfigUpdate) {
+            const finalConfigUpdates = {
+                ...configUpdates,
+                invoiceDetails: {
+                    ...(configUpdates.invoiceDetails || {}),
+                    invoicePrefix: prefix,
+                    invoiceNo: userEnteredNo >= configAvailableNo ? userEnteredNo + 1 : configAvailableNo
+                }
+            };
+
+            invoiceConfig = await InvoiceConfigModel.findOneAndUpdate(
+                { 
+                    business: businessId,
+                    user: invoiceSchema.user
+                },
+                { $set: finalConfigUpdates },
+                { new: true, session }
+            );
+            logger.debug('Updated invoice config with latest details');
+        }
+    }
+
+    return invoiceConfig;
+};
+
 export {
     createInvoiceConfig,
     getInvoiceConfig,
@@ -108,4 +185,5 @@ export {
     getInvoiceNo,
     updateInvoiceNo,
     incrementInvoiceNo,
+    createOrUpdateInvoiceConfig,
 }

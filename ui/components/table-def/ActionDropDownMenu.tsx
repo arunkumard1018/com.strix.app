@@ -9,11 +9,13 @@ import { useState } from "react"
 import { ToastAction } from "../ui/toast"
 import { ConfirmationDialog } from "./ConfirmationDialog"
 
-export function ActionsDropDownRow({ id, name, itemName, deleteFunction, handleUpdate }:
+export function ActionsDropDownRow({ id, name, itemName, deleteFunction, handleUpdate, handleDownload, handleView }:
     {
         id: string, name: string, path: string, itemName?: string,
         deleteFunction: (id: string) => Promise<boolean>,
         handleUpdate: (id: string) => void,
+        handleDownload?: (id: string) => void,
+        handleView?: (id: string) => void,
     }) {
 
     const [isDialogOpen, setDialogOpen] = useState(false); // State to control dialog visibility
@@ -52,15 +54,24 @@ export function ActionsDropDownRow({ id, name, itemName, deleteFunction, handleU
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
                     <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                    {handleView && (
+                        <DropdownMenuItem className="cursor-pointer" onClick={() => handleView(id)}>
+                            View {name}
+                        </DropdownMenuItem>
+                    )}
                     <DropdownMenuItem
+                        className="cursor-pointer"
                         onClick={() => navigator.clipboard.writeText(String(id))}>
                         Copy {name} ID
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
-                    {/* <Link href={`${path}/add-${name.toLowerCase()}/${id}`}> */}
-                    <DropdownMenuItem onClick={() => handleUpdate(id)}>Update {name}</DropdownMenuItem>
-                    {/* </Link> */}
-                    <DropdownMenuItem onClick={() => setDialogOpen(true)}>Delete {name}</DropdownMenuItem>
+                    <DropdownMenuItem className="cursor-pointer" onClick={() => handleUpdate(id)}>Update {name}</DropdownMenuItem>
+                    {handleDownload && (
+                        <DropdownMenuItem className="cursor-pointer" onClick={() => handleDownload(id)}>
+                            Download {name}
+                        </DropdownMenuItem>
+                    )}
+                    <DropdownMenuItem className="cursor-pointer" onClick={() => setDialogOpen(true)}>Delete {name}</DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>
 

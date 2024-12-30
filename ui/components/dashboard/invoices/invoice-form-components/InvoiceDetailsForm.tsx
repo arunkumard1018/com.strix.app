@@ -1,7 +1,7 @@
 import { DatePicker } from '@/components/reuse/DateSelector';
 import CustomInput from '@/components/reuse/invoice-input';
 import { Field, FormikProps } from 'formik';
-import { InvoiceFormData } from '../../types';
+import { InvoiceFormData } from '../types';
 
 const InvoiceDetailsForm = ({ formik }: { formik: FormikProps<InvoiceFormData> }) => {
     return (

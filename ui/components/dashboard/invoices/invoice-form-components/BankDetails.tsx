@@ -2,8 +2,7 @@ import CustomInput, { CustomSelect } from '@/components/reuse/invoice-input';
 import { cn } from '@/lib/utils';
 import { Field, FormikProps } from 'formik';
 import React from 'react';
-import { InvoiceFormData } from '../../types';
-
+import { InvoiceFormData } from '../form-data';
 interface BankDetailsProps {
     handleChange: FormikProps<InvoiceFormData>["handleChange"];
     isBankDetails: boolean;
@@ -15,7 +14,7 @@ const BankDetailsForm: React.FC<BankDetailsProps> = ({ isBankDetails }) => {
             <div className="font-serif text-xl  font-bold flex items-center">
                 <Field
                     type="checkbox"
-                    name="additionlInfo.isBankDetails"
+                    name="additionalInfo.isBankDetails"
                     className="h-4  w-4 mr-2 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
                 />
                 Bank Details
@@ -73,7 +72,7 @@ const BankDetailsForm: React.FC<BankDetailsProps> = ({ isBankDetails }) => {
                 <div className={cn("w-full md:w-1/2 flex flex-col my-5 md:my-0  md:justify-end  font-sans", isBankDetails && "md:items-end")}>
                     <div className='md:w-[75%] '>
                         <Field
-                            name="additionlInfo.paymentStatus"
+                            name="additionalInfo.paymentStatus"
                             label="Payment Status"
                             className="w-[75%] rounded-none"
                             component={CustomSelect}
@@ -84,7 +83,7 @@ const BankDetailsForm: React.FC<BankDetailsProps> = ({ isBankDetails }) => {
                             ]}
                         />
                         <Field
-                            name="additionlInfo.paymentMethod"
+                            name="additionalInfo.paymentMethod"
                             label="Payment Method"
                             className="w-[75%]"
                             component={CustomSelect}
@@ -97,7 +96,7 @@ const BankDetailsForm: React.FC<BankDetailsProps> = ({ isBankDetails }) => {
                     </div>
                     <div className='md:w-[75%] mt-10'>Additional Info</div>
                     <Field
-                        className="text-sm md:w-[75%] w-full " name="additionlInfo.thankyouNote" placeholder="BHJ766FASD"
+                        className="text-sm md:w-[75%] w-full " name="additionalInfo.thankyouNote" placeholder="BHJ766FASD"
                         component={CustomInput}
                     />
                 </div>

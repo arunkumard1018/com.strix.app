@@ -1,6 +1,6 @@
-import { InvoiceConfig } from "@/components/dashboard/invoices/types";
 import { ApiResponse } from "@/types/api-responses";
 import { axiosClient } from "./axiosClient";
+import { InvoiceConfig } from "@/components/dashboard/invoices/form-data";
 
 
 
@@ -8,6 +8,7 @@ const createUrl = (businessId: string) => {
     return `/api/v1/business/${businessId}/invoice-config`
 }
 const getInvoiceConfig = async (businessId: string) => {
+    await new Promise(resolve => setTimeout(resolve, 3000));
     const response = await axiosClient.get<ApiResponse<InvoiceConfig>>(createUrl(businessId));
     return response.data;
 }
@@ -31,10 +32,10 @@ const createInvoiceConfig = async (businessId: string, config: InvoiceConfig) =>
             ...config.bankDetails,
             accountNumber: Number(config.bankDetails.accountNumber)
         },
-        additionlInfo: {
-            thankyouNote: config.additionlInfo.thankyouNote,
-            isBankDetails: config.additionlInfo.isBankDetails,
-            isTransportInvoice: config.additionlInfo.isTransportInvoice,
+        additionalInfo: {
+            thankyouNote: config.additionalInfo.thankyouNote,
+            isBankDetails: config.additionalInfo.isBankDetails,
+            isTransportInvoice: config.additionalInfo.isTransportInvoice,
         },
     }
     const response = await axiosClient.post<ApiResponse<InvoiceConfig>>(createUrl(businessId), { ...data });
@@ -60,10 +61,10 @@ const updateInvoiceConfig = async (businessId: string, config: InvoiceConfig) =>
             ...config.bankDetails,
             accountNumber: Number(config.bankDetails.accountNumber)
         },
-        additionlInfo: {
-            thankyouNote: config.additionlInfo.thankyouNote,
-            isBankDetails: config.additionlInfo.isBankDetails,
-            isTransportInvoice: config.additionlInfo.isTransportInvoice,
+        additionalInfo: {
+            thankyouNote: config.additionalInfo.thankyouNote,
+            isBankDetails: config.additionalInfo.isBankDetails,
+            isTransportInvoice: config.additionalInfo.isTransportInvoice,
         },
     }
     const response = await axiosClient.put<ApiResponse<InvoiceConfig>>(createUrl(businessId), { ...data });
@@ -105,7 +106,7 @@ export interface CreateInvoiceConfig {
         ifscCode?: string | null;
         branch?: string | null;
     };
-    additionlInfo: {
+    additionalInfo: {
         thankyouNote?: string | null;
         isBankDetails: boolean;
         isTransportInvoice: boolean;

@@ -1,7 +1,6 @@
-import { formatCurrency, formatRupee, numberToWordsIndian } from "@/lib/utils"; // Make sure these functions work with PDF renderer
+import { formatCurrency, formatDateDDMMYY, formatRupee, numberToWordsIndian } from "@/lib/utils"; // Make sure these functions work with PDF renderer
 import { Font, StyleSheet, Text, View } from "@react-pdf/renderer";
-import { calculateInvoiceSummaryForProductsTransport, formatToTwoDecimalPlaces } from "../dashboard/invoices/invoice-template/form-components/calculations";
-import { InvoiceProductTransport } from "../dashboard/invoices/types";
+import { InvoiceProduct, InvoiceProductTransport, InvoiceSummary } from "../dashboard/invoices/types";
 
 // Register Noto Sans from Google Fonts
 Font.register({
@@ -30,196 +29,43 @@ const styles = StyleSheet.create({
         fontSize: 12,
     },
 });
-const invoiceProductsTransport: InvoiceProductTransport[] = [
-    {
-        date: new Date('2024-12-01'),
-        vehicleNo: 'KA01AB1234',
-        source: 'Mumbai',
-        destination: 'Pune',
-        price: 5000,
-        cgst: 2,
-        sgst: 2,
-        amount: 5100,
-    },
-    {
-        date: new Date('2024-12-02'),
-        vehicleNo: 'MH12CD5678',
-        source: 'Delhi',
-        destination: 'Agra',
-        price: 3000,
-        cgst: 2,
-        sgst: 2,
-        amount: 3060,
-    },
-
-    {
-        date: new Date('2024-12-10'),
-        vehicleNo: 'TN09GH3456',
-        source: 'Hyderabad',
-        destination: 'Mumbai',
-        price: 6000,
-        cgst: 2,
-        sgst: 2,
-        amount: 6120,
-    },
-    {
-        date: new Date('2024-12-10'),
-        vehicleNo: 'TN09GH3456',
-        source: 'Hyderabad',
-        destination: 'Mumbai',
-        price: 6000,
-        cgst: 2,
-        sgst: 2,
-        amount: 6120,
-    },
-    {
-        date: new Date('2024-12-10'),
-        vehicleNo: 'TN09GH3456',
-        source: 'Hyderabad',
-        destination: 'Mumbai',
-        price: 6000,
-        cgst: 2,
-        sgst: 2,
-        amount: 6120,
-    },
-    {
-        date: new Date('2024-12-10'),
-        vehicleNo: 'TN09GH3456',
-        source: 'Hyderabad',
-        destination: 'Mumbai',
-        price: 6000,
-        cgst: 2,
-        sgst: 2,
-        amount: 6120,
-    },
-    {
-        date: new Date('2024-12-10'),
-        vehicleNo: 'TN09GH3456',
-        source: 'Hyderabad',
-        destination: 'Mumbai',
-        price: 6000,
-        cgst: 2,
-        sgst: 2,
-        amount: 6120,
-    },
-    {
-        date: new Date('2024-12-10'),
-        vehicleNo: 'TN09GH3456',
-        source: 'Hyderabad',
-        destination: 'Mumbai',
-        price: 6000,
-        cgst: 2,
-        sgst: 2,
-        amount: 6120,
-    },
-    {
-        date: new Date('2024-12-10'),
-        vehicleNo: 'TN09GH3456',
-        source: 'Hyderabad',
-        destination: 'Mumbai',
-        price: 6000,
-        cgst: 2,
-        sgst: 2,
-        amount: 6120,
-    },
-    {
-        date: new Date('2024-12-10'),
-        vehicleNo: 'TN09GH3456',
-        source: 'Hyderabad',
-        destination: 'Mumbai',
-        price: 6000,
-        cgst: 2,
-        sgst: 2,
-        amount: 6120,
-    },
-    {
-        date: new Date('2024-12-10'),
-        vehicleNo: 'TN09GH3456',
-        source: 'Hyderabad',
-        destination: 'Mumbai',
-        price: 6000,
-        cgst: 2,
-        sgst: 2,
-        amount: 6120,
-    },
-    {
-        date: new Date('2024-12-10'),
-        vehicleNo: 'TN09GH3456',
-        source: 'Hyderabad',
-        destination: 'Mumbai',
-        price: 6000,
-        cgst: 2,
-        sgst: 2,
-        amount: 6120,
-    },
-    {
-        date: new Date('2024-12-10'),
-        vehicleNo: 'TN09GH3456',
-        source: 'Hyderabad',
-        destination: 'Mumbai',
-        price: 6000,
-        cgst: 2,
-        sgst: 2,
-        amount: 6120,
-    },
-];
-
-const dummyInvoiceProducts = [
-    {
-        description: "Laptop",
-        price: 50000,
-        qty: 2,
-        cgst: 9,
-        sgst: 9,
-        amount: 118000,
-    },
-    {
-        description: "Smartphone",
-        price: 20000,
-        qty: 3,
-        cgst: 12,
-        sgst: 12,
-        amount: 67200,
-    },
-    {
-        description: "Tablet",
-        price: 15000,
-        qty: 1,
-        cgst: 5,
-        sgst: 5,
-        amount: 16500,
-    },
-];
-
-function PdfInvoiceProductsTable() {
-    // Format prices, CGST, SGST, and calculate amounts
-    const invoiceProductsTransportMod = invoiceProductsTransport.map((product) => {
-        // Parse and format inputs to floats with 2 decimal places
-        const price = formatToTwoDecimalPlaces(product.price);
-        const cgst = formatToTwoDecimalPlaces(product.cgst);
-        const sgst = formatToTwoDecimalPlaces(product.sgst);
-        // Calculate the amount for each product
-        const amount = price + (price * cgst) / 100 + (price * sgst) / 100;
-        return {
-            ...product,
-            price,
-            cgst,
-            sgst,
-            amount: formatToTwoDecimalPlaces(amount), // Ensure 2 decimal places
-        };
-    });
-    // Calculate the summary totals (subtotal, GST, and grand total)
-    const invoicesummary = calculateInvoiceSummaryForProductsTransport(invoiceProductsTransportMod);
-    const { totalPrice, cgst, sgst, invoiceAmount } = invoicesummary;
+function PdfInvoiceProductsTable({ 
+    products, 
+    invoiceSummary 
+}: { 
+    products: Array<InvoiceProduct | InvoiceProductTransport>
+    invoiceSummary: InvoiceSummary 
+}) {
+    const isTransportInvoice = products.length > 0 && 'vehicleNo' in products[0];
+    // Format prices only
+    // const formattedProducts = products.map((product) => ({
+    //     ...product,
+    //     price: formatToTwoDecimalPlaces(product.price),
+    //     cgst: formatToTwoDecimalPlaces(product.cgst),
+    //     sgst: formatToTwoDecimalPlaces(product.sgst),
+    //     amount: formatToTwoDecimalPlaces(product.amount)
+    // }));
+    const { totalPrice, cgst, sgst, invoiceAmount } = invoiceSummary;
 
     return (
         <View style={styles.section}>
             {/* Table header */}
             <View style={styles.tableHeader}>
                 <View style={{ flexDirection: "row" }}>
-                    <Text style={[styles.headerCell, { width: "45%" }]}>Description</Text>
+                    {isTransportInvoice ? (
+                        <>
+                            <Text style={[styles.headerCell, { width: "15%" }]}>Date</Text>
+                            <Text style={[styles.headerCell, { width: "15%" }]}>Vehicle No</Text>
+                            <Text style={[styles.headerCell, { width: "20%" }]}>Source</Text>
+                            <Text style={[styles.headerCell, { width: "20%" }]}>Destination</Text>
+                        </>
+                    ) : (
+                        <>
+                            <Text style={[styles.headerCell, { width: "45%" }]}>Description</Text>
+                            <Text style={[styles.headerCell, { width: "9%" }]}>Qty</Text>
+                        </>
+                    )}
                     <Text style={[styles.headerCell, { width: "15%" }]}>Price</Text>
-                    <Text style={[styles.headerCell, { width: "9%" }]}>Qty</Text>
                     <Text style={[styles.headerCell, { width: "8%", textAlign: "center" }]}>SGST</Text>
                     <Text style={[styles.headerCell, { width: "8%", textAlign: "center" }]}>CGST</Text>
                     <Text style={[styles.headerCell, { width: "15%", textAlign: "right" }]}>Amount</Text>
@@ -227,11 +73,22 @@ function PdfInvoiceProductsTable() {
             </View>
 
             {/* Table rows */}
-            {dummyInvoiceProducts.map((product, index) => (
-                <View key={index} style={{ flexDirection: "row", }}>
-                    <Text style={[styles.cell, { width: "45%" }]}>{product.description}</Text>
+            {products.map((product, index) => (
+                <View key={index} style={{ flexDirection: "row" }}>
+                    {isTransportInvoice ? (
+                        <>
+                            <Text style={[styles.cell, { width: "15%" }]}>{formatDateDDMMYY((product as InvoiceProductTransport).date.toString())}</Text>
+                            <Text style={[styles.cell, { width: "15%" }]}>{(product as InvoiceProductTransport).vehicleNo}</Text>
+                            <Text style={[styles.cell, { width: "20%" }]}>{(product as InvoiceProductTransport).source}</Text>
+                            <Text style={[styles.cell, { width: "20%" }]}>{(product as InvoiceProductTransport).destination}</Text>
+                        </>
+                    ) : (
+                        <>
+                            <Text style={[styles.cell, { width: "45%" }]}>{(product as InvoiceProduct).description}</Text>
+                            <Text style={[styles.cell, { width: "9%" }]}>{(product as InvoiceProduct).qty}</Text>
+                        </>
+                    )}
                     <Text style={[styles.cell, { width: "15%" }]}>{formatRupee(product.price)}</Text>
-                    <Text style={[styles.cell, { width: "9%" }]}>{formatRupee(product.qty)}</Text>
                     <Text style={[styles.cell, { width: "8%", textAlign: "center" }]}>{product.sgst}%</Text>
                     <Text style={[styles.cell, { width: "8%", textAlign: "center" }]}>{product.cgst}%</Text>
                     <Text style={[styles.cell, { width: "15%", textAlign: "right" }]}>{formatRupee(product.amount)}</Text>

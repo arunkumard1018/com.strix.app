@@ -1,5 +1,4 @@
 import Joi from "joi";
-import { addressSchema } from "./addressSchema";
 
 
 const businessSchema = Joi.object({
@@ -7,17 +6,10 @@ const businessSchema = Joi.object({
         "string.min": "Name must be at least 3 characters long",
         "string.empty": "Name is required",
     }),
-    email: Joi.string().email().optional().messages({
-        "string.email": "Please enter a valid email address",
-    }),
-    phone: Joi.number().integer().required(),
     logo: Joi.string().optional(),
-    invoicePrefix:Joi.string().required(),
     catagory: Joi.string().valid("Transport", "Retail", "Enterprise").required(),
-    GSTIN : Joi.string().optional().allow(""),
-    HSN : Joi.number().integer().optional(),
-    stateCode: Joi.number().integer().optional(),
-    address: addressSchema
+    city: Joi.string().optional(),
+    owner: Joi.string().required(),
 });
 
-export {businessSchema};
+export { businessSchema };

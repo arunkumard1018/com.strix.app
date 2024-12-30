@@ -1,14 +1,16 @@
 /* eslint-disable jsx-a11y/alt-text */
 import { Document, Image, Page, StyleSheet, Text, View } from "@react-pdf/renderer";
 import { PdfInvoiceProductsTable } from "./PdfProductsTable";
+import { Invoice } from "../dashboard/invoices/types";
+import { formatDateDDMMYY } from "@/lib/utils";
 
 const styles = StyleSheet.create({
-    page: { padding: 40 },
+    page: { paddingHorizontal: 30, paddingVertical: 20 },
     section: { marginBottom: 10, width: "100%" },
-    heading: { fontSize: 20, fontWeight: "bold", },
-    subHeading: { fontSize: 10, fontStyle: 'italic', },
+    heading: { fontSize: 20, fontWeight: "extrabold", marginBottom: 3 },
+    subHeading: { fontSize: 10, fontStyle: 'italic', color: "gray" },
     text: { fontSize: 12, marginBottom: 3 },
-    textSm: { fontSize: 8, marginBottom: 2 },
+    textSm: { fontSize: 9, marginBottom: 2 },
     textMd: { fontSize: 10, marginBottom: 2 },
     flexRowBtw: { display: "flex", flexDirection: "row", justifyContent: "space-between" },
     flexColBtw: { display: "flex", flexDirection: "column" },
@@ -18,67 +20,79 @@ const styles = StyleSheet.create({
     qrCode: {
         width: 50, height: 50,
     },
+    invoiceDetail: { fontSize: 10, marginBottom: 2 },
 });
-const data = "hello";
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const PdfTemplate = ({ invoiceData, qrCode }: { invoiceData: any, qrCode: string }) => (
+const PdfTemplate = ({ invoiceData, qrCode }: { invoiceData: Invoice, qrCode: string }) => (
     <Document>
-        <Page style={styles.page}>
+        <Page size="A4" style={styles.page}>
             <View style={[styles.section]}>
-                <div style={styles.header}>
-                    <div style={styles.flexColBtw}>
-                        <Text style={styles.heading} >AB Eneterprises</Text>
-                        <Text style={styles.subHeading} >Transport Service</Text>
-                    </div>
-                    <Text style={[styles.title, { fontWeight: "extrabold" }]}>TAX INVOICE</Text>
-                </div>
+                <View style={styles.header}>
+                    <View style={styles.flexColBtw}>
+                        <Text style={styles.heading} >{invoiceData.invoiceHeading.heading}</Text>
+                        <Text style={styles.subHeading} >{invoiceData.invoiceHeading.subHeading}</Text>
+                    </View>
+                    <Text style={[styles.title, { fontWeight: "extrabold" }]}>{invoiceData.invoiceHeading.title}</Text>
+                </View>
                 <hr style={styles.hr} />
             </View>
             <View style={styles.section}>
-                <div style={styles.flexRowBtw}>
-                    <div>
+                <View style={styles.flexRowBtw}>
+                    <View>
                         <Text style={[styles.text, { fontSize: 10 }]}>From:</Text>
                         <Text style={[styles.textSm]}>{invoiceData.invoiceFrom.name}</Text>
-                        <Text style={styles.textSm}>{invoiceData.invoiceFrom.street}</Text>
+                        <Text style={styles.textSm}>{invoiceData.invoiceFrom.address}</Text>
                         <Text style={styles.textSm}>
-                            {invoiceData.invoiceFrom.city}, {invoiceData.invoiceFrom.state},{577002}
+                            {invoiceData.invoiceFrom.city}, {invoiceData.invoiceFrom.state},{invoiceData.invoiceFrom.postalCode}
                         </Text>
                         <Text style={styles.textSm}>
-                            {data && `Phone: ${7584585258}`}
+                            {invoiceData.invoiceFrom.phone && `Phone: ${invoiceData.invoiceFrom.phone}`}
                         </Text>
                         <Text style={[styles.text, { fontSize: 10, marginTop: 10 }]}>To:</Text>
-                        <Text style={[styles.textSm]}>{invoiceData.invoiceFrom.name}</Text>
-                        <Text style={styles.textSm}>{invoiceData.invoiceFrom.street}</Text>
+                        <Text style={[styles.textSm]}>{invoiceData.invoiceTo.name}</Text>
+                        <Text style={styles.textSm}>{invoiceData.invoiceTo.address}</Text>
                         <Text style={styles.textSm}>
-                            {invoiceData.invoiceFrom.city}, {invoiceData.invoiceFrom.state},{577002}
+                            {invoiceData.invoiceTo.city}, {invoiceData.invoiceTo.state},{invoiceData.invoiceTo.postalCode}
                         </Text>
                         <Text style={styles.textSm}>
-                            {data && `Phone: ${7584585258}`}
+                            {invoiceData.invoiceTo.phone && `Phone: ${invoiceData.invoiceTo.phone}`}
                         </Text>
-                    </div>
-                    <div >
-                        <Text style={[styles.textMd, { marginBottom: 3 }]}>INVOICE NO: INV-1005 </Text>
-                        <Text style={[styles.textMd, { marginBottom: 3 }]}>DATE: 22-12-2024</Text>
-                        <Text style={[styles.textMd, { marginBottom: 3 }]}>GSTIN: HGAF544FS</Text>
-                        <Text style={[styles.textMd, { marginBottom: 3 }]}>PAN: HGAF544FS</Text>
-                        <Text style={[styles.textMd, { marginBottom: 3 }]}>HSN: 255</Text>
-                        <Text style={[styles.textMd, { marginBottom: 3 }]}>StateCode: 85</Text>
-                    </div>
-                </div>
+                    </View>
+                    <View>
+                        <Text style={styles.invoiceDetail}>
+                            Invoice No: {invoiceData.invoiceDetails.invoicePrefix}{invoiceData.invoiceDetails.invoiceNo}
+                        </Text>
+                        <Text style={styles.invoiceDetail}>
+                            Date: {formatDateDDMMYY(invoiceData.invoiceDetails.invoiceDate.toString())}
+                        </Text>
+                        {invoiceData.invoiceDetails.GSTIN && (
+                            <Text style={styles.invoiceDetail}>GSTIN: {invoiceData.invoiceDetails.GSTIN}</Text>
+                        )}
+                        {invoiceData.invoiceDetails.PAN && (
+                            <Text style={styles.invoiceDetail}>PAN: {invoiceData.invoiceDetails.PAN}</Text>
+                        )}
+                        {invoiceData.invoiceDetails.HSN && (
+                            <Text style={styles.invoiceDetail}>HSN: {invoiceData.invoiceDetails.HSN}</Text>
+                        )}
+                        {invoiceData.invoiceDetails.stateCode && (
+                            <Text style={styles.invoiceDetail}>State Code: {invoiceData.invoiceDetails.stateCode}</Text>
+                        )}
+                    </View>
+                </View>
             </View>
-            <PdfInvoiceProductsTable />
+            <PdfInvoiceProductsTable products={invoiceData.invoiceProducts} invoiceSummary={invoiceData.invoiceSummary} />
             <View style={[styles.section, { flexDirection: "row", justifyContent: "space-between" }]}>
-                <div>
-                    <Text style={[styles.text, { fontSize: 10, marginTop: 10, fontWeight: "bold" }]}>Bank Details</Text>
-                    <Text style={{ fontSize: 9, marginBottom: 2 }}>{data && `Account Name: ${"GM Logistics"}`}</Text>
-                    <Text style={{ fontSize: 9, marginBottom: 2 }}>{data && `Bank: ${"AMX Bank"}`}</Text>
-                    <Text style={{ fontSize: 9, marginBottom: 2 }}>{data && `Account No: ${"45858555855"}`}</Text>
-                    <Text style={{ fontSize: 9, marginBottom: 2 }}>{data && `IFSC Code: ${"IHG56GG"}`}</Text>
-                    <Text style={{ fontSize: 9, marginBottom: 2 }}>{data && `Branch: ${"MG Road Banglore"}`}</Text>
-                </div>
-                <View style={{ alignItems: "flex-end", justifyContent: "flex-end" }}>
+                {invoiceData.bankDetails && invoiceData.bankDetails.accountNumber !== 0 && <View>
+                    <Text style={[{ fontSize: 12, marginTop: 10, fontWeight: "extrabold", marginBottom: 2 }]}>Bank Details:</Text>
+                    <Text style={{ fontSize: 9, marginBottom: 2 }}>{invoiceData.bankDetails.bankName && `Bank Name: ${invoiceData.bankDetails.bankName}`}</Text>
+                    <Text style={{ fontSize: 9, marginBottom: 2 }}>{invoiceData.bankDetails.accountName && `Account Name: ${invoiceData.bankDetails.accountName}`}</Text>
+                    <Text style={{ fontSize: 9, marginBottom: 2 }}>{invoiceData.bankDetails.accountNumber && `Account No: ${invoiceData.bankDetails.accountNumber}`}</Text>
+                    <Text style={{ fontSize: 9, marginBottom: 2 }}>{invoiceData.bankDetails.ifscCode && `IFSC Code: ${invoiceData.bankDetails.ifscCode}`}</Text>
+                    <Text style={{ fontSize: 9, marginBottom: 2 }}>{invoiceData.bankDetails.branch && `Branch: ${invoiceData.bankDetails.branch}`}</Text>
+                </View>}
+                <View style={{ alignItems: invoiceData.bankDetails && invoiceData.bankDetails.accountNumber !== 0 ? "flex-end" : "flex-start", justifyContent: "flex-end" }}>
                     <Image src={qrCode} style={styles.qrCode} />
-                    <Text style={{ fontSize: 9, marginTop: 4, }}>{data && `Thank you for youre Business!`}</Text>
+                    <Text style={{ fontSize: 9, marginTop: 4, }}>{invoiceData.additionalInfo.thankyouNote && `Thank you for youre Business!`}</Text>
                 </View>
             </View>
         </Page>

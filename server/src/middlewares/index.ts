@@ -8,15 +8,24 @@ import { ResponseEntity } from "../lib/ApiResponse";
 const authMiddleWare = (req: Request, res: Response, next: NextFunction) => {
     try {
 
-        const publicPaths = ['/', '/health', '/api/v1/auth/authenticate', '/api/v1/auth/register', '/api/v1/auth/google','/api/v1/auth/logout']
+        const publicPaths = ['/', '/health',
+            '/api/v1/auth/authenticate',
+            '/api/v1/auth/register',
+            '/api/v1/auth/google',
+            '/api/v1/auth/logout',
+            '/api/v1/business/create',
+            '/api/v1/business/get',
+            '/api/v1/business/update',
+            '/api/v1/business/delete',
+        ]
         const currentPath = req.url;
-        if (publicPaths.includes(currentPath)) {
+        if (publicPaths.includes(currentPath) || currentPath.startsWith('/api/v1/invoices/view/')) {
             next();
         } else {
             let token = undefined;
-            token =  req.cookies.token;
-            
-            if(!token) token = req.headers['authorization']?.split(' ')[1];
+            token = req.cookies.token;
+
+            if (!token) token = req.headers['authorization']?.split(' ')[1];
 
             if (!token) {
                 res.status(HttpStatusCode.UNAUTHORIZED)
@@ -24,7 +33,7 @@ const authMiddleWare = (req: Request, res: Response, next: NextFunction) => {
                 return;
             }
             const secretKey = process.env.JWT_SECRET_KEY!;
-            Jwt.verify(token, secretKey, (error : any, decoded: object | any) => {
+            Jwt.verify(token, secretKey, (error: any, decoded: object | any) => {
                 if (!error && decoded && typeof decoded !== 'string') {
                     req.authContext = {
                         userEmail: decoded.email,

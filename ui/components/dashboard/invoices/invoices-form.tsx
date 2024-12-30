@@ -1,111 +1,92 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
-import { createInvoiceConfig, updateInvoiceConfig } from "@/api/invoiceConfig";
-import { Tabs, TabsContent, TabsList, TabsTrigger, } from "@/components/ui/tabs";
+import { createInvoices } from "@/api/invoices";
+import { setConfigData } from "@/store/slices/configSlice";
+import { unShiftInvoice } from "@/store/slices/invoicesSlice";
 import { RootState } from "@/store/store";
+import { ApiResponse } from "@/types/api-responses";
 import { Formik, FormikProps } from "formik";
-import { Printer } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { useSelector } from "react-redux";
-import { hasConfigChanged } from "./form-validation-schema";
-import { InvoiceDataForm } from "./invoice-template/form-components/InvoiceDataForm";
+import { useDispatch, useSelector } from "react-redux";
+import { InvoiceConfig, InvoiceFormData } from "./form-data";
+import { InvoiceDataForm } from "./invoice-form-components/InvoiceDataForm";
 import "./invoice.css";
-import { InvoicePage } from "./InvoicePage";
-import { InvoiceConfig, InvoiceFormData } from "./types";
+import { Invoice } from "./types";
+import { toast } from 'sonner';
+
 
 
 function InvoiceForm({ initialValues }: { initialValues: InvoiceFormData, }) {
-    const [printTitle, setprintTitle] = useState((initialValues.invoiceDetails.invoicePrefix + initialValues.invoiceDetails.invoiceNo))
-    const previouesConfig = useSelector((state: RootState) => state.config.invoiceConfig);
     const activeBusinessId = useSelector((state: RootState) => state.authContext.activeBusiness._id);
-    const handlePrint = () => {
-        const originalTitle = document.title;
-        document.title = printTitle;
-        window.print();
-        window.onafterprint = () => {
-            document.title = originalTitle;
-        };
-        document.title = originalTitle;
-    };
+    const dispatch = useDispatch();
+    const [isError, setIsError] = useState(false);
+    const router = useRouter();
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
     const handleSubmit = async (values: InvoiceFormData) => {
-        const currentConfig: InvoiceConfig = {
-            invoiceHeading: values.invoiceHeading,
-            invoiceFrom: values.invoiceFrom,
-            invoiceDetails: values.invoiceDetails,
-            additionlInfo: values.additionlInfo,
-            bankDetails: values.bankDetails,
-        };
+        setIsSubmitting(true);
         try {
-            if (previouesConfig && hasConfigChanged(currentConfig, previouesConfig)) {
-                if (previouesConfig.invoiceDetails.invoiceNo === "1") {
-                    console.log("create Invoice Config and Invoice")
-                    await createInvoiceConfig(activeBusinessId, currentConfig);
-                } else {
-                    console.log("Update Invoice Config");
-                    await updateInvoiceConfig(activeBusinessId, {
-                        ...currentConfig,
-                        invoiceDetails: {
-                            ...currentConfig.invoiceDetails,
-                            invoiceNo: previouesConfig.invoiceDetails.invoiceNo
-                        }
-                    });
-                }
-            }
-            // if Config Prefix Changed check if Pref already exists and update max value else set to 1
-            // Note If Config Not Changed
-            // if CurrentinvNo < prevNo  Check For inv No Availability if Yes Create invoice Dont Update Config Val to Next
-            if (previouesConfig && currentConfig.invoiceDetails.invoiceNo < previouesConfig.invoiceDetails.invoiceNo) {
-                // check for Inv No avaliablity if yes proceed
-                console.log("Create Invoice with Chicking No")
+            const response: ApiResponse<Invoice> = await createInvoices(activeBusinessId, values);
+            if (response.result) {
+                const InvoiceData: Invoice = response.result;
+                dispatch(unShiftInvoice({
+                    _id: InvoiceData._id || "",
+                    invoiceDetails: {
+                        ...InvoiceData.invoiceDetails,
+                        invoiceNo: InvoiceData.invoiceDetails.invoiceNo.toString()
+                    },
+                    invoiceFrom: InvoiceData.invoiceFrom,
+                    invoiceTo: InvoiceData.invoiceTo,
+                    additionalInfo: InvoiceData.additionalInfo,
+                    invoiceSummary: InvoiceData.invoiceSummary,
+                }));
+                const configData: InvoiceConfig = {
+                    invoiceHeading: InvoiceData.invoiceHeading,
+                    invoiceFrom: {
+                        ...InvoiceData.invoiceFrom,
+                        postalCode: InvoiceData.invoiceFrom.postalCode.toString(),
+                        phone: InvoiceData.invoiceFrom.phone?.toString(),
+                    },
+                    invoiceDetails: {
+                        ...InvoiceData.invoiceDetails,
+                        invoiceNo: (InvoiceData.invoiceDetails.invoiceNo + 1).toString(),
+                        HSN: InvoiceData.invoiceDetails.HSN?.toString(),
+                        stateCode: InvoiceData.invoiceDetails.stateCode?.toString(),
+                    },
+                    bankDetails: {
+                        ...InvoiceData.bankDetails,
+                        accountNumber: InvoiceData.bankDetails.accountNumber?.toString(),
+                    },
+                    additionalInfo: InvoiceData.additionalInfo,
+                };
+                dispatch(setConfigData(configData));
+                toast.success('Invoice created successfully');
+                router.push(`/dashboard/invoices/view/${InvoiceData._id}`);
             } else {
-                console.log("Create Invoice")
-                // if currentInvNo > preInvNo Create Inv and Update Config with Next value ++
+                setIsError(true);
+                toast.error('Failed to create invoice');
             }
-            // create Invoice will Receive next available Id with Created Details update next Id in Redux
         } catch (error) {
-            console.log("Alert Error While Creating InvoiceConfig")
+            setIsError(true);
+            toast.error('Error creating invoice');
+            console.log("Alert Error While Creating Invoice", error)
+        } finally {
+            setIsSubmitting(false);
         }
     }
 
     return (
         <Formik
             initialValues={{ ...initialValues }}
-            // validationSchema={InvoiceSchema}
             onSubmit={(values) => {
                 handleSubmit(values);
             }}
         >
             {(formik: FormikProps<typeof initialValues>) => (
-                <Tabs defaultValue="Edit" className="md:w-full md:px-10 lg:px-36">
-                    <div className="flex justify-between items-center">
-                        <TabsList className="grid grid-cols-2 md:w-[25%] no-print h-12 mb-1 rounded-none">
-                            <TabsTrigger value="Edit" className="h-10 rounded-none">
-                                Edit
-                            </TabsTrigger>
-                            <TabsTrigger value="Preview" className="h-10 rounded-none">
-                                Preview
-                            </TabsTrigger>
-                        </TabsList>
-                        <div className="flex no-print">
-                            <TabsContent value="Preview">
-                                <button onClick={() => {
-                                    handlePrint();
-                                    setprintTitle((formik.values.invoiceDetails.invoicePrefix + formik.values.invoiceDetails.invoiceNo))
-                                }}
-                                    className="rounded-none shadow-sm border p-2">
-                                    <div className="flex items-center justify-center gap-2">
-                                        <Printer />
-                                        Print Invoice
-                                    </div>
-                                </button>
-                            </TabsContent>
-                        </div>
-                    </div>
-                    <InvoicePage formik={formik} />
-                    <TabsContent value="Edit" >
-                        <InvoiceDataForm {...formik} />
-                    </TabsContent>
-                </Tabs>
+                <div className="md:w-full md:px-10 lg:px-36">
+                    <InvoiceDataForm formik={formik} isError={isError} isSubmitting={isSubmitting} />
+                </div>
             )}
         </Formik>
     );

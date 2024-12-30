@@ -10,7 +10,7 @@ export const store = configureStore({
     reducer: {
         authContext: userReducer,
         customers: customersReducer,
-        invoices: invoicesReducer,
+        invoicesData: invoicesReducer,
         latestData: latestDataReducer,
         config: configReducer,
     },

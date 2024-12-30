@@ -88,8 +88,8 @@ interface Invoice {
     invoiceDetails: InvoiceDetails;
     invoiceProducts: Array<InvoiceProductsTransport | InvoiceProducts>;
     bankDetails: BankDetails;
-    additionlInfo: AdditionlInfo;
-    invoicesummary: InvoiceSummary;
+    additionalInfo: AdditionlInfo;
+    invoiceSummary: InvoiceSummary;
     createdAt?: Date;
     updatedAt?: Date;
     user:Id;

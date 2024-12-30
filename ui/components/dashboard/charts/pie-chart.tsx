@@ -31,11 +31,12 @@ export const description = "A donut chart with text"
 const chartConfig = {
     totalPaid: {
         label: "Paid",
-        color: "hsl(var(--chart-1))",
+        
+        color: "hsl(var(--chart-2))",
     },
     totalProcessing: {
         label: "Processing",
-        color: "hsl(var(--chart-2))",
+        color: "hsl(var(--chart-1))",
     },
     totalDue: {
         label: "Due",
@@ -51,17 +52,17 @@ export function InvoicePieChart() {
         const data = [
             {
                 browser: "totalPaid",
-                visitors: stats.totalPaid,
+                visitors: stats.paidInvoices,
                 fill: chartConfig.totalPaid.color,
             },
             {
                 browser: "totalProcessing",
-                visitors: stats.totalProcessing,
+                visitors: stats.processingInvoices,
                 fill: chartConfig.totalProcessing.color,
             },
             {
                 browser: "totalDue",
-                visitors: stats.totalDue,
+                visitors: stats.dueInvoices,
                 fill: chartConfig.totalDue.color,
             },
         ]
@@ -157,18 +158,51 @@ export function InvoicePieChart() {
 }
 
 const DummyPieChart = () => {
+    const dummyData = [
+        { name: 'Paid', value: 1, fill: chartConfig.totalPaid.color },
+        { name: 'Processing', value: 1, fill: chartConfig.totalProcessing.color },
+        { name: 'Due', value: 1, fill: chartConfig.totalDue.color }
+    ];
+
     return (
         <PieChart width={200} height={200}>
             <Pie
-                data={[{ name: 'Dummy', value: 0.1 }]} // Single dummy slice
+                data={dummyData}
                 dataKey="value"
                 cx="50%"
                 cy="50%"
                 outerRadius="80%"
-                fill="#e0e0e0" // Light grey to indicate a dummy chart
-                isAnimationActive={false} // Optional: Disable animation for the dummy chart
+                innerRadius={60}
+                isAnimationActive={false}
             >
-                <Cell fill="#e0e0e0" />
+                {dummyData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.fill} />
+                ))}
+                <Label
+                    content={() => (
+                        <text
+                            x="50%"
+                            y="50%"
+                            textAnchor="middle"
+                            dominantBaseline="middle"
+                        >
+                            <tspan
+                                x="50%"
+                                y="50%"
+                                className="fill-foreground text-3xl font-bold"
+                            >
+                                0
+                            </tspan>
+                            <tspan
+                                x="50%"
+                                y="62%"
+                                className="fill-muted-foreground"
+                            >
+                                Invoices
+                            </tspan>
+                        </text>
+                    )}
+                />
             </Pie>
         </PieChart>
     );

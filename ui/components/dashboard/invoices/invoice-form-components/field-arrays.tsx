@@ -5,8 +5,7 @@ import { FieldArray, FormikProps } from 'formik'
 import React from 'react'
 import { InvoiceTransportProductRow } from './InvoiceTransportProductRow'
 import { InvoiceProductRow } from './invoice-products-row'
-import { InvoiceFormData } from '../../types'
-
+import { InvoiceFormData } from '../form-data'
 
 interface TransportFieldArrayProps {
     formik: FormikProps<InvoiceFormData>;
@@ -20,7 +19,7 @@ const TransportProductFieldArray: React.FC<TransportFieldArrayProps> = ({ formik
         price: 0,
         cgst: 0,
         sgst: 0,
-        totalAmount: 0,
+        amount: 0,
     }
     return (
         <FieldArray name="invoiceProductsTransport">
@@ -44,7 +43,7 @@ const TransportProductFieldArray: React.FC<TransportFieldArrayProps> = ({ formik
                                     <AddRowBtn onClick={() => push(initialValues)} />
                                 </td>
                                 <td className="">Gross</td>
-                                <td className="text-right">{formatCurrency(formik.values.invoicesummary.invoiceAmount)}</td>
+                                <td className="text-right">{formatCurrency(formik.values.invoiceSummary.invoiceAmount)}</td>
                                 <td></td>
                             </tr>
                         </tbody>
@@ -62,11 +61,11 @@ const ProductsFieldArray: React.FC<ProductsFieldArrayProps> = ({ formik }) => {
     const initialValues = {
         sku: "",
         description: "",
-        price: 0,
-        qty: 1,
-        cgst: 0,
-        sgst: 0,
-        totalAmount: 0
+        price: "",
+        qty: '1',
+        cgst: "",
+        sgst: "",
+        amount: ""
     }
     return (
         <FieldArray name="invoiceProducts">
@@ -91,7 +90,7 @@ const ProductsFieldArray: React.FC<ProductsFieldArrayProps> = ({ formik }) => {
                                 </td>
                                 <td colSpan={3}></td>
                                 <td className="">Gross</td>
-                                <td className="text-center">{formatCurrency(formik.values.invoicesummary.invoiceAmount)}</td>
+                                <td className="text-center">{formatCurrency(formik.values.invoiceSummary.invoiceAmount)}</td>
                                 <td></td>
                             </tr>
                         </tbody>

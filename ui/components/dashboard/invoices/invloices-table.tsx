@@ -6,7 +6,7 @@ import { Tabs } from "@/components/ui/tabs"
 import { setInvoices } from "@/store/slices/invoicesSlice"
 import { RootState } from "@/store/store"
 import { ApiResponse } from "@/types/api-responses"
-import { Invoices } from "@/types/invoices"
+import { InvoicesData } from "@/types/invoices"
 import { File, PlusCircle } from "lucide-react"
 import Link from "next/link"
 import { useEffect } from "react"
@@ -15,17 +15,16 @@ import { Invoicescolumns } from "./invoice-column"
 
 
 export default function InvoicesTable() {
-    const storeState = useSelector((state: RootState) => state);
     const dispatch = useDispatch();
-    const businessId = storeState.authContext.activeBusiness._id;
-    const invoiceList = storeState.invoices;
+    const businessId = useSelector((state: RootState) => state.authContext.activeBusiness._id);
+    const invoiceList = useSelector((state: RootState) => state.invoicesData.invoices);
 
     useEffect(() => {
-        const loadInvoices = async (Id: string) => {
+        const loadInvoices = async (businessId: string) => {
             try {
-                const invoices: ApiResponse<Invoices[]> = await getAllInvoices(Id);
-                if (invoices.result) {
-                    dispatch(setInvoices(invoices.result));
+                const response: ApiResponse<InvoicesData> = await getAllInvoices(businessId);
+                if (response.result) {
+                    dispatch(setInvoices(response.result));
                 }
                 // eslint-disable-next-line @typescript-eslint/no-unused-vars
             } catch (_error: unknown) {
@@ -57,7 +56,7 @@ export default function InvoicesTable() {
                         </div>
                     </div>
                     <TableComponent columns={Invoicescolumns} data={invoiceList} heading="Invoice Details" headingInfo="Manage You're Invoices"
-                        smHiddenCells={["invoiceTo.address.city", "invoiceDate", "paymentStatus", "paymentMethod"]}
+                        smHiddenCells={["invoiceTo.city", "invoiceDetails.invoiceDate", "additionalInfo.paymentStatus", "additionalInfo.paymentMethod"]}
                         isSearchInputRequired
                         searchInputValue="invoiceTo.name"
                         key={invoiceList.length}

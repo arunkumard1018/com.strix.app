@@ -1,38 +1,48 @@
-import { Invoices } from '@/types/invoices';
+import { Invoices, InvoicesData } from '@/types/invoices';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 
-const initialState: Invoices[] = [];
+const initialState: InvoicesData = {
+    invoices: [],
+    pagination: {
+        page: 1,
+        limit: 10,
+        totalPages: 1,
+        totalItems: 0,
+    },
+};
 
 const invoicesSlice = createSlice({
     name: 'invoices',
     initialState,
     reducers: {
-        setInvoices(state, action: PayloadAction<Invoices[]>) {
+        setInvoices(state, action: PayloadAction<InvoicesData>) {
             return action.payload;
         },
 
         removeInvoice(state, action: PayloadAction<string>) {
-            return state.filter((customer: Invoices) => customer._id !== action.payload);
+            state.invoices = state.invoices.filter((customer: Invoices) => customer._id !== action.payload);
         },
 
         updateInvoice(state, action: PayloadAction<Invoices>) {
             const updatedCustomer = action.payload;
-            const index = state.findIndex((customer) => customer._id === updatedCustomer._id);
+            const index = state.invoices.findIndex((customer) => customer._id === updatedCustomer._id);
             if (index !== -1) {
-                state[index] = updatedCustomer;
+                state.invoices[index] = updatedCustomer;
             }
         },
 
-        appendInvoice(state, action: PayloadAction<Invoices>) {
-            state.push(action.payload);
+        
+
+        unShiftInvoice(state, action: PayloadAction<Invoices>) {
+            state.invoices.unshift(action.payload);
         },
 
-        clearInvoices() {
-            return [];
+        clearInvoices(state) {
+            state.invoices = [];
         },
     },
 });
 
-export const { clearInvoices,updateInvoice,removeInvoice, setInvoices,appendInvoice } = invoicesSlice.actions;
+export const { clearInvoices,updateInvoice,removeInvoice, setInvoices,unShiftInvoice } = invoicesSlice.actions;
 export default invoicesSlice.reducer;

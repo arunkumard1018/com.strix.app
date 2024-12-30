@@ -1,5 +1,5 @@
 import * as Yup from 'yup';
-import { InvoiceConfig } from './types';
+import { InvoiceConfig } from './form-data';
 
 export const InvoiceSchema = Yup.object().shape({
     invoiceHeading: Yup.object().shape({

@@ -14,7 +14,7 @@ const InvoiceProductsTransportSchema = new mongoose.Schema({
 
 // Define sub-schema for ProductInvoiceDetails
 const InvoiceProductsSchema = new mongoose.Schema({
-    sku: { type: String, required: true },
+    sku: { type: String, default: "" },
     description: { type: String, required: true },
     price: { type: Number, required: true },
     qty: { type: Number, required: true },
@@ -83,7 +83,7 @@ const InvoiceSummarySchema = new mongoose.Schema({
     cgst: { type: Number, required: true },
     sgst: { type: Number, required: true },
     invoiceAmount: { type: Number, required: true },
-});
+}, { _id: false });
 
 // Infer types for transport and product schemas
 type InvoiceProductsTransport = InferSchemaType<typeof InvoiceProductsTransportSchema>;
@@ -111,11 +111,25 @@ const InvoiceSchema = new mongoose.Schema({
         },
     },
     bankDetails: BankDetailsSchema,
-    additionlInfo: AdditionlInfoSchema,
-    invoicesummary: InvoiceSummarySchema,
+    additionalInfo: AdditionlInfoSchema,
+    invoiceSummary: InvoiceSummarySchema,
     user: { type: mongoose.Schema.Types.ObjectId, ref: "users", required: true },
     business: { type: mongoose.Schema.Types.ObjectId, ref: "business", required: true },
-    customers: { type: mongoose.Schema.Types.ObjectId, ref: "customers", },
+    customers: {
+        type: mongoose.Schema.Types.Mixed, // Allow ObjectId or an empty string
+        ref: "customers",
+        validate: {
+            validator: function (value: any) {
+                return (
+                    typeof value === 'string' && value === "" ||
+                    mongoose.isValidObjectId(value)
+                );
+            },
+            message: "customers must be a valid ObjectId or an empty string."
+        },
+        default: "", // Default value can be an empty string
+    },
+
 }, { timestamps: true });
 
 // Export model and types

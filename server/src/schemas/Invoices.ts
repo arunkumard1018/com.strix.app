@@ -13,8 +13,9 @@ const InvoiceProductsTransportSchema = Joi.object({
     amount: Joi.number().required(),
 });
 
+
 const InvoiceProductsSchema = Joi.object({
-    sku: Joi.string().required(),
+    sku: Joi.string().allow(''),
     description: Joi.string().required(),
     price: Joi.number().required(),
     qty: Joi.number().required(),
@@ -45,10 +46,10 @@ const InvoiceToSchema = Joi.object({
     city: Joi.string().required(),
     state: Joi.string().required(),
     postalCode: Joi.number().required(),
-    phone: Joi.number(),
-    email: Joi.string().email(),
-    GSTIN: Joi.string().default(""),
-    PAN: Joi.string().default(""),
+    phone: Joi.number().optional(),
+    email: Joi.string().email().optional().allow(''),
+    GSTIN: Joi.string().optional().allow(''),
+    PAN: Joi.string().optional().allow(''),
 });
 
 const InvoiceDetailsSchema = Joi.object({
@@ -56,18 +57,18 @@ const InvoiceDetailsSchema = Joi.object({
     invoiceNo: Joi.number().required(),
     invoiceDate: Joi.date().required(),
     dueDate: Joi.date().required(),
-    GSTIN: Joi.string().default(""),
-    PAN: Joi.string().default(""),
-    HSN: Joi.number(),
-    stateCode: Joi.number(),
+    GSTIN: Joi.string().allow('').optional(),
+    PAN: Joi.string().allow('').optional(),
+    HSN: Joi.number().optional(),
+    stateCode: Joi.number().optional(),
 });
 
 const BankDetailsSchema = Joi.object({
-    bankName: Joi.string().default(""),
-    accountName: Joi.string().default(""),
+    bankName: Joi.string().allow(''),
+    accountName: Joi.string().allow(''),
     accountNumber: Joi.number(),
-    ifscCode: Joi.string().default(""),
-    branch: Joi.string().default(""),
+    ifscCode: Joi.string().allow(''),
+    branch: Joi.string().allow(''),
 });
 
 const AdditionlInfoSchema = Joi.object({
@@ -101,7 +102,7 @@ const InvoiceSchema = Joi.object({
         .custom((value, helpers) => {
             // Validate that all items in the array are of one type
             const isTransport = value.every((item: InvoiceProductsTransport) => "vehicleNo" in item);
-            const isProduct = value.every((item: InvoiceProducts) => "sku" in item);
+            const isProduct = value.every((item: InvoiceProducts) => "description" in item);
             if (!isTransport && !isProduct) {
                 return helpers.error("invoiceProducts.mixedType", {
                     message: "invoiceProducts should contain either only Transport or only Product details."
@@ -110,9 +111,10 @@ const InvoiceSchema = Joi.object({
             return value;
         }),
     bankDetails: BankDetailsSchema.required(),
-    additionlInfo: AdditionlInfoSchema.required(),
-    invoicesummary: InvoiceSummarySchema.required(),
-    customers: Joi.string(),
+    additionalInfo: AdditionlInfoSchema.required(),
+    invoiceSummary: InvoiceSummarySchema.required(),
+    customers: Joi.string().optional(),
 }).required();
+
 
 export { InvoiceSchema };

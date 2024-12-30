@@ -6,6 +6,7 @@ import HeroComponent from "@/components/home/HeroComponent";
 import { NavBar } from "@/components/home/NavBar";
 import SecondaryHero from "@/components/home/SecondaryHero";
 import { ThemeProvider } from "@/components/themes/theme-provider";
+import { Toaster } from "sonner";
 
 export default function Home() {
   return (
@@ -24,6 +25,7 @@ export default function Home() {
         <footer className="px-2  bg-muted">
           <Footer />
         </footer>
+        <Toaster />
       </ThemeProvider>
     </div>
   );

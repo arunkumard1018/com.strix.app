@@ -3,8 +3,7 @@ import { Field, FormikProps } from "formik";
 import { Trash2Icon } from "lucide-react";
 import { useEffect } from "react";
 import { formatRupee } from "@/lib/utils";
-import { InvoiceFormData } from "../../types";
-
+import { InvoiceFormData } from "../form-data";
 export const InvoiceProductRow = ({
     idx,
     removeRow,
@@ -42,7 +41,7 @@ export const InvoiceProductRow = ({
             }, 0);
         };
         const gross = calculateGross();
-        formik.setFieldValue(`invoicesummary.invoiceAmount`, gross)
+        formik.setFieldValue(`invoiceSummary.invoiceAmount`, gross)
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [formik.values.invoiceProducts[idx].amount])
 

@@ -1,4 +1,4 @@
-import { InvoiceConfig } from '@/components/dashboard/invoices/types';
+import { InvoiceConfig } from '@/components/dashboard/invoices/form-data';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface Config {
@@ -15,12 +15,15 @@ const configSlice = createSlice({
     name: 'config',
     initialState,
     reducers: {
-        setInvoiceConfig(state, action: PayloadAction<Config | undefined>) {
+        setInvoiceConfigWithId(state, action: PayloadAction<Config | undefined>) {
             state.invoiceConfig = action.payload?.invoiceConfig;
             state.businessId = action.payload?.businessId;
+        },
+        setConfigData(state, action: PayloadAction<InvoiceConfig>) {
+            state.invoiceConfig = action.payload;
         },
     },
 });
 
-export const { setInvoiceConfig } = configSlice.actions;
+export const { setInvoiceConfigWithId, setConfigData } = configSlice.actions;
 export default configSlice.reducer;
