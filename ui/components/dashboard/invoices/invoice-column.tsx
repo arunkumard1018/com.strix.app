@@ -1,10 +1,15 @@
 "use client"
 
+import { deleteInvoiceById } from "@/api/invoices"
 import { ActionsDropDownRow } from "@/components/table-def/ActionDropDownMenu"
 import { formatCurrency, formatDateDDMMYY } from "@/lib/utils"
+import { removeInvoice } from "@/store/slices/invoicesSlice"
+import { RootState } from "@/store/store"
 import { Invoices } from "@/types/invoices"
 import { ColumnDef, Row } from "@tanstack/react-table"
 import { ChevronsUpDown } from "lucide-react"
+import { useRouter } from "next/navigation"
+import { useDispatch, useSelector } from "react-redux"
 import { toast } from "sonner"
 
 export const Invoicescolumns: ColumnDef<Invoices>[] = [
@@ -90,11 +95,19 @@ export const Invoicescolumns: ColumnDef<Invoices>[] = [
 
 const ActionsCell = ({ row }: { row: Row<Invoices> }) => {
     const model = row.original;
-
-
+    const businessId = useSelector((state: RootState) => state.authContext.activeBusiness._id);
+    const dispatch = useDispatch();
+    const router = useRouter();
     const deleteInvoice = async (id: string): Promise<boolean> => {
-
-        return Promise.resolve(id === "dkahuy");
+        try {
+            const resp = await deleteInvoiceById(businessId, id);
+            if (resp) {
+                dispatch(removeInvoice(id));
+            }
+            return resp;
+        } catch {
+            return Promise.reject(false);
+        }
     }
     const handleDownload = async () => {
         try {
@@ -129,6 +142,9 @@ const ActionsCell = ({ row }: { row: Row<Invoices> }) => {
         window.open(`${origin}/i/${id}`, '_blank');
     };
 
+    const handleUpdate = () => {
+        router.push(`/dashboard/invoices/add-invoices/${model._id}`);
+    }
     return (
         <ActionsDropDownRow
             handleDownload={handleDownload}
@@ -138,7 +154,7 @@ const ActionsCell = ({ row }: { row: Row<Invoices> }) => {
             itemName={model.invoiceDetails.invoiceNo}
             name="Invoice"
             path="/dashboard/invoices"
-            handleUpdate={() => { }}
+            handleUpdate={handleUpdate}
         />
     );
 }

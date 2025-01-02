@@ -113,7 +113,7 @@ const InvoiceSchema = Joi.object({
     bankDetails: BankDetailsSchema.required(),
     additionalInfo: AdditionlInfoSchema.required(),
     invoiceSummary: InvoiceSummarySchema.required(),
-    customers: Joi.string().optional(),
+    customers: Joi.string().optional().allow(""),
 }).required();
 
 

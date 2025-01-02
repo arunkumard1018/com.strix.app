@@ -10,6 +10,7 @@ import { ColumnDef, Row } from "@tanstack/react-table"
 import axios from "axios"
 import { ChevronsUpDown } from "lucide-react"
 import Image from "next/image"
+import { useRouter } from "next/navigation"
 import { useDispatch, useSelector } from "react-redux"
 
 export const Businesscolumns: ColumnDef<Business>[] = [
@@ -92,6 +93,7 @@ export const Businesscolumns: ColumnDef<Business>[] = [
 const BusinessActionsCell = ({ row }: { row: Row<Business> }) => {
     const business = row.original;
     const authContext = useSelector((state: RootState) => state.authContext)
+    const router = useRouter();
     const dispatch = useDispatch()
     const {toast} = useToast();
     const deleteBusines = async (businessId: string): Promise<boolean> => {
@@ -123,6 +125,10 @@ const BusinessActionsCell = ({ row }: { row: Row<Business> }) => {
         }
     }
 
+    const handleUpdate = () => {
+        router.push(`/dashboard/business/add-business/${business._id}`);
+    }
+
     return (
         <ActionsDropDownRow
             deleteFunction={deleteBusines}
@@ -130,6 +136,7 @@ const BusinessActionsCell = ({ row }: { row: Row<Business> }) => {
             itemName={business.name}
             name="Business"
             path="/dashboard/business"
+            handleUpdate={handleUpdate}
         />
     );
 }

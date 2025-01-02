@@ -100,6 +100,7 @@ export function Invoice({ invoiceData }: { invoiceData: InvoiceType }) {
                 <div className="text-xs space-y-1">
                     <p>Invoice No: {invoiceData.invoiceDetails.invoicePrefix}{invoiceData.invoiceDetails.invoiceNo}</p>
                     <p>Date: {formatDateDDMMYY(invoiceData.invoiceDetails.invoiceDate.toString())}</p>
+                    {invoiceData.invoiceDetails.dueDate && <p>Due Date: {formatDateDDMMYY(invoiceData.invoiceDetails.dueDate.toString())}</p>}
                     {invoiceData.invoiceDetails.GSTIN && <p>GSTIN: {invoiceData.invoiceDetails.GSTIN}</p>}
                     {invoiceData.invoiceDetails.PAN && <p>PAN: {invoiceData.invoiceDetails.PAN}</p>}
                     {invoiceData.invoiceDetails.HSN !== 0 && <p>HSN: {invoiceData.invoiceDetails.HSN}</p>}
@@ -144,6 +145,7 @@ export function Invoice({ invoiceData }: { invoiceData: InvoiceType }) {
                 <div className="hidden sm:block text-sm space-y-1 w-full sm:w-auto">
                     <p>Invoice No: {invoiceData.invoiceDetails.invoicePrefix}{invoiceData.invoiceDetails.invoiceNo}</p>
                     <p>Date: {formatDateDDMMYY(invoiceData.invoiceDetails.invoiceDate.toString())}</p>
+                    {invoiceData.invoiceDetails.dueDate && <p>Due Date: {formatDateDDMMYY(invoiceData.invoiceDetails.dueDate.toString())}</p>}
                     {invoiceData.invoiceDetails.GSTIN && <p>GSTIN: {invoiceData.invoiceDetails.GSTIN}</p>}
                     {invoiceData.invoiceDetails.PAN && <p>PAN: {invoiceData.invoiceDetails.PAN}</p>}
                     {invoiceData.invoiceDetails.HSN !== 0 && <p>HSN: {invoiceData.invoiceDetails.HSN}</p>}

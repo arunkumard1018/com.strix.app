@@ -65,6 +65,9 @@ const PdfTemplate = ({ invoiceData, qrCode }: { invoiceData: Invoice, qrCode: st
                         <Text style={styles.invoiceDetail}>
                             Date: {formatDateDDMMYY(invoiceData.invoiceDetails.invoiceDate.toString())}
                         </Text>
+                        {invoiceData.invoiceDetails.dueDate && (
+                            <Text style={styles.invoiceDetail}>Due Date: {formatDateDDMMYY(invoiceData.invoiceDetails.dueDate.toString())}</Text>
+                        )}
                         {invoiceData.invoiceDetails.GSTIN && (
                             <Text style={styles.invoiceDetail}>GSTIN: {invoiceData.invoiceDetails.GSTIN}</Text>
                         )}

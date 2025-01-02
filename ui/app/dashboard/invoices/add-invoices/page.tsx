@@ -5,7 +5,7 @@ import { invoiceFormInitialData } from '@/config/invoice';
 function Page() {
   return (
     <div className='flex items-center justify-center mt-0 mb-10'>
-      <InvoiceForm initialValues={invoiceFormInitialData} />
+      <InvoiceForm initialValues={invoiceFormInitialData} type="CREATE" />
     </div>
   )
 }

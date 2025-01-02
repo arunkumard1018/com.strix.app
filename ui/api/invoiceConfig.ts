@@ -8,7 +8,6 @@ const createUrl = (businessId: string) => {
     return `/api/v1/business/${businessId}/invoice-config`
 }
 const getInvoiceConfig = async (businessId: string) => {
-    await new Promise(resolve => setTimeout(resolve, 3000));
     const response = await axiosClient.get<ApiResponse<InvoiceConfig>>(createUrl(businessId));
     return response.data;
 }

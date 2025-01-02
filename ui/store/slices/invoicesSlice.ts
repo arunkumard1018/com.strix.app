@@ -19,21 +19,16 @@ const invoicesSlice = createSlice({
         setInvoices(state, action: PayloadAction<InvoicesData>) {
             return action.payload;
         },
-
         removeInvoice(state, action: PayloadAction<string>) {
-            state.invoices = state.invoices.filter((customer: Invoices) => customer._id !== action.payload);
+            state.invoices = state.invoices.filter((invoice: Invoices) => invoice._id !== action.payload);
         },
-
         updateInvoice(state, action: PayloadAction<Invoices>) {
-            const updatedCustomer = action.payload;
-            const index = state.invoices.findIndex((customer) => customer._id === updatedCustomer._id);
+            const updatedInvoice = action.payload;
+            const index = state.invoices.findIndex((invoice) => invoice._id === updatedInvoice._id);
             if (index !== -1) {
-                state.invoices[index] = updatedCustomer;
+                state.invoices[index] = updatedInvoice;
             }
         },
-
-        
-
         unShiftInvoice(state, action: PayloadAction<Invoices>) {
             state.invoices.unshift(action.payload);
         },

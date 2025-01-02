@@ -80,7 +80,7 @@ export interface InvoiceFormData {
 export interface InvoiceConfig {
     invoiceHeading: InvoiceHeading;
     invoiceFrom: InvoiceFrom;
-    invoiceDetails: InvoiceDetailsConfig;
+    invoiceDetails: InvoiceDetails;
     additionalInfo: AdditionalInfo;
     bankDetails: BankDetails;
 }

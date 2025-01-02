@@ -1,5 +1,7 @@
 import { Invoices } from "@/types/invoices";
-import { Download, Copy, Plus } from "lucide-react";
+import { Download, Copy, Plus, Loader2 } from "lucide-react";
+import { useSearchParams } from "next/navigation";
+import { useState } from "react";
 import { toast } from "sonner";
 
 interface CreatedInvoiceViewProps {
@@ -9,9 +11,12 @@ interface CreatedInvoiceViewProps {
 
 export function CreatedInvoiceView({ invoice, onCreateNew }: CreatedInvoiceViewProps) {
     const origin = window.location.origin;
-
+    const searchParams = useSearchParams();
+    const [isDownloading, setIsDownloading] = useState(false);
+    const type = searchParams.get("type");
     const handleDownload = async () => {
         try {
+            setIsDownloading(true);
             const response = await fetch(`${origin}/api/invoice/download?id=${invoice._id}`);
             if (!response.ok) {
                 throw new Error('Download failed');
@@ -35,6 +40,8 @@ export function CreatedInvoiceView({ invoice, onCreateNew }: CreatedInvoiceViewP
             toast.error('Failed to download invoice', {
                 duration: 2000
             });
+        } finally {
+            setIsDownloading(false);
         }
     }
 
@@ -57,7 +64,7 @@ export function CreatedInvoiceView({ invoice, onCreateNew }: CreatedInvoiceViewP
         <div className="flex justify-center relative">
             <div className="w-full max-w-[800px] border  relative">
                 <div className="flex flex-col  mb-4 p-4">
-                    <h2 className="text-xl font-semibold mb-1 text-green-300">Invoice Created Successfully</h2>
+                    <h2 className="text-xl font-semibold mb-1 text-green-300">{`Invoice ${type === "UPDATE" ? "Updated" : "Created"} Successfully`}</h2>
                     <p>{invoice.invoiceTo.name}</p>
                 </div>
 
@@ -73,12 +80,17 @@ export function CreatedInvoiceView({ invoice, onCreateNew }: CreatedInvoiceViewP
                     </button>
                     <button
                         onClick={handleDownload}
+                        disabled={isDownloading}
                         className="rounded-full border border-muted-foreground  p-3 shadow-lg 
                         hover:bg-muted-foreground/30 hover:scale-110 hover:-translate-y-1
                         active:scale-95 transition-all duration-200 ease-in-out"
                         title="Download Invoice"
                     >
-                        <Download size={20} />
+                        {isDownloading ? (
+                            <Loader2 size={20} className="animate-spin" />
+                        ) : (
+                            <Download size={20} />
+                        )}
                     </button>
                     <button
                         onClick={handleCopyLink}

@@ -6,6 +6,7 @@ import { invoiceConfig } from "@/config/invoice";
 import { setInvoiceConfigWithId } from "@/store/slices/configSlice";
 import { RootState } from "@/store/store";
 import { Form, FormikProps } from "formik";
+import { Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { InvoiceFormData } from "../form-data";
@@ -14,20 +15,19 @@ import { InvoiceDetailsForm } from "./InvoiceDetailsForm";
 import InvoiceHeaderForm from "./InvoiceHeaderForm";
 import InvoiceSecondaryHeaderForm from "./InvoiceSecondaryHeaderForm";
 import { ProductsFieldArray, TransportProductFieldArray } from "./field-arrays";
-import { Loader2 } from "lucide-react";
 
 interface InvoiceDataFormProps {    
     formik: FormikProps<InvoiceFormData>;
-    isError: boolean;
+    isError: string | null ;
     isSubmitting: boolean;
+    status: "CREATE" | "UPDATE";
 }
-const InvoiceDataForm = ({ formik ,isError, isSubmitting}: InvoiceDataFormProps) => {
+const InvoiceDataForm = ({ formik ,isError, isSubmitting, status}: InvoiceDataFormProps) => {
     const activeBusiness = useSelector((state: RootState) => state.authContext.activeBusiness);
     const config = useSelector((state: RootState) => state.config);
     const storedInvoiceConfig = config.invoiceConfig;
     const dispatch = useDispatch();
     const storedConfigBusinessId = config.businessId;
-    const [status, setStatus] = useState("CREATE")
     const [loading, setLoading] = useState(false);
     useEffect(() => {
         const loadData = async () => {
@@ -35,7 +35,6 @@ const InvoiceDataForm = ({ formik ,isError, isSubmitting}: InvoiceDataFormProps)
             setLoading(true)
             try {
                 const response = await getInvoiceConfig(activeBusiness._id);
-                console.log(response.result)
                 if (response.result) {
                     formik.setValues({
                         ...formik.values, ...response.result,
@@ -99,7 +98,6 @@ const InvoiceDataForm = ({ formik ,isError, isSubmitting}: InvoiceDataFormProps)
                     },
                     businessId: activeBusiness._id
                 }));
-
             } finally {
                 formik.setFieldValue("additionalInfo.isTransportInvoice",
                     activeBusiness.catagory === "Transport" ? true : false);
@@ -107,7 +105,7 @@ const InvoiceDataForm = ({ formik ,isError, isSubmitting}: InvoiceDataFormProps)
             }
         }
         if (activeBusiness._id !== storedConfigBusinessId || storedConfigBusinessId === undefined) {
-            loadData()
+            if(status === "CREATE") loadData()
         } else {
             if (storedInvoiceConfig) {
                 formik.setValues({
@@ -135,12 +133,11 @@ const InvoiceDataForm = ({ formik ,isError, isSubmitting}: InvoiceDataFormProps)
                 formik.setFieldValue("additionalInfo.isTransportInvoice",
                     activeBusiness.catagory === "Transport" ? true : false);
             } else {
-                loadData()
+                if(status === "CREATE") loadData()
             }
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [activeBusiness._id]);
-
 
     return (
         <div>
@@ -157,7 +154,7 @@ const InvoiceDataForm = ({ formik ,isError, isSubmitting}: InvoiceDataFormProps)
                         {/* Error Summary */}
                         {isError && <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4 text-xs" role="alert">
                             <p className="font-bold">Error:</p>
-                            <p>Please fill all required fields.</p>
+                            <p>{isError}</p>
                         </div>}
                         <div id="invoice" className=" invoice   flex-col space-y-8 py-8 ">
                             {/* Invoice Header Form  */}
@@ -190,10 +187,10 @@ const InvoiceDataForm = ({ formik ,isError, isSubmitting}: InvoiceDataFormProps)
                                 {isSubmitting ? (
                                     <>
                                         <Loader2 className="w-5 h-5 animate-spin" />
-                                        <span>Creating Invoice...</span>
+                                        <span>{`${status === "UPDATE" ? "Updating" : "Creating"} Invoice...`}</span>
                                     </>
                                 ) : (
-                                    <span>Create Invoice</span>
+                                    <span>{`${status === "UPDATE" ? "Update" : "Create"} Invoice`}</span>
                                 )}
                             </Button>
                         </div>

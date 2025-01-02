@@ -24,7 +24,6 @@ export default function CustomersTable() {
     const handleCreateCustomer = () => {
         router.push('customers?createCustomer=true');
     };
-
     useEffect(() => {
         const loadCustomers = async (Id: string) => {
             try {
@@ -32,13 +31,11 @@ export default function CustomersTable() {
                 if (customers.result) {
                     dispatch(setCustomers(customers.result));
                 }
-                // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            } catch (_error: unknown) {
+            } catch {
             }
         };
-        loadCustomers(businessId);
-    }, [businessId, dispatch]);
-    console.log(CustomersList)
+        if(CustomersList.length === 0) loadCustomers(businessId);
+    }, [businessId, dispatch, CustomersList]);
     if (!CustomersList) return <div className="text-center mt-10">Loading...</div>
     return (
         <div className="flex flex-col sm:py-4">
