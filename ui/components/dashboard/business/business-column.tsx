@@ -31,7 +31,6 @@ export const Businesscolumns: ColumnDef<Business>[] = [
         ),
     },
 
-
     {
         id: "name",
         accessorKey: "name",
@@ -45,7 +44,6 @@ export const Businesscolumns: ColumnDef<Business>[] = [
         },
         cell: ({ row }) => <div className="capitalize space-y-1">
             <div className="font-medium text-left">{row.getValue("name")}</div>
-            <div className="text-xs md:hidden text-left"> GSTIN : {row.getValue("GSTIN")}</div>
         </div>,
     },
 
@@ -57,29 +55,20 @@ export const Businesscolumns: ColumnDef<Business>[] = [
             <div className="capitalize table-cell">{row.getValue("catagory")}</div>
         ),
     },
-
     {
-        id: "GSTIN",
-        accessorKey: "GSTIN",
-        header: "GSTIN",
+        id: "city",
+        accessorKey: "city",
+        header: "City",
         cell: ({ row }) => (
-            <div className="capitalize table-cell">{row.getValue("GSTIN")}</div>
+            <div className="capitalize table-cell">{row.getValue("city")}</div>
         ),
     },
     {
-        id: "HSN",
-        accessorKey: "HSN",
-        header: "HSN",
+        id: "phone",
+        accessorKey: "phone",
+        header: "Phone",
         cell: ({ row }) => (
-            <div className="capitalize table-cell">{row.getValue("HSN")}</div>
-        ),
-    },
-    {
-        id: "invoicePrefix",
-        accessorKey: "invoicePrefix",
-        header: "Invoice Prefix",
-        cell: ({ row }) => (
-            <div className="capitalize table-cell">{row.getValue("invoicePrefix")}</div>
+            <div className="capitalize table-cell">{row.getValue("phone")}</div>
         ),
     },
 

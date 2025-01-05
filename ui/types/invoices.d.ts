@@ -64,6 +64,7 @@ export interface InvoiceStats {
     totalProcessingAmount: number;
     totalDueAmount: number;
 }
+
 interface MonthlyData {
     month: string;
     invoices: number;
@@ -71,10 +72,19 @@ interface MonthlyData {
     revenue: number;
     processingAndDue: number;
 }
-
-interface InvoiceData {
+export interface YearlyInvoiceData {
     data: MonthlyData[];
+    invoicedAmount: number;
+    outstandingAmount: number;
+    paidAmount: number;
+}
+
+export interface RevenueData {
     invoicedAmount: number;
     paidAmount: number;
     outstandingAmount: number;
+    totalInvoices: number;
+    totalPaidInvoices: number;
+    totalProcessingInvoices: number;
+    totalDueInvoices: number;
 }

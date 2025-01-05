@@ -1,53 +1,29 @@
-import { BusinessFormData } from "@/components/dashboard/business/business-form";
+import { OnBoardingFormData } from "@/components/dashboard/layout/onboarding-form";
 import { Business } from "@/store/slices/userSlice";
 import { ApiResponse } from "@/types/api-responses";
-import { BusinessData, BusinessModel } from "@/types/definetions";
+import { BusinessModel } from "@/types/model.definetions";
 import { axiosClient } from "./axiosClient";
 
-const createBusiness = async (businessData: BusinessFormData) => {
+const createBusiness = async (onboardingData: OnBoardingFormData) => {
     const data: BusinessModel = {
-        name: businessData.name,
-        catagory: businessData.catagory,
-        GSTIN: businessData.GSTIN,
-        invoicePrefix: businessData.invoicePrefix,
-        phone: Number(businessData.phone),
-        HSN: Number(businessData.hsn),
-        stateCode: Number(businessData.stateCode),
-        logo: businessData.logo,
-        address: {
-            street: businessData.street,
-            city: businessData.city,
-            state: businessData.state,
-            postalCode: Number(businessData.postalCode),
-        }
+        name: onboardingData.name,
+        catagory: onboardingData.catagory,
+        invoicePrefixes: [{ prefix: onboardingData.invoicePrefix, count: 1 }],
+        phone: Number(onboardingData.phone),
+        logo: onboardingData.logo,
+        city: onboardingData.city,
     }
     const response = await axiosClient.post<ApiResponse<Business>>("/api/v1/users/business", { ...data });
     return response.data;
 }
 
-const updateBusiness = async (businessData: BusinessFormData, businessId: string) => {
-    const data: BusinessModel = {
-        name: businessData.name,
-        catagory: businessData.catagory,
-        GSTIN: businessData.GSTIN,
-        invoicePrefix: businessData.invoicePrefix,
-        phone: Number(businessData.phone),
-        HSN: Number(businessData.hsn),
-        stateCode: Number(businessData.stateCode),
-        logo: businessData.logo,
-        address: {
-            street: businessData.street,
-            city: businessData.city,
-            state: businessData.state,
-            postalCode: Number(businessData.postalCode),
-        }
-    }
-    const response = await axiosClient.put<ApiResponse<BusinessData>>(`/api/v1/users/business/${businessId}`, { ...data });
+const updateBusiness = async (businessData: BusinessModel, businessId: string) => {
+    const response = await axiosClient.put<ApiResponse<Business>>(`/api/v1/users/business/${businessId}`, { ...businessData });
     return response.data;
 }
 
 const getBusinessInfo = async (businessId: string) => {
-    const response = await axiosClient.get<ApiResponse<BusinessData>>(`/api/v1/users/business/${businessId}`);
+    const response = await axiosClient.get<ApiResponse<Business>>(`/api/v1/users/business/${businessId}`);
     return response.data;
 }
 
@@ -56,11 +32,10 @@ const deleteBusiness = async (businessId: string) => {
         const response = await axiosClient.delete(`/api/v1/users/business/${businessId}`);
         if (response.data.result.deletedCount > 0) return Promise.resolve(true);
         return Promise.resolve(false)
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (error) {
+    } catch {
         return Promise.resolve(false)
     }
 }
 
-
 export { createBusiness, deleteBusiness, getBusinessInfo, updateBusiness };
+

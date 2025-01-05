@@ -25,7 +25,7 @@ const createBusiness = async (businessData: CreateBusiness) => {
     } catch (error) {
         await session.abortTransaction();
         throw error;
-    } finally{
+    } finally {
         session.endSession();
     }
 }
@@ -39,14 +39,14 @@ const updateBusiness = async (businessId: Id, businessData: CreateBusiness) => {
 }
 
 const getAllBusinessForUser = async (usersId: Id) => {
-    return businessModel.find({ owner: usersId }, { address: 0, owner: 0, __v: 0, createdAt: 0, updatedAt: 0 });
+    return businessModel.find({ owner: usersId }, { owner: 0, __v: 0, createdAt: 0, updatedAt: 0 });
 }
 
 const getBusinessWithId = async (businessId: Id, userId: Id) => {
     return businessModel.findOne({ _id: businessId, owner: userId }, { __v: 0, createdAt: 0, updatedAt: 0 });
 }
 
-const deleteBusinessWithID = async (businessId : Id, userId: Id) => {
+const deleteBusinessWithID = async (businessId: Id, userId: Id) => {
     const session = await mongoose.startSession();
 
     try {

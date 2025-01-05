@@ -19,7 +19,7 @@ import { cn } from "@/lib/utils"
 import { setCustomers } from "@/store/slices/customersSlice"
 import { RootState } from "@/store/store"
 import { ApiResponse } from "@/types/api-responses"
-import { Customers } from "@/types/definetions"
+import { Customers } from "@/types/model.definetions"
 import { Check, ChevronsUpDown } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
@@ -45,7 +45,7 @@ export function ComboboxDemo({ onSelectCustomer }: { onSelectCustomer: (customer
         };
         if (customers.length === 0) loadCustomers(businessId);
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [businessId, dispatch]);
+    }, [businessId]);
 
     const customerOptions = customers.map((customer) => ({
         value: customer._id,

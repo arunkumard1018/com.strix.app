@@ -7,7 +7,7 @@ import { setInvoices } from "@/store/slices/invoicesSlice"
 import { RootState } from "@/store/store"
 import { ApiResponse } from "@/types/api-responses"
 import { InvoicesData } from "@/types/invoices"
-import { File, PlusCircle, Upload } from "lucide-react"
+import { File, PlusCircle } from "lucide-react"
 import Link from "next/link"
 import { useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux"
@@ -18,7 +18,6 @@ export default function InvoicesTable() {
     const dispatch = useDispatch();
     const businessId = useSelector((state: RootState) => state.authContext.activeBusiness._id);
     const invoiceList = useSelector((state: RootState) => state.invoicesData.invoices);
-    // const [file, setFile] = useState<File>();
 
     useEffect(() => {
         const loadInvoices = async (businessId: string) => {
@@ -32,23 +31,8 @@ export default function InvoicesTable() {
             }
         };
         if (invoiceList.length === 0) loadInvoices(businessId);
-    }, [businessId, dispatch, invoiceList]);
-
-    const handleFileUpload = async (file: File) => {
-        console.log("uploading file");
-        console.log("file", file);
-        const formData = new FormData();
-        formData.append('file', file);
-        formData.append('name', file.name);
-        console.log("formData", formData);
-    };
-
-    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const file = event.target.files?.[0];
-        if (file) {
-            handleFileUpload(file);
-        }
-    };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [businessId]);
 
     if (!invoiceList) return <div className="text-center mt-10">Loading...</div>
     return (
@@ -57,19 +41,7 @@ export default function InvoicesTable() {
                 <Tabs defaultValue="all">
                     <div className="flex items-center mx-2">
                         <div className="ml-auto flex items-center gap-2">
-                            <Button size="sm" variant="outline" className="h-7 gap-1 rounded-none">
-                                <Upload className="h-3.5 w-3.5" />
-                                <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
-                                    Upload
-                                </span>
-                                <input
-                                    disabled={true}
-                                    type="file"
-                                    onChange={handleFileChange}
-                                    className="absolute inset-0 opacity-0 cursor-pointer"
-                                    aria-label="Upload file"
-                                />
-                            </Button>
+
                             <Button size="sm" variant="outline" className="h-7 gap-1 rounded-none">
                                 <File className="h-3.5 w-3.5" />
                                 <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
@@ -88,8 +60,8 @@ export default function InvoicesTable() {
                     </div>
                     <TableComponent columns={Invoicescolumns} data={invoiceList} heading="Invoice Details" headingInfo="Manage You're Invoices"
                         smHiddenCells={["invoiceTo.city", "invoiceDetails.invoiceDate", "additionalInfo.paymentStatus", "additionalInfo.paymentMethod"]}
-                        isSearchInputRequired
-                        searchInputValue="invoiceTo.name"
+                        isSearchInputRequired="invoiceTo.name"
+                        searchPlaceHolderText="Search By Customer Name"
                         key={invoiceList.length}
                         isSelectAvailable={false} />
                 </Tabs>

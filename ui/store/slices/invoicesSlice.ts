@@ -1,3 +1,4 @@
+import { PaymentStatus } from '@/components/dashboard/invoices/types';
 import { Invoices, InvoicesData } from '@/types/invoices';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
@@ -33,11 +34,19 @@ const invoicesSlice = createSlice({
             state.invoices.unshift(action.payload);
         },
 
+        updateInvoiceStatus(state, action: PayloadAction<{invoiceId: string, paymentStatus: PaymentStatus}>) {
+            const {invoiceId, paymentStatus} = action.payload;
+            const index = state.invoices.findIndex((invoice) => invoice._id === invoiceId);
+            if (index !== -1) {
+                state.invoices[index].additionalInfo.paymentStatus = paymentStatus;
+            }
+        },
+
         clearInvoices(state) {
             state.invoices = [];
         },
     },
 });
 
-export const { clearInvoices,updateInvoice,removeInvoice, setInvoices,unShiftInvoice } = invoicesSlice.actions;
+export const { clearInvoices,updateInvoice,removeInvoice, setInvoices,unShiftInvoice, updateInvoiceStatus } = invoicesSlice.actions;
 export default invoicesSlice.reducer;

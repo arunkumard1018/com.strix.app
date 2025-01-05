@@ -1,20 +1,23 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { MoreHorizontal } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { toast } from "sonner"
 import { ConfirmationDialog } from "./ConfirmationDialog"
+import { PaymentStatus } from "../dashboard/invoices/types"
 
-export function ActionsDropDownRow({ id, name, itemName, deleteFunction, handleUpdate, handleDownload, handleView }:
+const paymentStatus: PaymentStatus[] = ["Paid", "Processing", "Due"];
+export function ActionsDropDownRow({ id, name, itemName, deleteFunction, handleUpdate, handleDownload, handleView,handlePayment }:
     {
         id: string, name: string, path: string, itemName?: string,
         deleteFunction: (id: string) => Promise<boolean>,
         handleUpdate: (id: string) => void,
         handleDownload?: (id: string) => void,
         handleView?: (id: string) => void,
+        handlePayment?: (id: string, paymentStatus: PaymentStatus) => void,
     }) {
 
     const [isDialogOpen, setDialogOpen] = useState(false); // State to control dialog visibility
@@ -50,6 +53,20 @@ export function ActionsDropDownRow({ id, name, itemName, deleteFunction, handleU
                             View {name}
                         </DropdownMenuItem>
                     )}
+
+                    {handlePayment && <DropdownMenuSub>
+                        <DropdownMenuSubTrigger>Update Status</DropdownMenuSubTrigger>
+                        <DropdownMenuSubContent >
+                            <DropdownMenuGroup >
+                                {paymentStatus.map((status: PaymentStatus) => (
+                                    <DropdownMenuItem key={status} onClick={() =>  handlePayment(id, status)}>
+                                        {status}
+                                    </DropdownMenuItem>
+                                ))}
+                            </DropdownMenuGroup>
+                        </DropdownMenuSubContent>
+                    </DropdownMenuSub>}
+
                     <DropdownMenuItem
                         className="cursor-pointer"
                         onClick={() => navigator.clipboard.writeText(String(id))}>

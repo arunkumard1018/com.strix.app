@@ -1,5 +1,5 @@
 import { ApiResponse } from "@/types/api-responses";
-import { InvoiceData, InvoiceStats, LatestInvoices } from "@/types/invoices";
+import { InvoiceStats, LatestInvoices, RevenueData, YearlyInvoiceData } from "@/types/invoices";
 import { axiosClient } from "./axiosClient";
 
 const getLatestInvoices = async (businessId:string) => {
@@ -12,10 +12,15 @@ const getInvoiceStats = async (businessId:string) => {
     return response.data;
 }
 
-const getInvoiceData = async (year:number , businessId:string) => {
-    const response = await axiosClient.get<ApiResponse<InvoiceData>>(`/api/v1/business/${businessId}/stats/${year}`);
+const getYearlyInvoiceData = async (year:number , businessId:string) => {
+    const response = await axiosClient.get<ApiResponse<YearlyInvoiceData>>(`/api/v1/business/${businessId}/stats/${year}`);
     return response.data;
 }
 
-export { getInvoiceData, getInvoiceStats, getLatestInvoices };
+const getRevenueData = async (businessId:string) => {
+    const response = await axiosClient.get<ApiResponse<RevenueData>>(`/api/v1/business/${businessId}/stats/revenue`);
+    return response.data;
+}
+
+export { getInvoiceStats, getLatestInvoices, getYearlyInvoiceData, getRevenueData };
 

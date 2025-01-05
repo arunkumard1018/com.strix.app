@@ -17,7 +17,7 @@ import { cn } from "@/lib/utils";
 import { appendCustomer, updateCustomer } from "@/store/slices/customersSlice";
 import { RootState } from "@/store/store";
 import { ApiResponse } from "@/types/api-responses";
-import { Customers } from "@/types/definetions";
+import { Customers } from "@/types/model.definetions";
 import { Field, Form, Formik } from "formik";
 import { X } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";

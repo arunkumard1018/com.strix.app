@@ -4,7 +4,7 @@ import mongoose from "mongoose";
 import logger from "../lib/logConfig";
 import { InvoiceModel } from "../model/Invoice";
 
-const getYearlyInvoiceStats = async (businessId: Id, userId: Id, year: number) => {
+const getMonthlyInvoiceStats = async (businessId: Id, userId: Id, year: number) => {
     logger.debug(`Fetching yearly invoice stats for business: ${businessId}, user: ${userId}, year: ${year}`);
     try {
         const startDate = new Date(year, 0, 1); // January 1st of the year
@@ -100,8 +100,8 @@ const getYearlyInvoiceStats = async (businessId: Id, userId: Id, year: number) =
         const outstandingAmount = invoicedAmount - paidAmount;
 
         logger.debug(`Successfully retrieved yearly stats with invoiced amount: ${invoicedAmount}, paid amount: ${paidAmount}`);
-        return { 
-            data, 
+        return {
+            data,
             invoicedAmount,
             paidAmount,
             outstandingAmount
@@ -166,9 +166,95 @@ const getInvoiceStats = async (businessId: Id, userId: Id) => {
     }
 };
 
+const getRevenueData = async (businessId: Id, userId: Id) => {
+    logger.debug(`Getting revenue data for business: ${businessId} and user: ${userId}`);
+    try {
+        // Aggregate to compute the values
+        const revenueData = await InvoiceModel.aggregate([
+            { $match: { business: new mongoose.Types.ObjectId(businessId), user: new mongoose.Types.ObjectId(userId) } },
+            {
+                $group: {
+                    _id: null,
+                    invoicedAmount: { $sum: '$invoiceSummary.invoiceAmount' },
+                    paidAmount: {
+                        $sum: {
+                            $cond: [
+                                { $eq: ['$additionalInfo.paymentStatus', 'Paid'] },
+                                '$invoiceSummary.invoiceAmount',
+                                0
+                            ]
+                        }
+                    },
+                    totalInvoices: { $sum: 1 },
+                    totalPaidInvoices: {
+                        $sum: {
+                            $cond: [
+                                { $eq: ['$additionalInfo.paymentStatus', 'Paid'] },
+                                1,
+                                0
+                            ]
+                        }
+                    },
+                    totalProcessingInvoices: {
+                        $sum: {
+                            $cond: [
+                                { $eq: ['$additionalInfo.paymentStatus', 'Processing'] },
+                                1,
+                                0
+                            ]
+                        }
+                    },
+                    totalDueInvoices: {
+                        $sum: {
+                            $cond: [
+                                { $eq: ['$additionalInfo.paymentStatus', 'Due'] },
+                                1,
+                                0
+                            ]
+                        }
+                    },
+                }
+            },
+            {
+                $project: {
+                    _id: 0,
+                    invoicedAmount: 1,
+                    paidAmount: 1,
+                    outstandingAmount: { $subtract: ['$invoicedAmount', '$paidAmount'] },
+                    totalInvoices: 1,
+                    totalPaidInvoices: 1,
+                    totalProcessingInvoices: 1,
+                    totalDueInvoices: 1,
+                }
+            }
+        ]);
+
+        if (revenueData.length === 0) {
+            logger.debug('No revenue data found, returning default values');
+            return {
+                invoicedAmount: 0,
+                paidAmount: 0,
+                outstandingAmount: 0,
+                totalInvoices: 0,
+                totalPaidInvoices: 0,
+                totalProcessingInvoices: 0,
+                totalDueInvoices: 0,
+            };
+        }
+
+        logger.debug(`Successfully retrieved revenue data: ${JSON.stringify(revenueData[0])}`);
+        return revenueData[0];
+    } catch (error: unknown) {
+        logger.error(`Error in getRevenueData: ${error instanceof Error ? error.stack : error}`);
+        throw error;
+    }
+};
+
+
 
 // Update the exports section
 export {
-    getYearlyInvoiceStats,
+    getMonthlyInvoiceStats,
     getInvoiceStats,
+    getRevenueData
 };

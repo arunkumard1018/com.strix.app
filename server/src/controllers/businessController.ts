@@ -6,7 +6,8 @@ import { HttpStatusCode } from "../lib/status-codes";
 import { Business, CreateBusiness } from "../model/business";
 import { businessSchema } from "../schemas/businessShema";
 import { createBusiness, deleteBusinessWithID, getAllBusinessForUser, getBusinessWithId, updateBusiness, } from "../services/businessService";
-const handleAddBusiness = async (req: Request, res: Response) => {
+
+const handleCreateBusiness = async (req: Request, res: Response) => {
     const userId = req.authContext.userId;
     try {
         const { error } = businessSchema.validate(req.body, { abortEarly: false });
@@ -97,5 +98,5 @@ const handleDeleteBusiness = async (req: Request, res: Response) => {
         res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json(ResponseEntity("error", "Error While Deleting Business", undefined, message))
     }
 }
-export { handleAddBusiness, handleDeleteBusiness, handleGetAllBusiness, handleGetBusinessWithId, handleUpdateBusiness };
+export { handleCreateBusiness as handleAddBusiness, handleDeleteBusiness, handleGetAllBusiness, handleGetBusinessWithId, handleUpdateBusiness };
 

@@ -1,21 +1,21 @@
-import { InvoiceStats, LatestInvoices } from '@/types/invoices';
+import { LatestInvoices, RevenueData } from '@/types/invoices';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 
 export interface LatestDataContext {
     invoices: LatestInvoices[] | undefined;
-    invoiceStats: InvoiceStats;
+    revenue: RevenueData;
 }
 const initialState: LatestDataContext = {
     invoices: undefined,
-    invoiceStats: {
+    revenue: {
+        invoicedAmount: 0,
+        paidAmount: 0,
+        outstandingAmount: 0,
         totalInvoices: 0,
-        paidInvoices: 0,
-        processingInvoices: 0,
-        dueInvoices: 0,
-        totalPaidAmount: 0,
-        totalProcessingAmount: 0,
-        totalDueAmount: 0,
+        totalPaidInvoices: 0,
+        totalProcessingInvoices: 0,
+        totalDueInvoices: 0,
     },
 };
 
@@ -26,11 +26,11 @@ const latestDataSlice = createSlice({
         addLatestInvoices(state, action: PayloadAction<LatestInvoices[]>) {
             state.invoices = action.payload;
         },
-        addInvoicesStats(state, action: PayloadAction<InvoiceStats>) {
-            state.invoiceStats = action.payload;
+        addRevenueData(state, action: PayloadAction<RevenueData>) {
+            state.revenue = action.payload;
         }
     },
 });
-export const { addLatestInvoices, addInvoicesStats } = latestDataSlice.actions;
+export const { addLatestInvoices, addRevenueData } = latestDataSlice.actions;
 export default latestDataSlice.reducer;
 

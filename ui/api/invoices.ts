@@ -1,5 +1,5 @@
 import { InvoiceFormData } from "@/components/dashboard/invoices/form-data"
-import { Invoice } from "@/components/dashboard/invoices/types"
+import { Invoice, PaymentStatus } from "@/components/dashboard/invoices/types"
 import { ApiResponse } from "@/types/api-responses"
 import { InvoicesData } from "@/types/invoices"
 import { axiosClient } from "./axiosClient"
@@ -121,4 +121,9 @@ const getInvoiceById = async (invoiceId: string) => {
     return response.data;
 }
 
-export { createInvoices, deleteInvoiceById, getAllInvoices, getInvoiceById, updateInvoices }
+const updatePaymentStatus = async (businessId: string, invoiceId: string, paymentStatus: PaymentStatus) => {
+    const response = await axiosClient.patch<ApiResponse<PaymentStatus>>(`/api/v1/business/${businessId}/invoices/${invoiceId}/payment-status`, { paymentStatus });
+    return response.data;
+}
+
+export { createInvoices, deleteInvoiceById, getAllInvoices, getInvoiceById, updateInvoices, updatePaymentStatus }

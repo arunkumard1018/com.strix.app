@@ -19,8 +19,9 @@ import { Alert, AlertDescription } from '../ui/alert';
 const SignInSchema = Yup.object().shape({
     email: Yup.string().email().required("Email is required"),
     password: Yup.string()
-        .required("You Must Enter a Password")
-        .min(4, "Password is too short - should be 4 chars minimum"),
+        .required("Enter a Password")
+        // V1-Fix
+        // .min(8, "Password is too short - should be 8 chars minimum"), 
 });
 
 const initialValues = {

@@ -85,7 +85,7 @@ const PdfTemplate = ({ invoiceData, qrCode }: { invoiceData: Invoice, qrCode: st
             </View>
             <PdfInvoiceProductsTable products={invoiceData.invoiceProducts} invoiceSummary={invoiceData.invoiceSummary} />
             <View style={[styles.section, { flexDirection: "row", justifyContent: "space-between" }]}>
-                {invoiceData.bankDetails && invoiceData.bankDetails.accountNumber !== 0 && <View>
+                {invoiceData.additionalInfo.isBankDetails && invoiceData.bankDetails && invoiceData.bankDetails.accountNumber !== 0 && <View>
                     <Text style={[{ fontSize: 12, marginTop: 10, fontWeight: "extrabold", marginBottom: 2 }]}>Bank Details:</Text>
                     <Text style={{ fontSize: 9, marginBottom: 2 }}>{invoiceData.bankDetails.bankName && `Bank Name: ${invoiceData.bankDetails.bankName}`}</Text>
                     <Text style={{ fontSize: 9, marginBottom: 2 }}>{invoiceData.bankDetails.accountName && `Account Name: ${invoiceData.bankDetails.accountName}`}</Text>
@@ -93,7 +93,7 @@ const PdfTemplate = ({ invoiceData, qrCode }: { invoiceData: Invoice, qrCode: st
                     <Text style={{ fontSize: 9, marginBottom: 2 }}>{invoiceData.bankDetails.ifscCode && `IFSC Code: ${invoiceData.bankDetails.ifscCode}`}</Text>
                     <Text style={{ fontSize: 9, marginBottom: 2 }}>{invoiceData.bankDetails.branch && `Branch: ${invoiceData.bankDetails.branch}`}</Text>
                 </View>}
-                <View style={{ alignItems: invoiceData.bankDetails && invoiceData.bankDetails.accountNumber !== 0 ? "flex-end" : "flex-start", justifyContent: "flex-end" }}>
+                <View style={{ alignItems: invoiceData.additionalInfo.isBankDetails  ? "flex-end" : "flex-start", justifyContent: "flex-end" }}>
                     <Image src={qrCode} style={styles.qrCode} />
                     <Text style={{ fontSize: 9, marginTop: 4, }}>{invoiceData.additionalInfo.thankyouNote && `Thank you for youre Business!`}</Text>
                 </View>

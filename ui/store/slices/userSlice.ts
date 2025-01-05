@@ -5,10 +5,10 @@ export interface Business {
     _id: string;
     name: string;
     catagory: string;
+    phone: number;
     logo: string;
-    GSTIN: string;
-    HSN: number;
-    invoicePrefix: string;
+    invoicePrefixes: { prefix: string, count: number }[];
+    city: string;
 }
 
 export interface UserData {
@@ -29,9 +29,9 @@ const initialState: AuthContext = {
         name: "Strix Invoice",
         catagory: "Retail",
         logo: "/img/strix.png",
-        GSTIN: "",
-        invoicePrefix: "",
-        HSN: 22
+        invoicePrefixes: [{ prefix: "INV", count: 0 }],
+        city: "",
+        phone: 0,
     }
 };
 

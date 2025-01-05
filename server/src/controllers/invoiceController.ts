@@ -1,12 +1,11 @@
 import { Request, Response } from "express";
+import { DuplicateInvoiceNumberError, InvoiceNotFoundError } from "../errors";
 import { ResponseEntity } from "../lib/ApiResponse";
 import logger from "../lib/logConfig";
 import { HttpStatusCode } from "../lib/status-codes";
 import { InvoiceSchema } from "../schemas/Invoices";
-import { createInvoice, deleteInvoice, updateInvoice, getInvoiceDetails, getAllInvoicesInfo, getLatestInvoices, getInvoiceView } from "../services/invoiceService";
-import { DuplicateInvoiceNumberError, InvoiceNotFoundError } from "../errors";
-import { getYearlyInvoiceStats, getInvoiceStats } from "../services/InvoiceStatsService";
-import { InvoiceModel } from "../model/Invoice";
+import { createInvoice, deleteInvoice, getAllInvoicesInfo, getInvoiceDetails, getInvoiceView, getLatestInvoices, updateInvoice, updatePaymentStatus } from "../services/invoiceService";
+import { getInvoiceStats, getMonthlyInvoiceStats, getRevenueData } from "../services/InvoiceStatsService";
 
 interface SearchFilters {
     invoiceNumber?: string;
@@ -149,7 +148,7 @@ const handleGetAllInvoices = async (req: Request, res: Response) => {
     const userId = req.authContext.userId;
     const page = parseInt(req.query.page as string) || 1;
     const limit = parseInt(req.query.limit as string) || 10;
-    
+
     // Extract search parameters
     const search: SearchFilters = {};
     if (req.query.invoiceNumber) search.invoiceNumber = req.query.invoiceNumber as string;
@@ -158,13 +157,13 @@ const handleGetAllInvoices = async (req: Request, res: Response) => {
 
     try {
         const result = await getAllInvoicesInfo(
-            businessId, 
-            userId, 
-            page, 
+            businessId,
+            userId,
+            page,
             limit,
             Object.keys(search).length > 0 ? search : undefined
         );
-        
+
         res.status(HttpStatusCode.OK)
             .json(ResponseEntity("success", "Invoices Retrieved Successfully!", result));
 
@@ -193,13 +192,12 @@ const handleLatestInvoices = async (req: Request, res: Response) => {
     }
 };
 
-const handleInvoiceData = async (req: Request, res: Response) => {
+const handleMonthlyInvoiceData = async (req: Request, res: Response) => {
     const { businessId, year } = req.params;
     const userId = req.authContext.userId;
     logger.info(`Accessing Business stats for ${businessId} by user ${req.authContext.userEmail}`);
-
     try {
-        const invoiceData = await getYearlyInvoiceStats(businessId, userId, Number(year));
+        const invoiceData = await getMonthlyInvoiceStats(businessId, userId, Number(year));
         res.status(HttpStatusCode.OK).json(ResponseEntity("success", "Invoice Data!", invoiceData));
     } catch (error) {
         const message = error instanceof Error ? error.message : 'Unknown error occurred';
@@ -225,6 +223,20 @@ const handleInvoiceStats = async (req: Request, res: Response) => {
     }
 };
 
+const handleRevenueData = async (req: Request, res: Response) => {
+    const { businessId } = req.params;
+    const userId = req.authContext.userId;
+    logger.info(`Accessing revenue data for ${businessId} by user ${req.authContext.userEmail}`);
+    try {
+        const revenueData = await getRevenueData(businessId, userId);
+        res.status(HttpStatusCode.OK).json(ResponseEntity("success", "Revenue Data!", revenueData));
+    } catch (error) {
+        const message = error instanceof Error ? error.message : 'Unknown error occurred';
+        logger.error('Error in handleRevenueData:', error instanceof Error ? error.stack : error);
+        res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json(ResponseEntity("error", "Error While Retrieving Revenue Data", undefined, message));
+    }
+}
+
 const handleGetInvoiceView = async (req: Request, res: Response) => {
     const { invoiceId } = req.params;
 
@@ -247,14 +259,34 @@ const handleGetInvoiceView = async (req: Request, res: Response) => {
     }
 };
 
+const handleUpdatePaymentStatus = async (req: Request, res: Response) => {
+    const { businessId, invoiceId } = req.params;
+    const { paymentStatus } = req.body;
+    const userId = req.authContext.userId;
+    try {
+        const updatedInvoice = await updatePaymentStatus(businessId, invoiceId, paymentStatus, userId);
+        if (!updatedInvoice) {
+            throw new Error("Invoice not found");
+        }
+        res.status(HttpStatusCode.OK).json(ResponseEntity("success", "Payment Status Updated Successfully!", updatedInvoice.additionalInfo?.paymentStatus));
+    } catch (error) {
+        const message = error instanceof Error ? error.message : 'Unknown error occurred';
+        logger.error('Error in handleUpdatePaymentStatus:', error instanceof Error ? error.stack : error);
+        res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json(ResponseEntity("error", "Error While Updating Payment Status", undefined, message));
+    }
+}
+
 export {
     handleCreateInvoices,
-    handleUpdateInvoices,
     handleDeleteInvoices,
-    handleGetInvoices,
     handleGetAllInvoices,
-    handleLatestInvoices,
-    handleInvoiceData,
+    handleGetInvoices,
+    handleGetInvoiceView,
     handleInvoiceStats,
-    handleGetInvoiceView
+    handleLatestInvoices,
+    handleMonthlyInvoiceData,
+    handleUpdateInvoices,
+    handleUpdatePaymentStatus,
+    handleRevenueData,
 };
+

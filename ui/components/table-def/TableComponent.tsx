@@ -14,8 +14,8 @@ interface DataTableProps<TData, TValue> {
     data: TData[]
     heading: string
     headingInfo: string
-    isSearchInputRequired: boolean
-    searchInputValue: string
+    isSearchInputRequired: string
+    searchPlaceHolderText?: string
     isSelectAvailable?: boolean
     smHiddenCells?: string[]
 }
@@ -26,8 +26,8 @@ export function TableComponent<TData, TValue>(
         data,
         heading,
         headingInfo,
-        isSearchInputRequired,
-        searchInputValue,
+        isSearchInputRequired = "",
+        searchPlaceHolderText = "",
         isSelectAvailable = true,
         smHiddenCells
     }: DataTableProps<TData, TValue>) {
@@ -71,10 +71,10 @@ export function TableComponent<TData, TValue>(
                         <div className="hidden md:flex items-center py-4">
                             {isSearchInputRequired &&
                                 <Input
-                                    placeholder={`Filter By ${searchInputValue}...`}
-                                    value={(table.getColumn(searchInputValue)?.getFilterValue() as string) ?? ""}
+                                    placeholder={`Filter By ${searchPlaceHolderText}...`}
+                                    value={(table.getColumn(isSearchInputRequired)?.getFilterValue() as string) ?? ""}
                                     onChange={(event) =>
-                                        table.getColumn(searchInputValue)?.setFilterValue(event.target.value)
+                                        table.getColumn(isSearchInputRequired)?.setFilterValue(event.target.value)
                                     }
                                     className="max-w-sm rounded-none"
                                 />}

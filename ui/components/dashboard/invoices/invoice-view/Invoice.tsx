@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import QRCode from "qrcode";
 import Image from "next/image";
 // Status badge styles based on payment status
-const statusStyles = {
+export const statusStyles = {
     Paid: "border  text-green-500",
     Processing: "border  text-yellow-500",
     Due: "border  text-red-500"
@@ -163,7 +163,7 @@ export function Invoice({ invoiceData }: { invoiceData: InvoiceType }) {
 
             {/* Footer */}
             <div className="flex flex-col sm:flex-row justify-between mt-8 gap-6">
-                {invoiceData.bankDetails && invoiceData.bankDetails.accountNumber !== 0 && (
+                {invoiceData.additionalInfo.isBankDetails && invoiceData.bankDetails && (
                     <div className="text-sm space-y-1">
                         <p className="font-bold mb-2">Bank Details:</p>
                         {invoiceData.bankDetails.bankName && <p>Bank Name: {invoiceData.bankDetails.bankName}</p>}
@@ -173,7 +173,7 @@ export function Invoice({ invoiceData }: { invoiceData: InvoiceType }) {
                         {invoiceData.bankDetails.branch && <p>Branch: {invoiceData.bankDetails.branch}</p>}
                     </div>
                 )}
-                <div className={cn("text-right flex flex-col items-start", invoiceData.bankDetails.accountNumber !== 0 && "items-end")}>
+                <div className={cn("text-right flex flex-col items-start justify-end", invoiceData.additionalInfo.isBankDetails && "items-end")}>
                     {isQRCodeLoading ? (
                         <Loader2 className="w-6 h-6 animate-spin" />
                     ) : (

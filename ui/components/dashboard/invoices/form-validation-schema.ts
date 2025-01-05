@@ -9,7 +9,7 @@ export const InvoiceSchema = Yup.object().shape({
     }),
     invoiceFrom: Yup.object().shape({
         name: Yup.string().required('Name is required'),
-        street: Yup.string().required('Address is required'),
+        address: Yup.string().required('Address is required'),
         city: Yup.string().required('City is required'),
         state: Yup.string().required('State is required'),
         postalCode: Yup.string().required('Postal code is required'),
@@ -17,7 +17,7 @@ export const InvoiceSchema = Yup.object().shape({
     }),
     invoiceTo: Yup.object().shape({
         name: Yup.string().required('Name is required'),
-        street: Yup.string().required('Address is required'),
+        address: Yup.string().required('Address is required'),
         city: Yup.string().required('City is required'),
         state: Yup.string().required('State is required'),
         postalCode: Yup.string().required('Postal code is required'),
@@ -34,6 +34,7 @@ export const InvoiceSchema = Yup.object().shape({
         PAN: Yup.string().nullable(), // Optional
         HSN: Yup.string().nullable(), // Optional
         stateCode: Yup.string().nullable(), // Optional
+        dueDate: Yup.date().required('Due date is required'), // Optional
     }),
 
     bankDetails: Yup.object().shape({
@@ -44,7 +45,7 @@ export const InvoiceSchema = Yup.object().shape({
         branch: Yup.string().nullable(),
     }),
 
-    additionlInfo: Yup.object().shape({
+    additionalInfo: Yup.object().shape({
         thankyouNote: Yup.string().nullable(),
         isBankDetails: Yup.boolean().required('Bank Details field is required'),
         isTransportInvoice: Yup.boolean().required('Transport Invoice field is required'),

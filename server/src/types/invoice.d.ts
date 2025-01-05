@@ -74,6 +74,10 @@ interface AdditionlInfo {
     paymentMethod: "Cash" | "UPI" | "BankTransfer" | "CardPayment";
 }
 
+interface PaymentStatus {
+    paymentStatus: "Paid" | "Processing" | "Due";
+}
+
 interface InvoiceSummary {
     totalPrice: number;
     cgst: number;
@@ -92,6 +96,6 @@ interface Invoice {
     invoiceSummary: InvoiceSummary;
     createdAt?: Date;
     updatedAt?: Date;
-    user:Id;
-    business:Id;
+    user: Id;
+    business: Id;
 }

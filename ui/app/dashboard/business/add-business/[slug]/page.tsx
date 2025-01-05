@@ -1,10 +1,10 @@
 "use client"
 import { getBusinessInfo, updateBusiness } from "@/api/business";
-import { BusinessForm, BusinessFormData } from "@/components/dashboard/business/business-form";
+import { OnboardingForm, OnBoardingFormData } from "@/components/dashboard/layout/onboarding-form";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Business, updateBusinessList } from "@/store/slices/userSlice";
 import { ApiResponse } from "@/types/api-responses";
-import { BusinessData } from "@/types/definetions";
+import { BusinessModel } from "@/types/model.definetions";
 import { AxiosError } from "axios";
 import { AlertCircle } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
@@ -20,7 +20,7 @@ function Page() {
     const dispatch = useDispatch();
     const router = useRouter()
     const businessID = Array.isArray(params.slug) ? params.slug[0] : params.slug;
-    const [business, setBusiness] = useState<BusinessData>()
+    const [business, setBusiness] = useState<Business>()
     useEffect(() => {
         const loadData = async () => {
             try {
@@ -32,26 +32,25 @@ function Page() {
                     setErrorMessage(error.response?.data.error)
                 }
                 setIsError(true)
-            }finally{
+            } finally {
                 setLoading(false)
             }
         }
         loadData();
     }, [businessID])
-    const handleBusinessFormData = async (values: BusinessFormData) => {
+    const handleOnBoardingFormData = async (values: OnBoardingFormData) => {
         try {
-            const response: ApiResponse<BusinessData> = await updateBusiness(values, businessID);
+            const businessData: BusinessModel = {
+                name: values.name,
+                catagory: values.catagory,
+                phone: Number(values.phone),
+                logo: values.logo,
+                city: values.city,
+                invoicePrefixes: business?.invoicePrefixes || [],
+            }
+            const response: ApiResponse<Business> = await updateBusiness(businessData, businessID);
             if (response.result) {
-                const business: Business = {
-                    _id: response.result._id,
-                    name: response.result.name,
-                    catagory: response.result.catagory,
-                    GSTIN:response.result.GSTIN || "",
-                    HSN:response.result.HSN || 0,
-                    invoicePrefix:response.result.invoicePrefix,
-                    logo: response.result.logo,
-                }
-                dispatch(updateBusinessList(business))
+                dispatch(updateBusinessList(response.result))
                 router.push("/dashboard/business")
             }
         } catch (error) {
@@ -65,16 +64,10 @@ function Page() {
     const initialValues = {
         name: business?.name || "",
         catagory: business?.catagory || "",
-        GSTIN: business?.GSTIN || "",
-        hsn: String(business?.HSN) || "",
-        phone:String(business?.phone) || "",
-        invoicePrefix: business?.invoicePrefix || "",
-        stateCode: String(business?.stateCode) || "",
-        street: business?.address.street || "",
-        city: business?.address.city || "",
-        state: business?.address.state || "",
-        postalCode: String(business?.address.postalCode) || "",
-        logo: business?.logo || "/img/strix-black.png"
+        phone: String(business?.phone) || "",
+        invoicePrefix: "INV-",
+        city: business?.city || "",
+        logo: business?.logo || "/img/business-logo.png"
     };
     if (loading) return <div className="text-center text-xl mt-16">Loading...</div>
     return (
@@ -88,7 +81,7 @@ function Page() {
                         </AlertDescription>
                     </Alert>
                 </div>}
-            <BusinessForm initialValues={initialValues} handleBusinessFormData={handleBusinessFormData} className="items-start ml-2" type="Update" />
+            <OnboardingForm initialValues={initialValues} handleOnBoardingFormData={handleOnBoardingFormData} className="items-start ml-2"  type="Update"/>
         </div>
     )
 }

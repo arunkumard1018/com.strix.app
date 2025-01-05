@@ -1,7 +1,7 @@
 import { DatePicker } from '@/components/reuse/DateSelector';
 import CustomInput from '@/components/reuse/invoice-input';
 import { Field, FormikProps } from 'formik';
-import { InvoiceFormData } from '../types';
+import { InvoiceFormData } from '../form-data';
 
 const InvoiceDetailsForm = ({ formik }: { formik: FormikProps<InvoiceFormData> }) => {
     return (
@@ -35,8 +35,8 @@ const InvoiceDetailsForm = ({ formik }: { formik: FormikProps<InvoiceFormData> }
                     <div className="flex ">
                         <DatePicker
                             className='shadow-none border-b px-1'
-                            value={formik.values.invoiceDetails.invoiceDate}
-                            onChange={(date) => formik.setFieldValue('invoiceDetails.invoiceDate', date)}
+                            value={formik.values.invoiceDetails.dueDate}
+                            onChange={(date) => formik.setFieldValue('invoiceDetails.dueDate', date)}
                         />
                     </div>
                 </div>

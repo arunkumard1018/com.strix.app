@@ -15,6 +15,7 @@ import { InvoiceConfig, InvoiceFormData } from "./form-data";
 import { InvoiceDataForm } from "./invoice-form-components/InvoiceDataForm";
 import "./invoice.css";
 import { Invoice } from "./types";
+import { InvoiceSchema } from "./form-validation-schema";
 
 
 
@@ -25,7 +26,6 @@ function InvoiceForm({ initialValues, type, id }: { initialValues: InvoiceFormDa
     const [isError, setIsError] = useState<string | null>(null);
     const router = useRouter();
     const [isSubmitting, setIsSubmitting] = useState(false);
-
     const handleSubmit = async (values: InvoiceFormData) => {
         setIsSubmitting(true);
         try {
@@ -95,6 +95,7 @@ function InvoiceForm({ initialValues, type, id }: { initialValues: InvoiceFormDa
     return (
         <Formik
             initialValues={{ ...initialValues }}
+            validationSchema={InvoiceSchema}
             onSubmit={(values) => {
                 handleSubmit(values);
             }}

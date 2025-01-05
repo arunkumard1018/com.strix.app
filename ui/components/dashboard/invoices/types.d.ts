@@ -67,13 +67,16 @@ export interface BankDetails {
     branch?: string;
 }
 
+export type PaymentStatus = "Paid" | "Processing" | "Due";
+
 export interface AdditionlInfo {
     thankyouNote?: string;
     isBankDetails: boolean;
     isTransportInvoice: boolean;
-    paymentStatus: "Paid" | "Processing" | "Due";
+    paymentStatus: PaymentStatus;
     paymentMethod: "Cash" | "UPI" | "BankTransfer" | "CardPayment";
 }
+
 
 export interface InvoiceSummary {
     totalPrice: number;

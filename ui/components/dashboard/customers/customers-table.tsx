@@ -6,7 +6,7 @@ import { Tabs } from "@/components/ui/tabs"
 import { setCustomers } from "@/store/slices/customersSlice"
 import { RootState } from "@/store/store"
 import { ApiResponse } from "@/types/api-responses"
-import { Customers } from "@/types/definetions"
+import { Customers } from "@/types/model.definetions"
 import { File, PlusCircle } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useEffect } from "react"
@@ -27,6 +27,7 @@ export default function CustomersTable() {
     useEffect(() => {
         const loadCustomers = async (Id: string) => {
             try {
+                console.log("Gettig customers from customers table");
                 const customers: ApiResponse<Customers[]> = await getCustomersList(Id);
                 if (customers.result) {
                     dispatch(setCustomers(customers.result));
@@ -34,8 +35,10 @@ export default function CustomersTable() {
             } catch {
             }
         };
-        if(CustomersList.length === 0) loadCustomers(businessId);
-    }, [businessId, dispatch, CustomersList]);
+        if (CustomersList.length === 0) loadCustomers(businessId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [businessId]);
+
     if (!CustomersList) return <div className="text-center mt-10">Loading...</div>
     return (
         <div className="flex flex-col sm:py-4">
@@ -68,8 +71,8 @@ export default function CustomersTable() {
                         heading="Customers Details"
                         headingInfo="Manage You're Customers"
                         smHiddenCells={["GSTIN", "PAN", "email"]}
-                        isSearchInputRequired={false}
-                        searchInputValue=""
+                        isSearchInputRequired=""
+                        searchPlaceHolderText=""
                         key={CustomersList.length}
                         isSelectAvailable={false} />
                 </Tabs>

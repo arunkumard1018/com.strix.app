@@ -16,13 +16,13 @@ import InvoiceHeaderForm from "./InvoiceHeaderForm";
 import InvoiceSecondaryHeaderForm from "./InvoiceSecondaryHeaderForm";
 import { ProductsFieldArray, TransportProductFieldArray } from "./field-arrays";
 
-interface InvoiceDataFormProps {    
+interface InvoiceDataFormProps {
     formik: FormikProps<InvoiceFormData>;
-    isError: string | null ;
+    isError: string | null;
     isSubmitting: boolean;
     status: "CREATE" | "UPDATE";
 }
-const InvoiceDataForm = ({ formik ,isError, isSubmitting, status}: InvoiceDataFormProps) => {
+const InvoiceDataForm = ({ formik, isError, isSubmitting, status }: InvoiceDataFormProps) => {
     const activeBusiness = useSelector((state: RootState) => state.authContext.activeBusiness);
     const config = useSelector((state: RootState) => state.config);
     const storedInvoiceConfig = config.invoiceConfig;
@@ -68,24 +68,6 @@ const InvoiceDataForm = ({ formik ,isError, isSubmitting, status}: InvoiceDataFo
                         heading: activeBusiness.name,
                         subHeading: activeBusiness.catagory,
                     },
-                    invoiceFrom: {
-                        ...invoiceConfig.invoiceFrom,
-                        postalCode: "",
-                        phone: "",
-                    },
-                    invoiceDetails: {
-                        ...invoiceConfig.invoiceDetails,
-                        invoiceNo: "",
-                        HSN: "",
-                        stateCode: "",
-                        invoiceDate: new Date(),
-                        dueDate: new Date(),
-                    },
-                    additionalInfo: {
-                        ...invoiceConfig.additionalInfo,
-                        paymentMethod: "Cash",
-                        paymentStatus: "Processing",
-                    }
                 })
                 dispatch(setInvoiceConfigWithId({
                     invoiceConfig: {
@@ -101,39 +83,22 @@ const InvoiceDataForm = ({ formik ,isError, isSubmitting, status}: InvoiceDataFo
             } finally {
                 formik.setFieldValue("additionalInfo.isTransportInvoice",
                     activeBusiness.catagory === "Transport" ? true : false);
+                formik.setFieldValue("invoiceDetails.dueDate", new Date(new Date().setDate(new Date().getDate() + 8)));
                 setLoading(false)
             }
         }
         if (activeBusiness._id !== storedConfigBusinessId || storedConfigBusinessId === undefined) {
-            if(status === "CREATE") loadData()
+            if (status === "CREATE") loadData()
         } else {
             if (storedInvoiceConfig) {
                 formik.setValues({
                     ...formik.values,
                     ...storedInvoiceConfig,
-                    invoiceFrom: {
-                        ...storedInvoiceConfig.invoiceFrom,
-                        postalCode: String(storedInvoiceConfig.invoiceFrom.postalCode),
-                        phone: String(storedInvoiceConfig.invoiceFrom.phone),
-                    },
-                    invoiceDetails: {
-                        ...storedInvoiceConfig.invoiceDetails,
-                        invoiceDate: new Date(),
-                        dueDate: new Date(),
-                        invoiceNo: String(storedInvoiceConfig.invoiceDetails.invoiceNo),
-                        HSN: String(storedInvoiceConfig.invoiceDetails.HSN),
-                        stateCode: String(storedInvoiceConfig.invoiceDetails.stateCode),
-                    },
-                    additionalInfo: {
-                        ...storedInvoiceConfig.additionalInfo,
-                        paymentMethod: "Cash",
-                        paymentStatus: "Processing",
-                    }
                 });
                 formik.setFieldValue("additionalInfo.isTransportInvoice",
                     activeBusiness.catagory === "Transport" ? true : false);
             } else {
-                if(status === "CREATE") loadData()
+                if (status === "CREATE") loadData()
             }
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -179,8 +144,8 @@ const InvoiceDataForm = ({ formik ,isError, isSubmitting, status}: InvoiceDataFo
                             <BankDetailsForm handleChange={formik.handleChange} isBankDetails={formik.values.additionalInfo.isBankDetails} />
                         </div>
                         <div className="px-4">
-                            <Button 
-                                type="submit" 
+                            <Button
+                                type="submit"
                                 disabled={isSubmitting}
                                 className="w-full md:w-1/4 rounded-none flex items-center justify-center gap-2 h-10"
                             >
@@ -196,6 +161,11 @@ const InvoiceDataForm = ({ formik ,isError, isSubmitting, status}: InvoiceDataFo
                         </div>
                     </div>
                 )}
+                <div className="flex justify-center items-center">
+                    <div className="flex justify-center items-center">
+                        {JSON.stringify(formik.errors)}
+                    </div>
+                </div>
             </Form>
         </div>
     )

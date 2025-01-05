@@ -1,5 +1,5 @@
 import CustomInput from '@/components/reuse/invoice-input';
-import { Customers } from '@/types/definetions';
+import { Customers } from '@/types/model.definetions';
 import { Field, FormikProps } from 'formik';
 import React from 'react';
 import { ComboboxDemo } from './SelectCustomers';

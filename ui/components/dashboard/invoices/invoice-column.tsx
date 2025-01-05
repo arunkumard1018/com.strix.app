@@ -1,9 +1,9 @@
 "use client"
 
-import { deleteInvoiceById } from "@/api/invoices"
+import { deleteInvoiceById, updatePaymentStatus } from "@/api/invoices"
 import { ActionsDropDownRow } from "@/components/table-def/ActionDropDownMenu"
-import { formatCurrency, formatDateDDMMYY } from "@/lib/utils"
-import { removeInvoice } from "@/store/slices/invoicesSlice"
+import { cn, formatCurrency, formatDateDDMMYY } from "@/lib/utils"
+import { removeInvoice, updateInvoiceStatus } from "@/store/slices/invoicesSlice"
 import { RootState } from "@/store/store"
 import { Invoices } from "@/types/invoices"
 import { ColumnDef, Row } from "@tanstack/react-table"
@@ -11,6 +11,9 @@ import { ChevronsUpDown } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useDispatch, useSelector } from "react-redux"
 import { toast } from "sonner"
+import { PaymentStatus } from "./types"
+import { Badge } from "@/components/ui/badge"
+import { statusStyles } from "./invoice-view/Invoice"
 
 export const Invoicescolumns: ColumnDef<Invoices>[] = [
     {
@@ -65,7 +68,7 @@ export const Invoicescolumns: ColumnDef<Invoices>[] = [
         accessorKey: "additionalInfo.paymentStatus",
         header: "Payment Status",
         cell: ({ row }) => (
-            <div className="capitalize table-cell ">{row.getValue("additionalInfo.paymentStatus")}</div>
+            <Badge variant="outline" className={cn("capitalize  px-3 text-sm font-medium shadow-sm rounded-none table-cell", statusStyles[row.getValue("additionalInfo.paymentStatus") as PaymentStatus])}>{row.getValue("additionalInfo.paymentStatus")}</Badge>
         ),
     },
     {
@@ -145,6 +148,17 @@ const ActionsCell = ({ row }: { row: Row<Invoices> }) => {
     const handleUpdate = () => {
         router.push(`/dashboard/invoices/add-invoices/${model._id}`);
     }
+    const handlePayment = async (id: string, paymentStatus: PaymentStatus) => {
+        try {
+            const resp = await updatePaymentStatus(businessId, id, paymentStatus);
+            if (resp) {
+                toast.success('Payment Status Updated Successfully');
+                dispatch(updateInvoiceStatus({ invoiceId: id, paymentStatus: paymentStatus }));
+            }
+        } catch {
+            toast.error('Failed to update payment status');
+        }
+    }
     return (
         <ActionsDropDownRow
             handleDownload={handleDownload}
@@ -155,6 +169,7 @@ const ActionsCell = ({ row }: { row: Row<Invoices> }) => {
             name="Invoice"
             path="/dashboard/invoices"
             handleUpdate={handleUpdate}
+            handlePayment={handlePayment}
         />
     );
 }

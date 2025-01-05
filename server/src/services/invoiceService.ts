@@ -304,7 +304,12 @@ const getInvoiceView = async (invoiceId: Id) => {
     }
 };
 
+const updatePaymentStatus = async (businessId: Id, invoiceId: Id, paymentStatus: PaymentStatus, userId: Id) => {
+    const updatedInvoice = await InvoiceModel.findOneAndUpdate({ _id: invoiceId, business: businessId, user: userId }, { $set: { 'additionalInfo.paymentStatus': paymentStatus } }, { new: true });
+    return updatedInvoice;
+}
+
 export {
-    createInvoice, deleteInvoice, getAllInvoicesInfo, getInvoiceDetails, getLatestInvoices, updateInvoice, getInvoiceView
+    createInvoice, deleteInvoice, getAllInvoicesInfo, getInvoiceDetails, getLatestInvoices, updateInvoice, getInvoiceView, updatePaymentStatus
 };
 

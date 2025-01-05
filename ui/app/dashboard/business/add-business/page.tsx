@@ -1,6 +1,6 @@
 "use client"
 import { createBusiness } from "@/api/business";
-import { BusinessForm, BusinessFormData } from "@/components/dashboard/business/business-form";
+import { OnboardingForm, OnBoardingFormData } from "@/components/dashboard/layout/onboarding-form";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { addBusiness, Business } from "@/store/slices/userSlice";
 import { ApiResponse } from "@/types/api-responses";
@@ -14,16 +14,10 @@ import { useDispatch } from "react-redux";
 const initialValues = {
   name: "",
   catagory: "",
-  GSTIN: "",
-  hsn: "",
-  stateCode: "",
   phone:"",
-  invoicePrefix:"",
-  street: "",
+  invoicePrefix:"INV-",
   city: "",
-  state: "",
-  postalCode: "",
-  logo: "/img/strix-black.png"
+  logo: "/img/business-logo.png"
 };
 
 function Page() {
@@ -31,18 +25,18 @@ function Page() {
   const [errorMessage, setErrorMessage] = useState("Error While Creating New Business")
   const dispatch = useDispatch();
   const router = useRouter()
-  const handleBusinessFormData = async (values: BusinessFormData) => {
+  const handleOnBoardingFormData = async (values: OnBoardingFormData) => {
     try {
       const response: ApiResponse<Business> = await createBusiness(values);
       if (response.result) {
         const business: Business = {
             _id: response.result._id,
             name: response.result.name,
-            GSTIN:response.result.GSTIN || "",
-            HSN:response.result.HSN || 0,
-            invoicePrefix:response.result.invoicePrefix,
+            invoicePrefixes: response.result.invoicePrefixes,
             catagory: response.result.catagory,
             logo: response.result.logo,
+            phone: response.result.phone,
+            city: response.result.city,
         }
         dispatch(addBusiness(business));
         router.push("/dashboard/business");
@@ -65,7 +59,7 @@ function Page() {
             </AlertDescription>
           </Alert>
         </div>}
-      <BusinessForm initialValues={initialValues} handleBusinessFormData={handleBusinessFormData} className="items-start ml-2"/>
+      <OnboardingForm initialValues={initialValues} handleOnBoardingFormData={handleOnBoardingFormData} className="items-start ml-2"/>
     </div>
   )
 }

@@ -17,6 +17,8 @@ export const invoiceConfig: InvoiceConfig = {
     invoiceDetails: {
         invoicePrefix: "INV",
         invoiceNo: "1",
+        invoiceDate: new Date(),
+        dueDate: new Date(),
         GSTIN: "",
         PAN: "",
         HSN: "",

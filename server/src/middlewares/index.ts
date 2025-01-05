@@ -8,7 +8,9 @@ import { ResponseEntity } from "../lib/ApiResponse";
 const authMiddleWare = (req: Request, res: Response, next: NextFunction) => {
     try {
 
-        const publicPaths = ['/', '/health',
+        const publicPaths = [
+            '/',
+            '/health',
             '/api/v1/auth/authenticate',
             '/api/v1/auth/register',
             '/api/v1/auth/google',
