@@ -15,7 +15,7 @@ export default function DashboardClientLayout({ children }: { children: React.Re
     return (
         <Provider store={store}>
             <Dashboardlayout>{children}</Dashboardlayout>
-            <SonnerToaster /> 
+            <SonnerToaster />
         </Provider>
     );
 }

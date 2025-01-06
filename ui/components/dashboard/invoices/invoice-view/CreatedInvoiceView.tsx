@@ -1,5 +1,6 @@
 import { Invoices } from "@/types/invoices";
 import { Download, Copy, Plus, Loader2 } from "lucide-react";
+import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -63,9 +64,9 @@ export function CreatedInvoiceView({ invoice, onCreateNew }: CreatedInvoiceViewP
     return (
         <div className="flex justify-center relative">
             <div className="w-full max-w-[800px] border  relative">
-                <div className="flex flex-col  mb-4 p-4">
-                    <h2 className="text-xl font-semibold mb-1 text-green-300">{`Invoice ${type === "UPDATE" ? "Updated" : "Created"} Successfully`}</h2>
-                    <p>{invoice.invoiceTo.name}</p>
+                <div className="flex items-center my-5 gap-2">
+                    <div><Image src="/gif/completed-flower.gif" alt="" height={50} width={50} /></div>
+                    <h2 className="text-xl font-semibold mb-1 text-green-500">{`Invoice ${type === "UPDATE" ? "Updated" : "Created"} Successfully`}</h2>
                 </div>
 
                 <div className="absolute top-4 right-4 flex gap-2">

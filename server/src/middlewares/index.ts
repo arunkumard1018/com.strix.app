@@ -3,6 +3,7 @@ import logger from "../lib/logConfig";
 import Jwt from "jsonwebtoken";
 import { HttpStatusCode } from "../lib/status-codes";
 import { ResponseEntity } from "../lib/ApiResponse";
+import { colorWord } from "../lib/utils";
 
 
 const authMiddleWare = (req: Request, res: Response, next: NextFunction) => {
@@ -30,6 +31,7 @@ const authMiddleWare = (req: Request, res: Response, next: NextFunction) => {
             if (!token) token = req.headers['authorization']?.split(' ')[1];
 
             if (!token) {
+                logger.error(`Rejecting Request Authentication Error: No Token`);
                 res.status(HttpStatusCode.UNAUTHORIZED)
                     .json(ResponseEntity("error", "No Token", undefined, "Missing authentication token"));
                 return;
@@ -46,6 +48,7 @@ const authMiddleWare = (req: Request, res: Response, next: NextFunction) => {
                 } else {
                     const name = error?.name || "Authentication Error"
                     const message = error?.message || "Error While Authentication"
+                    logger.error(`Rejecting Request Authentication Error: ${name} - ${message}`);
                     res.clearCookie("token");
                     res.status(HttpStatusCode.UNAUTHORIZED).json(ResponseEntity("error", name, undefined, message));
                     return;
@@ -54,6 +57,7 @@ const authMiddleWare = (req: Request, res: Response, next: NextFunction) => {
         }
     } catch (error) {
         const message = (error as Error).message;
+        logger.error(`Rejecting Request Authentication Error: ${message}`);
         res.status(HttpStatusCode.UNAUTHORIZED).json(ResponseEntity("error", "Unauthorized", undefined, message));
         return;
     }
@@ -66,14 +70,11 @@ const authMiddleWare = (req: Request, res: Response, next: NextFunction) => {
  */
 const logReqRes = () => {
     return (req: Request, res: Response, next: NextFunction) => {
-        // logger.info(`Requsted Received from ${req.headers["user-agent"]}`)
-        // logger.info(`${req.method} : ${req.headers.host}${req.url}`);
-        const fullUrl = `${req.protocol}://${req.headers.host}${req.originalUrl}`;
-        logger.info(`Request received from ${req.headers["user-agent"]}`);
-        logger.info(`${req.method} : ${fullUrl}`);
+        const fullUrl = `${req.originalUrl}`;
+
+        logger.info(`[${colorWord(req.method, "214")}] Request received from ${req.headers["sec-ch-ua-platform"]} ${fullUrl}`);
         next();
     }
 }
 
 export { authMiddleWare, logReqRes }
-// fs.appendFile(filename, `\n ${Date.now()} : ${req.method} : ${req.headers.host}${req.url} `, (err) => { next() })

@@ -38,9 +38,6 @@ export default function InvoiceViewPage({ params }: { params: { id: string } }) 
             <div>
                 <div>Invoice not found for id: {params.id}</div>
                 <div>Invoices: {invoices.length}</div>
-                {invoices.map((invoice) => (
-                    <div key={invoice._id}>{invoice._id}</div>
-                ))}
             </div>)
     }
 

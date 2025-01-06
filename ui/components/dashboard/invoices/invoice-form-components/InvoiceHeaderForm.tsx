@@ -1,8 +1,7 @@
 import { Field, FormikProps } from 'formik';
 import React from 'react'
 import CustomInput from '@/components/reuse/invoice-input';
-import { InvoiceFormData } from '../types';
-
+import { InvoiceFormData } from '../form-data';
 
 interface InvoiceHeaderFormProps {
     handleChange: FormikProps<InvoiceFormData>["handleChange"];

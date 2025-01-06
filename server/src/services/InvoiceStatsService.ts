@@ -72,14 +72,12 @@ const getMonthlyInvoiceStats = async (businessId: Id, userId: Id, year: number) 
             },
             { $sort: { _id: 1 } }
         ]);
-        logger.debug(`Result: ${result}`);
-        // Array of all months
+
         const months = [
             'January', 'February', 'March', 'April', 'May', 'June',
             'July', 'August', 'September', 'October', 'November', 'December'
         ];
 
-        // Create data for all months, even those with no invoices
         const data = months.map((month, index) => {
             const monthData = result.find(item => item._id === index + 1);
             return {
@@ -94,7 +92,6 @@ const getMonthlyInvoiceStats = async (businessId: Id, userId: Id, year: number) 
             };
         });
 
-        // Calculate totals
         const invoicedAmount = data.reduce((acc, item) => acc + item.invoicedAmount, 0);
         const paidAmount = data.reduce((acc, item) => acc + item.paidAmount, 0);
         const outstandingAmount = invoicedAmount - paidAmount;

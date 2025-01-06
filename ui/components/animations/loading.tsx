@@ -24,4 +24,13 @@ const LoadingGif = () => {
         </div>
     )
 }
-export { LoadingAnimation ,LoadingGif};
+const ServerErrorWebM = () => {
+    return (
+        <div>
+            <Image src={"/gif/server-error.gif"} alt="server-error" width={100} height={100}></Image>
+        </div>
+    );
+};
+
+
+export { LoadingAnimation, LoadingGif, ServerErrorWebM };

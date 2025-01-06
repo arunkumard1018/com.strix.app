@@ -6,5 +6,10 @@ function formatUptime(uptime:number) {
 
     return `${days}d ${hours}h ${minutes}m ${seconds}s`;
 }
+// Color word for Logger
+const colorWord = (word: string, colorCode: string) => {
+    const coloredWord = `\x1b[38;5;${colorCode}m${word}\x1b[0m`; // Use 256-color codes
+    return coloredWord;
+};
 
-export {formatUptime}
+export { formatUptime, colorWord }
