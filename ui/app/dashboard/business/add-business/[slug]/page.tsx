@@ -1,15 +1,18 @@
 "use client"
 import { getBusinessInfo, updateBusiness } from "@/api/business";
-import { BusinessForm, BusinessFormData } from "@/components/dashboard/business/business-form";
+import { getActivePrefix } from "@/api/invoiceConfig";
+import { OnboardingForm, OnBoardingFormData } from "@/components/dashboard/layout/onboarding-form";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Business, updateBusinessList } from "@/store/slices/userSlice";
+import { setConfigData } from "@/store/slices/configSlice";
+import { Business, InvoicePrefixes, updateBusinessList } from "@/store/slices/userSlice";
+import { RootState } from "@/store/store";
 import { ApiResponse } from "@/types/api-responses";
-import { BusinessData } from "@/types/definetions";
+import { BusinessModel } from "@/types/model.definetions";
 import { AxiosError } from "axios";
 import { AlertCircle } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 
 function Page() {
@@ -17,41 +20,59 @@ function Page() {
     const [isError, setIsError] = useState(false)
     const [errorMessage, setErrorMessage] = useState("Error While Creating New Business");
     const [loading, setLoading] = useState(true)
+    const currentInvoiceConfig = useSelector((state: RootState) => state.config.invoiceConfig)
     const dispatch = useDispatch();
     const router = useRouter()
     const businessID = Array.isArray(params.slug) ? params.slug[0] : params.slug;
-    const [business, setBusiness] = useState<BusinessData>()
+    const [business, setBusiness] = useState<Business>()
+    const [activeInvoicePrefix, setActiveInvoicePrefix] = useState<string>("INV")
     useEffect(() => {
         const loadData = async () => {
             try {
                 const response = await getBusinessInfo(businessID);
                 setBusiness(response.result)
+                setActiveInvoicePrefix(response.result?.invoicePrefixes[0].prefix || "INV-")
+                await getActivePrefix(businessID)
+                    .then((response: ApiResponse<string>) => setActiveInvoicePrefix(response.result || "INV-"))
+                    .catch(() => console.log("Error While Loading Active Prefix"))
             } catch (error) {
-                setErrorMessage("Error While Updating Business")
-                if (error instanceof AxiosError) {
-                    setErrorMessage(error.response?.data.error)
+                if (!business) {
+                    setErrorMessage("Error While Updating Business")
+                    if (error instanceof AxiosError) {
+                        setErrorMessage(error.response?.data.error)
+                    }
+                    setIsError(true)
                 }
-                setIsError(true)
-            }finally{
+            } finally {
                 setLoading(false)
             }
         }
         loadData();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [businessID])
-    const handleBusinessFormData = async (values: BusinessFormData) => {
+    const handleOnBoardingFormData = async (values: OnBoardingFormData) => {
         try {
-            const response: ApiResponse<BusinessData> = await updateBusiness(values, businessID);
+            const businessData: BusinessModel = {
+                name: values.name,
+                catagory: values.catagory,
+                phone: Number(values.phone),
+                logo: values.logo,
+                city: values.city,
+                invoicePrefix: values.invoicePrefix,
+            }
+            const response: ApiResponse<Business> = await updateBusiness(businessData, businessID);
             if (response.result) {
-                const business: Business = {
-                    _id: response.result._id,
-                    name: response.result.name,
-                    catagory: response.result.catagory,
-                    GSTIN:response.result.GSTIN || "",
-                    HSN:response.result.HSN || 0,
-                    invoicePrefix:response.result.invoicePrefix,
-                    logo: response.result.logo,
+                dispatch(updateBusinessList(response.result))
+                if (currentInvoiceConfig !== undefined) {
+                    dispatch(setConfigData({
+                        ...currentInvoiceConfig,
+                        invoiceDetails: {
+                            ...currentInvoiceConfig.invoiceDetails,
+                            invoicePrefix: values.invoicePrefix,
+                            invoiceNo: String(response.result.invoicePrefixes.find((prefix: InvoicePrefixes) => prefix.prefix === values.invoicePrefix)!.count),
+                        }
+                    }))
                 }
-                dispatch(updateBusinessList(business))
                 router.push("/dashboard/business")
             }
         } catch (error) {
@@ -65,16 +86,10 @@ function Page() {
     const initialValues = {
         name: business?.name || "",
         catagory: business?.catagory || "",
-        GSTIN: business?.GSTIN || "",
-        hsn: String(business?.HSN) || "",
-        phone:String(business?.phone) || "",
-        invoicePrefix: business?.invoicePrefix || "",
-        stateCode: String(business?.stateCode) || "",
-        street: business?.address.street || "",
-        city: business?.address.city || "",
-        state: business?.address.state || "",
-        postalCode: String(business?.address.postalCode) || "",
-        logo: business?.logo || "/img/strix-black.png"
+        phone: String(business?.phone) || "",
+        invoicePrefix: "INV-",
+        city: business?.city || "",
+        logo: business?.logo || "/img/business-logo.png"
     };
     if (loading) return <div className="text-center text-xl mt-16">Loading...</div>
     return (
@@ -88,7 +103,7 @@ function Page() {
                         </AlertDescription>
                     </Alert>
                 </div>}
-            <BusinessForm initialValues={initialValues} handleBusinessFormData={handleBusinessFormData} className="items-start ml-2" type="Update" />
+            <OnboardingForm initialValues={initialValues} activeInvoicePrefix={activeInvoicePrefix} handleOnBoardingFormData={handleOnBoardingFormData} className="items-start ml-2" />
         </div>
     )
 }

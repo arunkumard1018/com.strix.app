@@ -1,6 +1,5 @@
 import express from "express";
-import { get } from "mongoose";
-import { handleCreateInvoices, handleDeleteInvoices, handleGetAllInvoices, handleGetInvoices, handleUpdateInvoices } from "../controllers/invoiceController";
+import { handleCreateInvoices, handleDeleteInvoices, handleGetAllInvoices, handleGetInvoices, handleGetInvoiceView, handleUpdateInvoices, handleUpdatePaymentStatus } from "../controllers/invoiceController";
 
 const invoiceRoute = express.Router({ mergeParams: true });
 
@@ -13,4 +12,12 @@ invoiceRoute.route("/:invoiceId")
     .get(handleGetInvoices)
     .delete(handleDeleteInvoices);
 
-export { invoiceRoute };
+invoiceRoute.route("/:invoiceId/payment-status")
+    .patch(handleUpdatePaymentStatus);
+
+const invoiceViewRoute = express.Router({ mergeParams: true });
+invoiceViewRoute.route("/:invoiceId")
+    .get(handleGetInvoiceView);
+
+export { invoiceRoute, invoiceViewRoute };
+

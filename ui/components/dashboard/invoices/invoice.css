@@ -1,0 +1,39 @@
+/* Hide spinners in Chrome, Edge, and Safari */
+/* input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+} */
+
+/* Hide spinners in Firefox */
+/* input[type="number"] {
+    -moz-appearance: textfield;
+} */
+
+@media print {
+    .no-print {
+        display: none;
+    }
+
+    #invoice {
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        color: black !important;
+    }
+
+    #preview {
+        padding: 0 1.5rem 0px 1.5rem;
+        border: none;
+    }
+    table{
+        table-layout: fixed;
+        width: 100%; 
+    }
+    table {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important; 
+        background-color: white !important;
+    }
+
+}

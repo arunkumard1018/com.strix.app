@@ -4,7 +4,7 @@ import logger from "../lib/logConfig";
 import { HttpStatusCode } from "../lib/status-codes";
 import { ResponseEntity } from "../lib/ApiResponse";
 import { CreateCustomers } from "../model/customers";
-import { createCustomer, deleteCustomer, getAllCustomersForBusiness, getCustomer, updateCustomers } from "../service/customers";
+import { createCustomer, deleteCustomer, getAllCustomersForBusiness, getCustomer, updateCustomers } from "../services/customersService";
 
 const handleCreateCustomer = async (req: Request, res: Response) => {
     const userId: Id = req.authContext.userId;
@@ -43,8 +43,8 @@ const handleUpdateCustomer = async (req: Request, res: Response) => {
         const customer: CreateCustomers = req.body;
         customer.business = businessId;
         customer.user = userId;
-        const updatedCustomer = await updateCustomers(userId,customersId, customer);
-        res.status(HttpStatusCode.CREATED).json(ResponseEntity("success", "Customer Updated Successfully!", updatedCustomer));
+        await updateCustomers(userId, customersId, customer);
+        res.status(HttpStatusCode.CREATED).json(ResponseEntity("success", "Customer Updated Successfully!", { ...customer, _id: customersId }));
     } catch (error) {
         const message = (error as Error).message;
         logger.error(message)

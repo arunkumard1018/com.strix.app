@@ -1,46 +1,106 @@
-type TransportInvoiceDetails = {
+interface InvoiceProductsTransport {
+    date: Date;
     vehicleNo: string;
-    source?: string;
-    destination?: string;
-    amount: number;
-};
-
-type ProductInvoiceDetails = {
-    sku: string;
-    productName: string;
+    source: string;
+    destination: string;
     price: number;
-};
+    cgst: number;
+    sgst: number;
+    amount: number;
+}
 
-type Address = {
-    street: string;
-    city: string;
-    postalCode: number;
-    state: string;
-};
+interface InvoiceProducts {
+    sku: string;
+    description: string;
+    price: number;
+    qty: number;
+    cgst: number;
+    sgst: number;
+    amount: number;
+}
 
-type Person = {
+interface InvoiceHeading {
+    heading: string;
+    subHeading?: string;
+    title?: string;
+}
+
+interface InvoiceFrom {
     name: string;
+    address: string;
+    city: string;
+    state: string;
+    postalCode: number;
+    phone?: number;
+    email?: string;
+}
+
+interface InvoiceTo {
+    name: string;
+    address: string;
+    city: string;
+    state: string;
+    postalCode: number;
+    phone?: number;
+    email?: string;
     GSTIN?: string;
+    PAN?: string;
+}
+
+interface InvoiceDetails {
+    invoicePrefix: string;
+    invoiceNo: number;
+    invoiceDate: Date;
+    dueDate: Date;
+    GSTIN?: string;
+    PAN?: string;
     HSN?: number;
     stateCode?: number;
-    PAN?: string;
-    phone: number;
-    email?: string;
-    address: Address;
-};
+}
 
-type Invoice = {
-    invoiceNo: string;
-    invoiceDate: Date;
-    invoiceBy: Person;
-    invoiceTo: Person;
-    invoiceDetails: Array<TransportInvoiceDetails | ProductInvoiceDetails>;
+interface BankDetails {
+    bankName?: string;
+    accountName?: string;
+    accountNumber?: number;
+    ifscCode?: string;
+    branch?: string;
+}
+
+interface AdditionlInfo {
+    thankyouNote?: string;
+    isBankDetails: boolean;
+    isTransportInvoice: boolean;
+    paymentStatus: "Paid" | "Processing" | "Due";
+    paymentMethod: "Cash" | "UPI" | "BankTransfer" | "CardPayment";
+}
+
+interface PaymentStatus {
+    paymentStatus: "Paid" | "Processing" | "Due";
+}
+
+interface InvoiceSummary {
+    totalPrice: number;
+    cgst: number;
+    sgst: number;
     invoiceAmount: number;
-    CGST?: number;
-    SGST?: number;
-    business: Id;
-    customers: Id;
-    user: Id;
-};
+}
 
-export {Address,Invoice,Person,ProductInvoiceDetails,TransportInvoiceDetails}
+interface Invoice {
+    invoiceHeading: InvoiceHeading;
+    invoiceFrom: InvoiceFrom;
+    invoiceTo: InvoiceTo;
+    invoiceDetails: InvoiceDetails;
+    invoiceProducts: Array<InvoiceProductsTransport | InvoiceProducts>;
+    bankDetails: BankDetails;
+    additionalInfo: AdditionlInfo;
+    invoiceSummary: InvoiceSummary;
+    createdAt?: Date;
+    updatedAt?: Date;
+    user: Id;
+    business: Id;
+}
+
+interface InvoicePrefixes{
+    prefix:string,
+    count:number,
+}

@@ -1,21 +1,21 @@
-import React from 'react';
-import { FieldProps, ErrorMessage } from 'formik';
-import classNames from 'classnames';
 import { cn } from '@/lib/utils';
+import classNames from 'classnames';
+import { ErrorMessage, FieldProps } from 'formik';
+import React from 'react';
 
 interface CustomInputProps extends FieldProps {
     placeholder: string;
-    label : string;
+    label: string;
     additionalInfo?: string;
-    className?:string;
+    className?: string;
 }
 
-const CustomInput: React.FC<CustomInputProps> = ({ field, form, placeholder, additionalInfo, label, className}) => {
+const CustomInput: React.FC<CustomInputProps> = ({ field, form, placeholder, additionalInfo, label, className }) => {
     const hasError = form.touched[field.name] && form.errors[field.name];
     const isFieldActive = form.values[field.name] !== ''; // Field is active if it has a value
 
     return (
-        <div className={cn("flex flex-col items-start justify-center w-[320px]  space-y-1 bg-background",className)}>
+        <div className={cn("flex flex-col items-start justify-center w-[320px]  space-y-1 bg-background", className)}>
             <label className="font-medium capitalize" htmlFor={field.name}>
                 {label}
             </label>
@@ -43,5 +43,47 @@ const CustomInput: React.FC<CustomInputProps> = ({ field, form, placeholder, add
         </div>
     );
 };
-
 export default CustomInput;
+
+
+interface FormInputProps extends FieldProps {
+    placeholder: string;
+    label: string;
+    errorMessageRequired?: boolean;
+    additionalInfo?: string;
+    className?: string;
+}
+
+
+const FormInput: React.FC<FormInputProps> = ({ field, form, placeholder, additionalInfo, label, className, errorMessageRequired = false }) => {
+    const hasError = form.touched[field.name] && form.errors[field.name];
+    // const isFieldActive = form.values[field.name] !== ''; // Field is active if it has a value
+
+    return (
+        <div className={classNames("flex flex-col  items-start justify-center  space-y-1", className)}>
+            <label className="text-xs capitalize " htmlFor={field.name}>
+                {label}
+            </label>
+            {additionalInfo &&
+                <p className="text-[0.6rem] text-left text-gray-500">{additionalInfo}</p>
+            }
+            <input
+                id={field.name}
+                type="text"
+                placeholder={placeholder}
+                {...field}
+                className={classNames(
+                    "w-full px-2 py-1  border border-muted-foreground/30 outline-none  text-sm font-normal", // Base styles with background color
+                    {
+                        "border-red-500": hasError, // Error styles
+                    }
+                )}
+            />
+            {errorMessageRequired && <ErrorMessage name={field.name} component="span" className="text-red-500 text-sm" />}
+        </div>
+    );
+};
+
+
+export { FormInput };
+

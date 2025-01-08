@@ -1,25 +1,15 @@
 import winston from 'winston';
 import 'winston-daily-rotate-file';
+import dotenv from 'dotenv';
+dotenv.config();
 
-//  log format
 const logFormat = winston.format.printf(({ level, message, timestamp }) => {
-    return `${timestamp} [${level.toUpperCase()}]: ${message}`;
+    return `[${timestamp}] ${level}: ${message}`;
 });
 
-// Configure the transports for logging
+
 const transports: winston.transport[] = [];
 
-// Console transport for development
-if (process.env.NODE_ENV !== 'production') {
-    transports.push(
-        new winston.transports.Console({
-            format: winston.format.combine(
-                winston.format.colorize(),
-                winston.format.simple()
-            ),
-        })
-    );
-}
 
 // Daily file rotation for 
 transports.push(
@@ -49,15 +39,26 @@ transports.push(
     })
 );
 
+// Console transport for development
+transports.push(
+    new winston.transports.Console({
+        format: winston.format.combine(
+            winston.format.colorize(),
+            winston.format.simple(),
+            winston.format.timestamp({ format: 'DD-MM-YYYY HH:mm:ss' }),
+            logFormat
+        ),
+    })
+);
+
 // Create the Winston logger
 const logger = winston.createLogger({
-    level: process.env.NODE_ENV === 'prod' ? 'info' : 'debug',
+    level: process.env.LOG_LEVEL || 'info',
     format: winston.format.combine(
-        winston.format.timestamp(),
+        winston.format.timestamp({ format: 'DD-MM-YYYY HH:mm:ss' }),
         logFormat
     ),
     transports,
 });
 
-// Export the logger for use in other modules
 export default logger;

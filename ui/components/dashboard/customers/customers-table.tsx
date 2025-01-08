@@ -6,12 +6,13 @@ import { Tabs } from "@/components/ui/tabs"
 import { setCustomers } from "@/store/slices/customersSlice"
 import { RootState } from "@/store/store"
 import { ApiResponse } from "@/types/api-responses"
-import { Customers } from "@/types/definetions"
+import { Customers } from "@/types/model.definetions"
 import { File, PlusCircle } from "lucide-react"
-import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { Customerscolumns } from "./customers-column"
+import { CustomersSheet } from "./sheet"
 
 
 export default function CustomersTable() {
@@ -19,6 +20,10 @@ export default function CustomersTable() {
     const dispatch = useDispatch();
     const businessId = storeState.authContext.activeBusiness._id;
     const CustomersList = storeState.customers;
+    const router = useRouter();
+    const handleCreateCustomer = () => {
+        router.push('customers?createCustomer=true');
+    };
     useEffect(() => {
         const loadCustomers = async (Id: string) => {
             try {
@@ -26,12 +31,12 @@ export default function CustomersTable() {
                 if (customers.result) {
                     dispatch(setCustomers(customers.result));
                 }
-                // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            } catch (_error: unknown) {
+            } catch {
             }
         };
-        loadCustomers(businessId);
-    }, [businessId, dispatch]);
+        if (CustomersList.length === 0) loadCustomers(businessId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [businessId]);
 
     if (!CustomersList) return <div className="text-center mt-10">Loading...</div>
     return (
@@ -39,31 +44,34 @@ export default function CustomersTable() {
             <div className="grid flex-1 items-start gap-4 px-0 sm:px-6 sm:py-0 md:gap-8">
                 <Tabs defaultValue="all">
                     <div className="flex items-center mx-2">
-
                         <div className="ml-auto flex items-center gap-2">
-
                             <Button size="sm" variant="outline" className="h-7 gap-1 rounded-none">
                                 <File className="h-3.5 w-3.5" />
                                 <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
                                     Export
                                 </span>
                             </Button>
-
-                            <Link href="customers/add-customers">
-                                <Button size="sm" className="h-7 gap-1 rounded-none">
-                                    <PlusCircle className="h-3.5 w-3.5" />
-                                    <span className="sm:not-sr-only sm:whitespace-nowrap">
-                                        Add New Customer
-                                    </span>
-                                </Button>
-                            </Link>
+                            <Button size="sm"
+                                onClick={handleCreateCustomer}
+                                className="h-7 gap-1 rounded-none">
+                                <PlusCircle className="h-3.5 w-3.5" />
+                                <span className="sm:not-sr-only sm:whitespace-nowrap">
+                                    Add New Customer
+                                </span>
+                            </Button>
+                            {/* </SheetTrigger> */}
+                            <CustomersSheet />
+                            {/* </Sheet> */}
                         </div>
                     </div>
-
-                    <TableComponent columns={Customerscolumns} data={CustomersList} heading="Customers Details" headingInfo="Manage You're Customers"
+                    <TableComponent
+                        columns={Customerscolumns}
+                        data={CustomersList}
+                        heading="Customers Details"
+                        headingInfo="Manage You're Customers"
                         smHiddenCells={["GSTIN", "PAN", "email"]}
-                        isSearchInputRequired={false}
-                        searchInputValue=""
+                        isSearchInputRequired=""
+                        searchPlaceHolderText=""
                         key={CustomersList.length}
                         isSelectAvailable={false} />
                 </Tabs>

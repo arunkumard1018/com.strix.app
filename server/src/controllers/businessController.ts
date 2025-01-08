@@ -5,9 +5,9 @@ import logger from "../lib/logConfig";
 import { HttpStatusCode } from "../lib/status-codes";
 import { Business, CreateBusiness } from "../model/business";
 import { businessSchema } from "../schemas/businessShema";
-import { createBusiness, deleteBusinessWithID, getAllBusinessForUser, getBusinessWithId, updateBusiness, } from "../service/business";
+import { createBusiness, deleteBusinessWithID, getAllBusinessForUser, getBusinessWithId, updateBusiness, } from "../services/businessService";
 
-const handleAddBusiness = async (req: Request, res: Response) => {
+const handleCreateBusiness = async (req: Request, res: Response) => {
     const userId = req.authContext.userId;
     try {
         const { error } = businessSchema.validate(req.body, { abortEarly: false });
@@ -18,8 +18,9 @@ const handleAddBusiness = async (req: Request, res: Response) => {
             return;
         }
         const business: CreateBusiness = req.body;
+        const { invoicePrefix }: { invoicePrefix: string } = req.body;
         business.owner = userId;
-        const createdBusiness = await createBusiness(business);
+        const createdBusiness = await createBusiness(business,invoicePrefix);
         res.status(HttpStatusCode.CREATED).json(ResponseEntity("success", "Business Created", createdBusiness))
     } catch (error) {
         res.status(HttpStatusCode.INTERNAL_SERVER_ERROR)
@@ -39,8 +40,9 @@ const handleUpdateBusiness = async (req: Request, res: Response) => {
             return;
         }
         const business: CreateBusiness = req.body;
+        const { invoicePrefix }: { invoicePrefix: string } = req.body;
         business.owner = userId;
-        const updatedBusiness = await updateBusiness(businessId, business);
+        const updatedBusiness = await updateBusiness(businessId, business,invoicePrefix);
         res.status(HttpStatusCode.CREATED).json(ResponseEntity("success", "Business Updated", updatedBusiness))
     } catch (error) {
         res.status(HttpStatusCode.INTERNAL_SERVER_ERROR)
@@ -87,8 +89,8 @@ const handleDeleteBusiness = async (req: Request, res: Response) => {
     const userId: Id = req.authContext.userId;
     try {
         const response = await deleteBusinessWithID(businessId, userId);
-        if(response.deletedCount === 0) {
-            res.status(HttpStatusCode.NOT_FOUND).json(ResponseEntity("error", "Business Not Found", undefined,`Unable to Delete business with id ${businessId}`));
+        if (response.deletedCount === 0) {
+            res.status(HttpStatusCode.NOT_FOUND).json(ResponseEntity("error", "Business Not Found", undefined, `Unable to Delete business with id ${businessId}`));
             return;
         }
         res.status(HttpStatusCode.OK).json(ResponseEntity("success", "Business Deleted", response))
@@ -98,5 +100,5 @@ const handleDeleteBusiness = async (req: Request, res: Response) => {
         res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json(ResponseEntity("error", "Error While Deleting Business", undefined, message))
     }
 }
-export { handleAddBusiness, handleDeleteBusiness, handleGetAllBusiness, handleGetBusinessWithId, handleUpdateBusiness };
+export { handleCreateBusiness as handleAddBusiness, handleDeleteBusiness, handleGetAllBusiness, handleGetBusinessWithId, handleUpdateBusiness };
 

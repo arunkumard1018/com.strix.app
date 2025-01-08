@@ -1,46 +1,42 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { MoreHorizontal } from "lucide-react"
-import Link from "next/link"
-import { useState } from "react"
 import { useRouter } from "next/navigation"
+import { useState } from "react"
+import { toast } from "sonner"
 import { ConfirmationDialog } from "./ConfirmationDialog"
-import { ToastAction } from "../ui/toast"
-import { useToast } from "@/hooks/use-toast"
+import { PaymentStatus } from "../dashboard/invoices/types"
 
-export function ActionsDropDownRow({ id, name, path, itemName, deleteFunction }:
+const paymentStatus: PaymentStatus[] = ["Paid", "Processing", "Due"];
+export function ActionsDropDownRow({ id, name, itemName, deleteFunction, handleUpdate, handleDownload, handleView,handlePayment }:
     {
         id: string, name: string, path: string, itemName?: string,
         deleteFunction: (id: string) => Promise<boolean>,
+        handleUpdate: (id: string) => void,
+        handleDownload?: (id: string) => void,
+        handleView?: (id: string) => void,
+        handlePayment?: (id: string, paymentStatus: PaymentStatus) => void,
     }) {
 
     const [isDialogOpen, setDialogOpen] = useState(false); // State to control dialog visibility
     const route = useRouter();
-    const { toast } = useToast();
 
     const handleDelete = async () => {
-        const resp = await deleteFunction(id);
-        if (resp) {
-            toast({
-                variant: "success",
-                title: `${name} Deleted Successfully!`,
-                description: `${name} ${itemName} Delete.`,
-                action: <ToastAction altText="Ok" >close</ToastAction>,
-            })
-            route.refresh();
-        } else {
-            toast({
-                variant: "destructive",
-                title: `Error While Deleting ${name}!`,
-                description: `${name} ${itemName} Failed to Delete.`,
-                action: <ToastAction altText="Ok" >close</ToastAction>,
-            })
+        try {
+            const resp = await deleteFunction(id);
+            if (resp) {
+                toast.success(`${name} Deleted Successfully!`);
+                route.refresh();
+            } else {
+                toast.error(`Error While Deleting ${name}!`);
+            }
+        } catch {
+            toast.error(`Error While Deleting ${name}!`);
         }
         setDialogOpen(false);
     };
-
     return (
         <div>
             <DropdownMenu>
@@ -51,19 +47,41 @@ export function ActionsDropDownRow({ id, name, path, itemName, deleteFunction }:
                     </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                    <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                    <DropdownMenuLabel className="disabled:opacity-50 disabled:cursor-not-allowed">Actions</DropdownMenuLabel>
+                    {handleView && (
+                        <DropdownMenuItem className="cursor-pointer" onClick={() => handleView(id)}>
+                            View {name}
+                        </DropdownMenuItem>
+                    )}
+
+                    {handlePayment && <DropdownMenuSub>
+                        <DropdownMenuSubTrigger>Update Status</DropdownMenuSubTrigger>
+                        <DropdownMenuSubContent >
+                            <DropdownMenuGroup >
+                                {paymentStatus.map((status: PaymentStatus) => (
+                                    <DropdownMenuItem key={status} onClick={() =>  handlePayment(id, status)}>
+                                        {status}
+                                    </DropdownMenuItem>
+                                ))}
+                            </DropdownMenuGroup>
+                        </DropdownMenuSubContent>
+                    </DropdownMenuSub>}
+
                     <DropdownMenuItem
+                        className="cursor-pointer"
                         onClick={() => navigator.clipboard.writeText(String(id))}>
                         Copy {name} ID
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
-                    <Link href={`${path}/add-${name.toLowerCase()}/${id}`}>
-                        <DropdownMenuItem>Update {name}</DropdownMenuItem>
-                    </Link>
-                    <DropdownMenuItem onClick={() => setDialogOpen(true)}>Delete {name}</DropdownMenuItem>
+                    <DropdownMenuItem className="cursor-pointer" onClick={() => handleUpdate(id)}>Update {name}</DropdownMenuItem>
+                    {handleDownload && (
+                        <DropdownMenuItem className="cursor-pointer" onClick={() => handleDownload(id)}>
+                            Download {name}
+                        </DropdownMenuItem>
+                    )}
+                    <DropdownMenuItem className="cursor-pointer" onClick={() => setDialogOpen(true)}>Delete {name}</DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>
-
 
             {/* Alert Dialog for Deletion */}
             <ConfirmationDialog
@@ -75,7 +93,6 @@ export function ActionsDropDownRow({ id, name, path, itemName, deleteFunction }:
                 cancelText="Cancel"
                 onConfirm={handleDelete}
             />
-
         </div>
     )
 }

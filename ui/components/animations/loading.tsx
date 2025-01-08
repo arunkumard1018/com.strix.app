@@ -20,8 +20,17 @@ const LoadingAnimation: React.FC = () => {
 const LoadingGif = () => {
     return (
         <div>
-            <Image src="/img/loading.gif" alt="Loading..." width={100} height={100} priority />
+            <Image src="/img/loading.gif" alt="Loading..." width={100} height={100} priority unoptimized />
         </div>
     )
 }
-export { LoadingAnimation ,LoadingGif};
+const ServerErrorWebM = () => {
+    return (
+        <div>
+            <Image src={"/gif/server-error.gif"} alt="server-error" width={100} height={100} unoptimized></Image>
+        </div>
+    );
+};
+
+
+export { LoadingAnimation, LoadingGif, ServerErrorWebM };

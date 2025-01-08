@@ -2,7 +2,7 @@ import { cn } from "@/lib/utils";
 import type { Metadata } from "next";
 import { geistMono, inter } from "./fonts/fonts";
 import "./globals.css";
-
+import "../components/ui/custom.css"
 
 
 export const metadata: Metadata = {

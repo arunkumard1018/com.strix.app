@@ -14,9 +14,10 @@ interface DataTableProps<TData, TValue> {
     data: TData[]
     heading: string
     headingInfo: string
-    isSearchInputRequired: boolean
-    searchInputValue: string
+    isSearchInputRequired?: string
+    searchPlaceHolderText?: string
     isSelectAvailable?: boolean
+    isPaginationAvailable?: boolean
     smHiddenCells?: string[]
 }
 
@@ -26,17 +27,16 @@ export function TableComponent<TData, TValue>(
         data,
         heading,
         headingInfo,
-        isSearchInputRequired,
-        searchInputValue,
+        isSearchInputRequired = "",
+        searchPlaceHolderText = "",
         isSelectAvailable = true,
+        isPaginationAvailable = true,
         smHiddenCells
     }: DataTableProps<TData, TValue>) {
-
     const [sorting, setSorting] = React.useState<SortingState>([])
     const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
     const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
     const [rowSelection, setRowSelection] = React.useState({})
-
     const table = useReactTable({
         data,
         columns,
@@ -71,15 +71,14 @@ export function TableComponent<TData, TValue>(
                         <div className="hidden md:flex items-center py-4">
                             {isSearchInputRequired &&
                                 <Input
-                                    placeholder={`Filter By ${searchInputValue}...`}
-                                    value={(table.getColumn(searchInputValue)?.getFilterValue() as string) ?? ""}
+                                    placeholder={`${searchPlaceHolderText}...`}
+                                    value={(table.getColumn(isSearchInputRequired)?.getFilterValue() as string) ?? ""}
                                     onChange={(event) =>
-                                        table.getColumn(searchInputValue)?.setFilterValue(event.target.value)
+                                        table.getColumn(isSearchInputRequired)?.setFilterValue(event.target.value)
                                     }
                                     className="max-w-sm rounded-none"
                                 />}
                         </div>
-
                         {/* Table Column View Options */}
                         <DataTableViewOptions table={table} />
                     </div>
@@ -142,35 +141,36 @@ export function TableComponent<TData, TValue>(
                         </Table>
                     </div>
                 </CardContent>
-                <CardFooter className="flex justify-between">
-                    <div className="text-xs text-muted-foreground flex-col">
-                        <div>Page {pageIndex + 1} of {table.getPageCount()}</div>
-                        Showing <strong>{currentRowsCount}</strong> of <strong>{data.length}</strong>{" "}
-                        {heading}
-                        {isSelectAvailable && <div className="flex-1 text-sm text-muted-foreground">
-                            {table.getFilteredSelectedRowModel().rows.length} of{" "}
-                            {table.getFilteredRowModel().rows.length} row(s) selected.
-                        </div>}
-                    </div>
-                    <div className="flex items-center justify-end space-x-2 py-4">
-                        <div className="space-x-2 flex">
-                            <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => table.previousPage()}
-                                disabled={!table.getCanPreviousPage()}>
-                                Previous
-                            </Button>
-                            <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => table.nextPage()}
-                                disabled={!table.getCanNextPage()}>
-                                Next
-                            </Button>
+                {isPaginationAvailable &&
+                    <CardFooter className="flex justify-between">
+                        <div className="text-xs text-muted-foreground flex-col">
+                            <div>Page {pageIndex + 1} of {table.getPageCount()}</div>
+                            Showing <strong>{currentRowsCount}</strong> of <strong>{data.length}</strong>{" "}
+                            {heading}
+                            {isSelectAvailable && <div className="flex-1 text-sm text-muted-foreground">
+                                {table.getFilteredSelectedRowModel().rows.length} of{" "}
+                                {table.getFilteredRowModel().rows.length} row(s) selected.
+                            </div>}
                         </div>
-                    </div>
-                </CardFooter>
+                        <div className="flex items-center justify-end space-x-2 py-4">
+                            <div className="space-x-2 flex">
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => table.previousPage()}
+                                    disabled={!table.getCanPreviousPage()}>
+                                    Previous
+                                </Button>
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => table.nextPage()}
+                                    disabled={!table.getCanNextPage()}>
+                                    Next
+                                </Button>
+                            </div>
+                        </div>
+                    </CardFooter>}
             </Card>
         </TabsContent>
     )
