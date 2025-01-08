@@ -60,7 +60,6 @@ export function DashboardLineChart() {
     const [trendingPercentage, setTrendingPercentage] = useState(0)
     useEffect(() => {
         const fetchData = async () => {
-            console.log(selectedYear, "selectedYear");
             try {
                 const response: ApiResponse<YearlyInvoiceData> = await getYearlyInvoiceData(selectedYear, Activebusiness);
                 if (response.result) {

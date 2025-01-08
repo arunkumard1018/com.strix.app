@@ -27,7 +27,6 @@ export default function CustomersTable() {
     useEffect(() => {
         const loadCustomers = async (Id: string) => {
             try {
-                console.log("Gettig customers from customers table");
                 const customers: ApiResponse<Customers[]> = await getCustomersList(Id);
                 if (customers.result) {
                     dispatch(setCustomers(customers.result));

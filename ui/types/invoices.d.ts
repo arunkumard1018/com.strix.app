@@ -44,14 +44,15 @@ export interface LatestInvoices {
     invoiceAmount: number;
 }
 interface Pagination {
-    page: number;
-    limit: number;
+    currentPage: number;
+    itemsPerPage: number;
     totalPages: number;
     totalItems: number;
 }
 export interface InvoicesData {
     invoices: Invoices[];
     pagination: Pagination;
+    activeBusiness : string;
 }
 
 

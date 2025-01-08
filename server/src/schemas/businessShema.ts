@@ -9,10 +9,7 @@ const businessSchema = Joi.object({
     logo: Joi.string().optional(),
     catagory: Joi.string().valid("Transport", "Retail", "Enterprise").required(),
     city: Joi.string().required(),
-    invoicePrefixes: Joi.array().items(Joi.object({
-        prefix: Joi.string().required(),
-        count: Joi.number().required()
-    })).required(),
+    invoicePrefix: Joi.string().required(),
     phone: Joi.number().required(),
 });
 

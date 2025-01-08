@@ -1,13 +1,17 @@
 // store/slices/userSlice.ts
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
+export interface InvoicePrefixes {
+    prefix: string,
+    count: number,
+}
 export interface Business {
     _id: string;
     name: string;
     catagory: string;
     phone: number;
     logo: string;
-    invoicePrefixes: { prefix: string, count: number }[];
+    invoicePrefixes: InvoicePrefixes[];
     city: string;
 }
 

@@ -6,11 +6,12 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 const initialState: InvoicesData = {
     invoices: [],
     pagination: {
-        page: 1,
-        limit: 10,
+        currentPage: 1,
+        itemsPerPage: 20,
         totalPages: 1,
         totalItems: 0,
     },
+    activeBusiness: "",
 };
 
 const invoicesSlice = createSlice({
@@ -34,8 +35,8 @@ const invoicesSlice = createSlice({
             state.invoices.unshift(action.payload);
         },
 
-        updateInvoiceStatus(state, action: PayloadAction<{invoiceId: string, paymentStatus: PaymentStatus}>) {
-            const {invoiceId, paymentStatus} = action.payload;
+        updateInvoiceStatus(state, action: PayloadAction<{ invoiceId: string, paymentStatus: PaymentStatus }>) {
+            const { invoiceId, paymentStatus } = action.payload;
             const index = state.invoices.findIndex((invoice) => invoice._id === invoiceId);
             if (index !== -1) {
                 state.invoices[index].additionalInfo.paymentStatus = paymentStatus;
@@ -48,5 +49,5 @@ const invoicesSlice = createSlice({
     },
 });
 
-export const { clearInvoices,updateInvoice,removeInvoice, setInvoices,unShiftInvoice, updateInvoiceStatus } = invoicesSlice.actions;
+export const { clearInvoices, updateInvoice, removeInvoice, setInvoices, unShiftInvoice, updateInvoiceStatus } = invoicesSlice.actions;
 export default invoicesSlice.reducer;

@@ -8,7 +8,7 @@ const createBusiness = async (onboardingData: OnBoardingFormData) => {
     const data: BusinessModel = {
         name: onboardingData.name,
         catagory: onboardingData.catagory,
-        invoicePrefixes: [{ prefix: onboardingData.invoicePrefix, count: 1 }],
+        invoicePrefix: onboardingData.invoicePrefix,
         phone: Number(onboardingData.phone),
         logo: onboardingData.logo,
         city: onboardingData.city,

@@ -14,7 +14,6 @@ export const statusStyles = {
 };
 
 export function Invoice({ invoiceData }: { invoiceData: InvoiceType }) {
-    console.log(invoiceData)
     const [isDownloading, setIsDownloading] = useState(false);
     const [isQRCodeLoading, setIsQRCodeLoading] = useState(true);
 
@@ -60,8 +59,7 @@ export function Invoice({ invoiceData }: { invoiceData: InvoiceType }) {
             toast.success('Invoice downloaded successfully', {
                 duration: 2000
             });
-        } catch (error) {
-            console.error('Download error:', error);
+        } catch {
             toast.error('Failed to download invoice', {
                 duration: 2000
             });

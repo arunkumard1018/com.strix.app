@@ -83,8 +83,9 @@ export function LatestInvoicesTable() {
             </TableBody>
             <TableFooter>
                 <TableRow>
-                    <TableCell colSpan={4} className="px-2">Total</TableCell>
-                    <TableCell className="text-right px- hidden md:table-cell">{formatCurrency(totalAmount)}</TableCell>
+                    <TableCell colSpan={4} className="px-2 hidden md:table-cell">Total</TableCell>
+                    <TableCell colSpan={3} className="px-2 md:hidden">Total</TableCell>
+                    <TableCell className="text-right ">{formatCurrency(totalAmount)}</TableCell>
                 </TableRow>
             </TableFooter>
         </Table>

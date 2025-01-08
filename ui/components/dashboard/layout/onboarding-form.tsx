@@ -32,17 +32,17 @@ const OnBoardingFormSchema = Yup.object().shape({
 interface OnBoardingFormProps {
     handleOnBoardingFormData: (values: OnBoardingFormData) => void;
     initialValues: OnBoardingFormData;
+    activeInvoicePrefix?:string;
     className?: string;
-    type?: string;
 }
 
-export const OnboardingForm = ({ handleOnBoardingFormData, initialValues, className, type }: OnBoardingFormProps) => {
+export const OnboardingForm = ({ handleOnBoardingFormData, initialValues, className,activeInvoicePrefix}: OnBoardingFormProps) => {
+    if(activeInvoicePrefix) initialValues = {...initialValues,invoicePrefix:activeInvoicePrefix}
     return (
         <Formik
             initialValues={initialValues}
             validationSchema={OnBoardingFormSchema}
             onSubmit={(values) => {
-                console.log(values)
                 handleOnBoardingFormData(values);
             }}
         >
@@ -62,12 +62,12 @@ export const OnboardingForm = ({ handleOnBoardingFormData, initialValues, classN
                             selectOptions={["Retail", "Transport", "Enterprise"]}
                             component={CustomSelect}
                         />
-                        {type !== "Update" && <Field
+                        <Field
                             label="Invoice Prefix"
                             name="invoicePrefix"
                             placeholder="INV-"
                             component={CustomInput}
-                        />}
+                        />
                         <Field
                             label="Phone"
                             name="phone"

@@ -99,3 +99,8 @@ interface Invoice {
     user: Id;
     business: Id;
 }
+
+interface InvoicePrefixes{
+    prefix:string,
+    count:number,
+}

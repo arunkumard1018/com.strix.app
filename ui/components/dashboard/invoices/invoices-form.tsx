@@ -87,7 +87,6 @@ function InvoiceForm({ initialValues, type, id }: { initialValues: InvoiceFormDa
                 setIsError(`Failed to ${type === "UPDATE" ? "update" : "create"} invoice`);
             }
             toast.error(`Failed to ${type === "UPDATE" ? "update" : "create"} invoice`);
-            console.log("Alertt Error While Creating Invoice", error)
         } finally {
             setIsSubmitting(false);
         }

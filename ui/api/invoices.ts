@@ -111,8 +111,8 @@ const deleteInvoiceById = async (businessId: string, invoiceId: string) => {
     }
 }
 
-const getAllInvoices = async (businessId: string) => {
-    const response = await axiosClient.get<ApiResponse<InvoicesData>>(`/api/v1/business/${businessId}/invoices/`);
+const getAllInvoices = async (businessId: string,page:number,limit:number,q:string) => {
+    const response = await axiosClient.get<ApiResponse<InvoicesData>>(`/api/v1/business/${businessId}/invoices?page=${page}&limit=${limit}&q=${q}`);
     return response.data;
 }
 

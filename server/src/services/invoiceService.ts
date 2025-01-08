@@ -4,6 +4,7 @@ import logger from "../lib/logConfig";
 import { InvoiceModel } from "../model/Invoice";
 import { validateInvoiceNumber } from '../utils/invoiceValidator';
 import { createOrUpdateInvoiceConfig } from './invoiceConfigService';
+import { FilterQuery } from 'mongoose';
 
 const createInvoice = async (invoiceSchema: Invoice, businessId: Id) => {
     const session = await mongoose.startSession();
@@ -13,7 +14,7 @@ const createInvoice = async (invoiceSchema: Invoice, businessId: Id) => {
     try {
         // Handle invoice config creation/updates using centralized function
         const invoiceConfig = await createOrUpdateInvoiceConfig(invoiceSchema, businessId, session);
-        
+
         // Validate invoice number uniqueness
         const userEnteredNo = invoiceSchema.invoiceDetails.invoiceNo;
         const prefix = invoiceConfig?.invoiceDetails?.invoicePrefix ?? 'INV';
@@ -48,9 +49,9 @@ const updateInvoice = async (invoiceSchema: Invoice, invoiceId: Id, userId: Id) 
 
     try {
         // Get existing invoice
-        const existingInvoice = await InvoiceModel.findOne({ 
-            _id: invoiceId, 
-            user: userId 
+        const existingInvoice = await InvoiceModel.findOne({
+            _id: invoiceId,
+            user: userId
         }).session(session);
 
         if (!existingInvoice) {
@@ -59,7 +60,7 @@ const updateInvoice = async (invoiceSchema: Invoice, invoiceId: Id, userId: Id) 
 
         // Handle invoice config updates using centralized function
         const invoiceConfig = await createOrUpdateInvoiceConfig(invoiceSchema, invoiceSchema.business, session);
-        
+
         const userEnteredNo = invoiceSchema.invoiceDetails.invoiceNo;
         const prefix = invoiceConfig?.invoiceDetails?.invoicePrefix ?? 'INV';
 
@@ -72,7 +73,7 @@ const updateInvoice = async (invoiceSchema: Invoice, invoiceId: Id, userId: Id) 
         // Update invoice
         const updatedInvoice = await InvoiceModel.findOneAndUpdate(
             { _id: invoiceId, user: userId },
-            { 
+            {
                 ...invoiceSchema,
                 updatedAt: new Date()
             },
@@ -95,10 +96,10 @@ const updateInvoice = async (invoiceSchema: Invoice, invoiceId: Id, userId: Id) 
 
 const deleteInvoice = async (invoiceId: Id, userId: Id, businessId: Id) => {
     logger.debug(`Starting invoice deletion for invoice: ${invoiceId} in business: ${businessId}`);
-    
+
     try {
-        const deletedInvoice = await InvoiceModel.findOneAndDelete({ 
-            _id: invoiceId, 
+        const deletedInvoice = await InvoiceModel.findOneAndDelete({
+            _id: invoiceId,
             user: userId,
             business: businessId
         });
@@ -118,10 +119,10 @@ const deleteInvoice = async (invoiceId: Id, userId: Id, businessId: Id) => {
 
 const getInvoiceDetails = async (invoiceId: Id, userId: Id, businessId: Id) => {
     logger.debug(`Retrieving invoice details for invoice: ${invoiceId} in business: ${businessId}`);
-    
+
     try {
-        const invoice = await InvoiceModel.findOne({ 
-            _id: invoiceId, 
+        const invoice = await InvoiceModel.findOne({
+            _id: invoiceId,
             user: userId,
             business: businessId
         });
@@ -144,25 +145,47 @@ interface SearchFilters {
     customerName?: string;
     customerCity?: string;
 }
+
 const getAllInvoicesInfo = async (
-    businessId: Id, 
-    userId: Id, 
-    page = 1, 
+    businessId: Id,
+    userId: Id,
+    page = 1,
     limit = 10,
+    q?: string,
     search?: SearchFilters
 ) => {
-    logger.debug(`Retrieving invoices for business: ${businessId}, user: ${userId}, page: ${page}, limit: ${limit}, search:`, search);
-    
+    logger.debug(`Retrieving invoices for business: ${businessId}, user: ${userId}, page: ${page}, limit: ${limit}, q: ${q}, search:`, search);
+
     try {
         // Build search query
-        const baseQuery = { 
-            business: businessId, 
-            user: userId 
+        // const baseQuery = { business: businessId, user: userId };
+        const baseQuery: FilterQuery<typeof InvoiceModel> = {
+            business: businessId,
+            user: userId,
         };
+
+        if (q) {
+            const generalQuery: any[] = [];
+            const match = q.match(/^([A-Za-z-/_]*)?(\d+)?$/i);
+            if (match) {
+                const [, prefix, number] = match;
+                // if (prefix) {
+                //     generalQuery.push({ 'invoiceDetails.invoicePrefix': new RegExp('^' + prefix.replace(/[-\/_]/g, '[-\\/_]'), 'i') });
+                // }
+                if (number) {
+                    generalQuery.push({ 'invoiceDetails.invoiceNo': parseInt(number) });
+                }
+            }
+
+            generalQuery.push({ 'invoiceTo.name': new RegExp(q, 'i') });
+            generalQuery.push({ 'invoiceTo.city': new RegExp(q, 'i') });
+            generalQuery.push({ 'additionalInfo.paymentStatus': new RegExp(q, 'i') });
+            baseQuery['$or'] = generalQuery;
+        }
 
         if (search) {
             const searchQuery: any = { ...baseQuery };
-            
+
             if (search.invoiceNumber) {
                 // Match various invoice number patterns:
                 // Examples: INV-001, inv/001, ABC123, INV_001, etc.
@@ -182,70 +205,39 @@ const getAllInvoicesInfo = async (
                     ];
                 }
             }
-
             if (search.customerName) {
                 searchQuery['invoiceTo.name'] = new RegExp(search.customerName, 'i');
             }
-
             if (search.customerCity) {
                 searchQuery['invoiceTo.city'] = new RegExp(search.customerCity, 'i');
             }
-
             Object.assign(baseQuery, searchQuery);
         }
 
-        // Calculate skip value for pagination
+        // Pagination logic
         const skip = (page - 1) * limit;
-
-        // Get total count for pagination
         const totalCount = await InvoiceModel.countDocuments(baseQuery);
-
-        // Get paginated invoices
-        const invoices = await InvoiceModel.find(
-            baseQuery,
-            {
-                'invoiceDetails.invoicePrefix': 1,
-                'invoiceDetails.invoiceNo': 1,
-                'invoiceDetails.invoiceDate': 1,
-                'invoiceDetails.dueDate': 1,
-                'invoiceFrom.name': 1,
-                'invoiceFrom.city': 1,
-                'invoiceTo.name': 1,
-                'invoiceTo.city': 1,
-                'additionalInfo.paymentStatus': 1,
-                'additionalInfo.paymentMethod': 1,
-                'invoiceSummary': 1
-            }
-        )
-        .sort({ 'invoiceDetails.invoiceDate': -1 })
-        .skip(skip)
-        .limit(limit);
+        const invoices = await InvoiceModel.find(baseQuery)
+            .sort({ createdAt: -1 })
+            .skip(skip)
+            .limit(limit);
 
         const totalPages = Math.ceil(totalCount / limit);
-
-        logger.debug(`Retrieved ${invoices.length} invoices (page ${page}/${totalPages})`);
-        return {
-            invoices,
-            pagination: {
-                currentPage: page,
-                totalPages,
-                totalItems: totalCount,
-                itemsPerPage: limit
-            }
-        };
-
+        return { invoices, pagination: { currentPage: page, totalPages, totalItems: totalCount, itemsPerPage: limit } };
     } catch (error: unknown) {
         logger.error(`Error in getAllInvoicesInfo: ${error instanceof Error ? error.stack : error}`);
         throw error;
     }
 };
 
+
+
 const getLatestInvoices = async (userId: Id, businessId: Id) => {
     logger.debug(`Fetching latest 5 invoices for user: ${userId}`);
-    
+
     try {
         const latestInvoices = await InvoiceModel.find(
-            { 
+            {
                 user: userId,
                 business: businessId,
                 // 'additionalInfo.paymentStatus': 'Paid' // Only fetch paid invoices
@@ -260,8 +252,8 @@ const getLatestInvoices = async (userId: Id, businessId: Id) => {
                 'invoiceSummary': 1
             }
         )
-        .sort({ 'invoiceDetails.invoiceDate': -1 }) // Sort by date, newest first
-        .limit(5); // Limit to 5 results
+            .sort({ 'createdAt': -1 }) // Sort by date, newest first
+            .limit(5); // Limit to 5 results
 
         // Transform the data to include combined invoice number
         const formattedInvoices = latestInvoices.map(invoice => ({
@@ -285,9 +277,9 @@ const getLatestInvoices = async (userId: Id, businessId: Id) => {
 
 const getInvoiceView = async (invoiceId: Id) => {
     logger.debug(`Retrieving invoice view for invoice: ${invoiceId}`);
-    
+
     try {
-        const invoice = await InvoiceModel.findOne({ 
+        const invoice = await InvoiceModel.findOne({
             _id: invoiceId,
         });
 
@@ -310,6 +302,10 @@ const updatePaymentStatus = async (businessId: Id, invoiceId: Id, paymentStatus:
 }
 
 export {
-    createInvoice, deleteInvoice, getAllInvoicesInfo, getInvoiceDetails, getLatestInvoices, updateInvoice, getInvoiceView, updatePaymentStatus
+    createInvoice,
+    deleteInvoice,
+    getAllInvoicesInfo,
+    getInvoiceDetails, getInvoiceView, getLatestInvoices,
+    updateInvoice, updatePaymentStatus
 };
 

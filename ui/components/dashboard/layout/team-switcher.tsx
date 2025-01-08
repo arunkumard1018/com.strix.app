@@ -76,7 +76,7 @@ export function BusinessSwitcher() {
                 className="gap-2 p-2 hover:rounded-none"
               >
                 <div className="flex relative size-6 items-center justify-center rounded-sm border">
-                  <Image src={team.logo} fill alt="" className="object-contain" />
+                  <Image src={team.logo} fill alt="" className="object-contain" sizes="25"/>
                 </div>
                 {team.name}
                 <DropdownMenuShortcut>⌘{index + 1}</DropdownMenuShortcut>

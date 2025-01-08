@@ -20,9 +20,9 @@ const styles = StyleSheet.create({
     qrCode: {
         width: 50, height: 50,
     },
-    invoiceDetail: { fontSize: 10, marginBottom: 2 },
+    invoiceDetail: { fontSize: 10, marginBottom: 4 },
 });
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 const PdfTemplate = ({ invoiceData, qrCode }: { invoiceData: Invoice, qrCode: string }) => (
     <Document>
         <Page size="A4" style={styles.page}>
@@ -58,6 +58,7 @@ const PdfTemplate = ({ invoiceData, qrCode }: { invoiceData: Invoice, qrCode: st
                             {invoiceData.invoiceTo.phone && `Phone: ${invoiceData.invoiceTo.phone}`}
                         </Text>
                     </View>
+                    {/* InvoiceDetails */}
                     <View>
                         <Text style={styles.invoiceDetail}>
                             Invoice No: {invoiceData.invoiceDetails.invoicePrefix}{invoiceData.invoiceDetails.invoiceNo}

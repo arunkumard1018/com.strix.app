@@ -9,11 +9,15 @@ const InvoiceDetailsForm = ({ formik }: { formik: FormikProps<InvoiceFormData> }
             <div className="md:max-w-[70%] space-y-1">
                 <div className="flex items-center gap-1">
                     <div className="text-sm w-[30%] font-bold ">InoviceNo</div>
-                    <div className="flex w-[70%] gap-1">
-                        <Field
+                    <div className="flex w-[70%] ">
+                        {/* <Field
+                            disabled
                             className="text-sm w-1/3 self-end" name="invoiceDetails.invoicePrefix" placeholder="INX"
                             component={CustomInput}
-                        />
+                        /> */}
+                        <div className='text-sm  self-end  text-right py-1 pr-2 border px-2'>
+                            {formik.values.invoiceDetails.invoicePrefix}
+                        </div>
                         <Field
                             className="text-sm w-2/3 self-end" name="invoiceDetails.invoiceNo" placeholder="001"
                             component={CustomInput}

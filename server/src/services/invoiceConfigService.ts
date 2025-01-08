@@ -176,6 +176,9 @@ const createOrUpdateInvoiceConfig = async (
 
     return invoiceConfig;
 };
+const getActiveInvoicePrefix = async (businessId:Id, userId:Id) => {
+    return InvoiceConfigModel.findOne({business:businessId, user:userId},{"invoiceDetails.invoicePrefix":1});
+}
 
 export {
     createInvoiceConfig,
@@ -186,4 +189,5 @@ export {
     updateInvoiceNo,
     incrementInvoiceNo,
     createOrUpdateInvoiceConfig,
+    getActiveInvoicePrefix,
 }

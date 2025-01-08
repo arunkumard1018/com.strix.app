@@ -148,6 +148,7 @@ const handleGetAllInvoices = async (req: Request, res: Response) => {
     const userId = req.authContext.userId;
     const page = parseInt(req.query.page as string) || 1;
     const limit = parseInt(req.query.limit as string) || 10;
+    const q = req.query.q as string;
 
     // Extract search parameters
     const search: SearchFilters = {};
@@ -161,7 +162,8 @@ const handleGetAllInvoices = async (req: Request, res: Response) => {
             userId,
             page,
             limit,
-            Object.keys(search).length > 0 ? search : undefined
+            q,
+            Object.keys(search).length > 0 ? search : undefined,
         );
 
         res.status(HttpStatusCode.OK)

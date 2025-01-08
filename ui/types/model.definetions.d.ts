@@ -7,8 +7,8 @@ export interface AddressModel {
 export interface BusinessModel {
     name: string;
     catagory: string;
-    phone: number,
-    invoicePrefixes: { prefix: string, count: number }[],
+    phone: number;
+    invoicePrefix: string;
     logo: string;
     city: string;
 }

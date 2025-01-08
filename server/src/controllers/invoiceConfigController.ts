@@ -4,7 +4,7 @@ import { ResponseEntity } from "../lib/ApiResponse";
 import logger from "../lib/logConfig";
 import invoiceConfigJoiSchema from "../schemas/InvoiceConfigSchema";
 import { CreateInvoiceConfig, InvoiceConfig } from "../model/InvoiceConfig";
-import { createInvoiceConfig, deleteInvoiceConfig, getInvoiceConfig, updateInvoiceConfig } from "../services/invoiceConfigService";
+import { createInvoiceConfig, deleteInvoiceConfig, getActiveInvoicePrefix, getInvoiceConfig, updateInvoiceConfig } from "../services/invoiceConfigService";
 
 const handleCreateInvoiceConfig = async (req: Request, res: Response) => {
     const userId: Id = req.authContext.userId;
@@ -77,7 +77,7 @@ const handleDeleteInvoiceConfig = async (req: Request, res: Response) => {
         const userId: Id = req.authContext.userId;
         const { businessId } = req.params;
         const config = await deleteInvoiceConfig(businessId, userId);
-        if (config.deletedCount === 0 ) {
+        if (config.deletedCount === 0) {
             res.status(HttpStatusCode.NOT_FOUND).json(ResponseEntity("error", "Error While Deleting", undefined, `Resource Not Found`));
             return;
         }
@@ -88,9 +88,26 @@ const handleDeleteInvoiceConfig = async (req: Request, res: Response) => {
     }
 }
 
+const handleGetActiveInvoicePrefix = async (req: Request, res: Response) => {
+    try {
+        const userId: Id = req.authContext.userId;
+        const { businessId } = req.params;
+        logger.info(`Getting Active Invoice Config for business : ${businessId}`)
+        const config = await getActiveInvoicePrefix(businessId, userId);
+        if (!config) {
+            res.status(HttpStatusCode.NOT_FOUND).json(ResponseEntity("error", "Error While getting Current Invoice Config", undefined, `Resource Not Found`));
+            return;
+        }
+        res.status(HttpStatusCode.OK).json(ResponseEntity("success", "Active Invoice Prefix Details", config?.invoiceDetails?.invoicePrefix))
+    } catch (error) {
+        logger.error(error);
+        res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json(ResponseEntity("error", (error as Error).name, undefined, (error as Error).message))
+    }
+}
 export {
     handleCreateInvoiceConfig,
     handleGetInvoiceConfigWithBusinessWithId,
     handleUpdateInvoiceConfig,
     handleDeleteInvoiceConfig,
+    handleGetActiveInvoicePrefix,
 }

@@ -17,7 +17,7 @@ export default function InvoiceViewPage({ params }: { params: { id: string } }) 
     useEffect(() => {
         const loadInvoices = async (businessId: string) => {
             try {
-                const response: ApiResponse<InvoicesData> = await getAllInvoices(businessId);
+                const response: ApiResponse<InvoicesData> = await getAllInvoices(businessId,1,1,"");
                 if (response.result) {
                     dispatch(setInvoices(response.result));
                 }

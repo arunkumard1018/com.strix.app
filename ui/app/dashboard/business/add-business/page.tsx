@@ -59,7 +59,7 @@ function Page() {
             </AlertDescription>
           </Alert>
         </div>}
-      <OnboardingForm initialValues={initialValues} handleOnBoardingFormData={handleOnBoardingFormData} className="items-start ml-2"/>
+      <OnboardingForm  initialValues={initialValues} handleOnBoardingFormData={handleOnBoardingFormData} className="items-start ml-2"/>
     </div>
   )
 }

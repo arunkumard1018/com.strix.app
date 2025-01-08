@@ -69,10 +69,17 @@ const updateInvoiceConfig = async (businessId: string, config: InvoiceConfig) =>
     const response = await axiosClient.put<ApiResponse<InvoiceConfig>>(createUrl(businessId), { ...data });
     return response.data;
 }
-
+const getActivePrefix = async (businessId: string) => {
+    const response = await axiosClient.get<ApiResponse<string>>(`${createUrl(businessId)}/active-prefix`);
+    return response.data;
+}
 export {
-    createInvoiceConfig, getInvoiceConfig, updateInvoiceConfig
+    createInvoiceConfig,
+    getInvoiceConfig,
+    updateInvoiceConfig,
+    getActivePrefix,
 };
+
 
 /** TypeScript Interface for invoiceConfigJoiSchema */
 export interface CreateInvoiceConfig {

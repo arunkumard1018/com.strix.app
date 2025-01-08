@@ -68,6 +68,11 @@ const InvoiceDataForm = ({ formik, isError, isSubmitting, status }: InvoiceDataF
                         heading: activeBusiness.name,
                         subHeading: activeBusiness.catagory,
                     },
+                    invoiceDetails: {
+                        ...invoiceConfig.invoiceDetails,
+                        invoicePrefix: activeBusiness.invoicePrefixes[0].prefix,
+                        invoiceNo: String(activeBusiness.invoicePrefixes[0].count) || "1",
+                    }
                 })
                 dispatch(setInvoiceConfigWithId({
                     invoiceConfig: {
@@ -76,6 +81,11 @@ const InvoiceDataForm = ({ formik, isError, isSubmitting, status }: InvoiceDataF
                             ...invoiceConfig.invoiceHeading,
                             heading: activeBusiness.name,
                             subHeading: activeBusiness.catagory,
+                        },
+                        invoiceDetails: {
+                            ...invoiceConfig.invoiceDetails,
+                            invoicePrefix: activeBusiness.invoicePrefixes[0].prefix,
+                            invoiceNo: String(activeBusiness.invoicePrefixes[0].count) || "1",
                         }
                     },
                     businessId: activeBusiness._id
@@ -161,11 +171,6 @@ const InvoiceDataForm = ({ formik, isError, isSubmitting, status }: InvoiceDataF
                         </div>
                     </div>
                 )}
-                <div className="flex justify-center items-center">
-                    <div className="flex justify-center items-center">
-                        {JSON.stringify(formik.errors)}
-                    </div>
-                </div>
             </Form>
         </div>
     )
