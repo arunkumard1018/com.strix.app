@@ -2,6 +2,7 @@
 
 import { deleteInvoiceById, updatePaymentStatus } from "@/api/invoices"
 import { ActionsDropDownRow } from "@/components/table-def/ActionDropDownMenu"
+import { Badge } from "@/components/ui/badge"
 import { cn, formatCurrency, formatDateDDMMYY } from "@/lib/utils"
 import { removeInvoice, updateInvoiceStatus } from "@/store/slices/invoicesSlice"
 import { RootState } from "@/store/store"
@@ -11,10 +12,8 @@ import { ChevronsUpDown } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useDispatch, useSelector } from "react-redux"
 import { toast } from "sonner"
-import { PaymentStatus } from "./types"
-import { Badge } from "@/components/ui/badge"
 import { statusStyles } from "./invoice-view/Invoice"
-import { console } from "inspector"
+import { PaymentStatus } from "./types"
 
 export const Invoicescolumns: ColumnDef<Invoices>[] = [
     {
