@@ -1,13 +1,17 @@
 import { formatCurrency, formatDateDDMMYY, formatRupee, numberToWordsIndian } from "@/lib/utils"; // Make sure these functions work with PDF renderer
 import { Font, StyleSheet, Text, View } from "@react-pdf/renderer";
 import { InvoiceProduct, InvoiceProductTransport, InvoiceSummary } from "../dashboard/invoices/types";
+import path from "path";
+// import NotoSansFont from "./NotoSans-Bold.ttf";
 
 // Register Noto Sans from Google Fonts
+const fontPath = path.resolve('./public/fonts/NotoSans-Bold.ttf');
+
 Font.register({
     family: 'Noto Sans',
     fonts: [
         {
-            src: './components/pdf/NotoSans-Bold.ttf',
+            src: fontPath
         },
     ],
 });
@@ -29,12 +33,12 @@ const styles = StyleSheet.create({
         fontSize: 12,
     },
 });
-function PdfInvoiceProductsTable({ 
-    products, 
-    invoiceSummary 
-}: { 
+function PdfInvoiceProductsTable({
+    products,
+    invoiceSummary
+}: {
     products: Array<InvoiceProduct | InvoiceProductTransport>
-    invoiceSummary: InvoiceSummary 
+    invoiceSummary: InvoiceSummary
 }) {
     const isTransportInvoice = products.length > 0 && 'vehicleNo' in products[0];
     // Format prices only
