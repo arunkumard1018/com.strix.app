@@ -58,7 +58,7 @@ export async function GET(req: NextRequest) {
         return new NextResponse(readableStream, { headers });
     } catch (error) {
         console.error("Error generating PDF:", error);
-        return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+        return NextResponse.json({ error: "Internal server error", err: error }, { status: 500 });
     }
 }
 

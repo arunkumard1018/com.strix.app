@@ -70,9 +70,9 @@ const authMiddleWare = (req: Request, res: Response, next: NextFunction) => {
  */
 const logReqRes = () => {
     return (req: Request, res: Response, next: NextFunction) => {
-        const fullUrl = `${req.originalUrl}`;
-
-        logger.info(`[${colorWord(req.method, "214")}] Request received from ${req.headers["sec-ch-ua-platform"]} ${fullUrl}`);
+        const clientIp = req.socket.remoteAddress;
+        const fullUrl = `${req.originalUrl} IP:${clientIp}`;
+        logger.info(`[${colorWord(req.method, "214")}] Request received from ${req.headers["sec-ch-ua-platform"]}, ${req.headers["host"]}${fullUrl}`);
         next();
     }
 }
