@@ -14,6 +14,7 @@ import { toast } from "sonner"
 import { PaymentStatus } from "./types"
 import { Badge } from "@/components/ui/badge"
 import { statusStyles } from "./invoice-view/Invoice"
+import { console } from "inspector"
 
 export const Invoicescolumns: ColumnDef<Invoices>[] = [
     {
@@ -134,6 +135,7 @@ const ActionsCell = ({ row }: { row: Row<Invoices> }) => {
             });
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (error) {
+            console.log("Error While Downloading Invoice",error)
             toast.error('Failed to download invoice', {
                 duration: 2000
             });
