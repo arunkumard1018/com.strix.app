@@ -1,12 +1,12 @@
-import { Invoices } from "@/types/invoices";
-import { Download, Copy, Plus, Loader2 } from "lucide-react";
-import Image from "next/image";
+import { Check, Copy, Download, Loader2, Plus } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
+import { Invoice } from "../types";
+import { formatCurrency, formatRupee } from "@/lib/utils";
 
 interface CreatedInvoiceViewProps {
-    invoice: Invoices;
+    invoice: Invoice;
     onCreateNew: () => void;
 }
 
@@ -65,7 +65,8 @@ export function CreatedInvoiceView({ invoice, onCreateNew }: CreatedInvoiceViewP
         <div className="flex justify-center relative">
             <div className="w-full max-w-[800px] border  relative">
                 <div className="flex items-center my-5 gap-2">
-                    <div><Image src="/gif/completed-flower.gif" alt="" height={50} width={50} /></div>
+                    {/* <div><Image src="/gif/completed-flower.gif" alt="" height={50} width={50} /></div> */}
+                    <div className="p-2 border-2 border-green-500 rounded-full mx-4"><Check size={20} className="text-green-500" /></div>
                     <h2 className="text-xl font-semibold mb-1 text-green-500">{`Invoice ${type === "UPDATE" ? "Updated" : "Created"} Successfully`}</h2>
                 </div>
 
@@ -108,15 +109,14 @@ export function CreatedInvoiceView({ invoice, onCreateNew }: CreatedInvoiceViewP
                     <div className="space-y-4">
                         {/* Header Section */}
                         <div className="space-y-4">
-                            <div>
-                                <h3 className="font-semibold text-sm border-b pb-1">Invoice From:</h3>
-                                <p className="text-sm">{invoice.invoiceFrom.name}</p>
-                                <p className="text-sm">{invoice.invoiceFrom.city}</p>
-                            </div>
-                            <div>
+                            <div className="space-y-1">
                                 <h3 className="font-semibold text-sm border-b pb-1">Invoice To:</h3>
                                 <p className="text-sm">{invoice.invoiceTo.name}</p>
-                                <p className="text-sm">{invoice.invoiceTo.city}</p>
+                                <p className="text-sm">{invoice.invoiceTo.address}</p>
+                                <p className="text-sm">{invoice.invoiceTo.city},{invoice.invoiceTo.state},{invoice.invoiceTo.postalCode}</p>
+                                <p className="text-sm">{invoice.invoiceTo.phone}, {invoice.invoiceTo.email}</p>
+                                {invoice.invoiceTo.GSTIN && <p className="text-sm">GSTIN : {invoice.invoiceTo.GSTIN}</p>}
+                                {invoice.invoiceTo.PAN && <p className="text-sm">PAN : {invoice.invoiceTo.PAN}</p>}
                             </div>
                         </div>
 
@@ -135,19 +135,19 @@ export function CreatedInvoiceView({ invoice, onCreateNew }: CreatedInvoiceViewP
                             <div className="space-y-2 text-sm">
                                 <div className="flex justify-between">
                                     <span>Total Price:</span>
-                                    <span>₹{invoice.invoiceSummary.totalPrice.toFixed(2)}</span>
+                                    <span>{formatCurrency(invoice.invoiceSummary.totalPrice)}</span>
                                 </div>
                                 <div className="flex justify-between">
                                     <span>CGST:</span>
-                                    <span>₹{invoice.invoiceSummary.cgst.toFixed(2)}</span>
+                                    <span>{formatRupee(invoice.invoiceSummary.cgst)}</span>
                                 </div>
                                 <div className="flex justify-between">
                                     <span>SGST:</span>
-                                    <span>₹{invoice.invoiceSummary.sgst.toFixed(2)}</span>
+                                    <span>{formatRupee(invoice.invoiceSummary.sgst)}</span>
                                 </div>
                                 <div className="flex justify-between font-semibold border-t pt-2">
                                     <span>Total Amount:</span>
-                                    <span>₹{invoice.invoiceSummary.invoiceAmount.toFixed(2)}</span>
+                                    <span>{formatCurrency(invoice.invoiceSummary.invoiceAmount)}</span>
                                 </div>
                             </div>
                         </div>

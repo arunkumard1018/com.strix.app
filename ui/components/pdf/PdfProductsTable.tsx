@@ -1,20 +1,21 @@
-import { formatCurrency, formatDateDDMMYY, formatRupee, numberToWordsIndian } from "@/lib/utils"; // Make sure these functions work with PDF renderer
-import { Font, StyleSheet, Text, View } from "@react-pdf/renderer";
+/* eslint-disable jsx-a11y/alt-text */
+import { formatDateDDMMYY, formatRupee, numberToWordsIndian } from "@/lib/utils"; // Make sure these functions work with PDF renderer
+import { Image, StyleSheet, Text, View } from "@react-pdf/renderer";
 import { InvoiceProduct, InvoiceProductTransport, InvoiceSummary } from "../dashboard/invoices/types";
-import path from "path";
-// import NotoSansFont from "./NotoSans-Bold.ttf";
 
 // Register Noto Sans from Google Fonts
-const fontPath = path.resolve('./public/fonts/NotoSans-Bold.ttf');
+// const fontPath = path.resolve('./public/fonts/NotoSans-Bold.ttf');
 
-Font.register({
-    family: 'Noto Sans',
-    fonts: [
-        {
-            src: fontPath
-        },
-    ],
-});
+// Font.register({
+//     family: 'Noto Sans',
+//     fonts: [
+//         {
+//             src: 'https://fonts.googleapis.com/css2?family=Noto+Sans&display=swap',
+//         },
+//     ],
+// });
+
+const rupeeSource = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAUZJREFUSEvd1b8rRWEcx/HXVQaRlD/CoEyIUSg/BtmE0WJlkixGiwxWgzIZiURSCpEy+R+YRAb5eZ46V7fbvfece7o35dnOOc/zeZ/v5/vjyanzytVZXznANXqqhN+gt/jMnwGKf6QNnVjCOO7Qjc+kKLPkYD+GLGC9HoA+XOIUg1kB/y/JhU704wInGM5qUaVzBxjFLHZqBWhHB5YxhiuESBJXqTIN757RUub0GabwkKhOyVERAC9oLhB4x3Hs+wa+0oiHPeUaLVgS6rwLjxjAfVrRwn2VOrk18vkIobGeMITbaiFJo6IJe3HHvsbVc14NJAkQtBqjQbeLiWjYvWESh2khaQBBqwHbmMEHpmNoIictIF8Qm1F5zuMbc9hKIlQDyGutRvfASvwwEhdCWU4WQBBbxFqcl3A/1ByQ5Mzv96wRpAb8AJ1zMxn/uNudAAAAAElFTkSuQmCC"
 
 // Define styles for the table
 const styles = StyleSheet.create({
@@ -29,10 +30,29 @@ const styles = StyleSheet.create({
     summaryTable: { width: "40%", textAlign: "right", marginTop: 10 },
     totalAmountCell: { fontSize: 12 },
     rupeeText: {
-        fontFamily: 'Noto Sans',
         fontSize: 12,
+        fontWeight: "extrabold"
+    },
+    svgContainer: {
+        marginTop: 20,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    qrCode: {
+        width: 8,
+        height: 8,
+        marginRight: 2,
     },
 });
+function formatCurrency(amount: number) {
+    return new Intl.NumberFormat('en-IN', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+    }).format(amount);
+}
+
+
+
 function PdfInvoiceProductsTable({
     products,
     invoiceSummary
@@ -110,7 +130,9 @@ function PdfInvoiceProductsTable({
                     )}
                 </Text>
                 <Text style={[styles.totalCell, styles.rupeeText, { width: "30%", fontSize: 10 }]}>Gross:</Text>
-                <Text style={[styles.totalCell, styles.rupeeText, { width: "20%", fontSize: 10, textAlign: "right" }]}>{formatCurrency(invoiceAmount)}</Text>
+                <Text style={[styles.totalCell, styles.rupeeText, { width: "20%", fontSize: 10, textAlign: "right" }]}>
+                    <Image src={rupeeSource} style={styles.qrCode} />{formatCurrency(invoiceAmount)}
+                </Text>
             </View>
 
             {/* Summary Table */}
@@ -125,12 +147,15 @@ function PdfInvoiceProductsTable({
                         <Text style={styles.totalCell}>{formatRupee(cgst)}</Text>
                     </View>
                     <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-                        <Text style={styles.summaryCell}>SGST</Text>
+                        <Text style={styles.summaryCell}>SGST
+                        </Text>
                         <Text style={styles.totalCell}>{formatRupee(sgst)}</Text>
                     </View>
                     <View style={{ flexDirection: "row", justifyContent: "space-between", backgroundColor: "#f0f0f0" }}>
                         <Text style={[styles.summaryCell, styles.totalAmountCell, styles.rupeeText]}>Total Amount</Text>
-                        <Text style={[styles.totalCell, styles.totalAmountCell, styles.rupeeText]}>{formatCurrency(invoiceAmount)}</Text>
+                        <Text style={[styles.totalCell, styles.totalAmountCell, styles.rupeeText]}>
+                            <Image src={rupeeSource} style={styles.qrCode} />{formatCurrency(invoiceAmount)}
+                        </Text>
                     </View>
                 </View>
             </View>
