@@ -30,7 +30,7 @@ export async function GET(req: NextRequest) {
             throw new Error("Invoice data is missing");
         }
 
-        const host = url.origin;
+        const host = process.env.DOMAIN_URL;
         const qrData = `${host}/i/${invoiceId}`;
         const qrCodeBase64 = await QRCode.toDataURL(qrData);
         const stream = await renderToStream(<PdfTemplate invoiceData={invoiceData} qrCode={qrCodeBase64} />);
