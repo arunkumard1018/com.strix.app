@@ -1,50 +1,47 @@
 "use client";
 
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "@/store/store";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
-import { getAllInvoices } from "@/api/invoices";
-import { InvoicesData } from "@/types/invoices";
-import { ApiResponse } from "@/types/api-responses";
-import { setInvoices } from "@/store/slices/invoicesSlice";
+import { getInvoiceById } from "@/api/invoices";
 import { CreatedInvoiceView } from "@/components/dashboard/invoices/invoice-view/CreatedInvoiceView";
+import { Invoice } from "@/components/dashboard/invoices/types";
+import { ApiResponse } from "@/types/api-responses";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export default function InvoiceViewPage({ params }: { params: { id: string } }) {
     const router = useRouter();
-    const dispatch = useDispatch();
-    const businessId = useSelector((state: RootState) => state.authContext.activeBusiness._id);
+    const [invoice, setInvoice] = useState<Invoice>();
+    const [loading, setLoading] = useState(true)
     useEffect(() => {
-        const loadInvoices = async (businessId: string) => {
+        const loadInvoices = async () => {
+            setLoading(true)
             try {
-                const response: ApiResponse<InvoicesData> = await getAllInvoices(businessId,1,1,"");
+                const response: ApiResponse<Invoice> = await getInvoiceById(params.id);
                 if (response.result) {
-                    dispatch(setInvoices(response.result));
+                    setInvoice(response.result);
                 }
-                // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            } catch (_error: unknown) {
+            } catch {
+            } finally {
+                setLoading(false)
             }
         };
-        loadInvoices(businessId);
-    }, [businessId, dispatch]);
-    const invoice = useSelector((state: RootState) =>
-        state.invoicesData.invoices.find(inv => inv._id === params.id)
-    );
-    const invoices = useSelector((state: RootState) => state.invoicesData.invoices);
+        loadInvoices();
+    }, [params.id]);
 
     console.log("invoice id", params.id);
     if (!invoice) {
         return (
             <div>
                 <div>Invoice not found for id: {params.id}</div>
-                <div>Invoices: {invoices.length}</div>
             </div>)
     }
 
     return (
-        <CreatedInvoiceView
-            invoice={invoice}
-            onCreateNew={() => router.push('/dashboard/invoices/add-invoices')}
-        />
+        <div>
+            {loading ? <div className="text-center">Loading...</div> :
+                <CreatedInvoiceView
+                    invoice={invoice}
+                    onCreateNew={() => router.push('/dashboard/invoices/add-invoices')}
+                />}
+        </div>
     );
 }
