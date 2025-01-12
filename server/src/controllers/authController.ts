@@ -7,8 +7,7 @@ import { oAuth2Client } from "../lib/googleAuthConfig";
 import logger from '../lib/logConfig';
 import { HttpStatusCode } from "../lib/status-codes";
 import { loginSchema, userSchema } from '../schemas/UserSchema';
-import { createUser, finduser, getUserWithBusinessDetails } from "../service/users";
-
+import { createUser, finduser, getUserWithBusinessDetails } from "../services/userService";
 
 const generateJwtToken = (userId: Id, email: string): string => {
     const secreatKey = process.env.JWT_SECRET_KEY!;

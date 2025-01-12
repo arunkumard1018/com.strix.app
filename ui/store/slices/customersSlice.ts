@@ -1,4 +1,4 @@
-import { Customers } from '@/types/definetions';
+import { Customers } from '@/types/model.definetions';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 const initialState: Customers[] = [];

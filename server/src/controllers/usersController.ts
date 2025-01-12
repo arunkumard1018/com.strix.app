@@ -1,8 +1,8 @@
 import { Request, Response } from "express"
-import { getUserWithBusinessDetails } from "../service/users";
 import { HttpStatusCode } from "../lib/status-codes";
 import { ResponseEntity } from "../lib/ApiResponse";
 import logger from "../lib/logConfig";
+import { getUserWithBusinessDetails } from "../services/userService";
 
 const handlegetUserInfo = async (req: Request, res: Response) => {
     console.info("in users info")

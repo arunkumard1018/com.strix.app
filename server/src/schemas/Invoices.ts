@@ -1,144 +1,120 @@
-import Joi from 'joi';
-import { Address, Person, ProductInvoiceDetails, TransportInvoiceDetails } from '../types/invoice';
-import { Invoice } from '../model/Invoice';
+import Joi from "joi";
+import { InvoiceProducts, InvoiceProductsTransport } from "../model/Invoice";
 
-const TransportInvoiceDetailsSchema = Joi.object<TransportInvoiceDetails>({
-    vehicleNo: Joi.string().required().messages({
-        'string.base': '"vehicleNo" should be a type of text',
-        'any.required': '"vehicleNo" is a required field',
-    }),
-    source: Joi.string().optional().messages({
-        'string.base': '"source" should be a type of text',
-    }),
-    destination: Joi.string().optional().messages({
-        'string.base': '"destination" should be a type of text',
-    }),
-    amount: Joi.number().required().messages({
-        'number.base': '"amount" should be a number',
-        'any.required': '"amount" is a required field',
-    }),
+// Joi schemas for sub-documents
+const InvoiceProductsTransportSchema = Joi.object({
+    date: Joi.date().required(),
+    vehicleNo: Joi.string().required(),
+    source: Joi.string().required(),
+    destination: Joi.string().required(),
+    price: Joi.number().required(),
+    cgst: Joi.number().required(),
+    sgst: Joi.number().required(),
+    amount: Joi.number().required(),
 });
 
-const ProductInvoiceDetailsSchema = Joi.object<ProductInvoiceDetails>({
-    sku: Joi.string().required().messages({
-        'string.base': '"sku" should be a type of text',
-        'any.required': '"sku" is a required field',
-    }),
-    productName: Joi.string().required().messages({
-        'string.base': '"productName" should be a type of text',
-        'any.required': '"productName" is a required field',
-    }),
-    price: Joi.number().required().messages({
-        'number.base': '"price" should be a number',
-        'any.required': '"price" is a required field',
-    }),
+
+const InvoiceProductsSchema = Joi.object({
+    sku: Joi.string().allow(''),
+    description: Joi.string().required(),
+    price: Joi.number().required(),
+    qty: Joi.number().required(),
+    cgst: Joi.number().required(),
+    sgst: Joi.number().required(),
+    amount: Joi.number().required(),
 });
 
-const addressSchema = Joi.object<Address>({
-    street: Joi.string().required().messages({
-        'string.base': '"street" should be a type of text',
-        'any.required': '"street" is a required field',
-    }),
-    city: Joi.string().required().messages({
-        'string.base': '"city" should be a type of text',
-        'any.required': '"city" is a required field',
-    }),
-    postalCode: Joi.number().required().messages({
-        'number.base': '"postalCode" should be a number',
-        'any.required': '"postalCode" is a required field',
-    }),
-    state: Joi.string().required().messages({
-        'string.base': '"state" should be a type of text',
-        'any.required': '"state" is a required field',
-    }),
+const InvoiceHeadingSchema = Joi.object({
+    heading: Joi.string().required(),
+    subHeading: Joi.string().default(""),
+    title: Joi.string().default(""),
 });
 
-const personSchema = Joi.object<Person>({
-    name: Joi.string().required().messages({
-        'string.base': '"name" should be a type of text',
-        'any.required': '"name" is a required field',
-    }),
-    GSTIN: Joi.string().optional().messages({
-        'string.base': '"GSTIN" should be a type of text',
-    }),
-    HSN: Joi.number().optional().messages({
-        'number.base': '"HSN" should be a number',
-    }),
-    stateCode: Joi.number().optional().messages({
-        'number.base': '"stateCode" should be a number',
-    }),
-    PAN: Joi.string().optional().messages({
-        'string.base': '"PAN" should be a type of text',
-    }),
-    phone: Joi.number().required().messages({
-        'number.base': '"phone" should be a number',
-        'any.required': '"phone" is a required field',
-    }),
-    email: Joi.string().email().optional().messages({
-        'string.email': '"email" must be a valid email address',
-    }),
-    address: addressSchema.required().messages({
-        'any.required': '"address" is a required field',
-    }),
+const InvoiceFromSchema = Joi.object({
+    name: Joi.string().required(),
+    address: Joi.string().required(),
+    city: Joi.string().required(),
+    state: Joi.string().required(),
+    postalCode: Joi.number().required(),
+    phone: Joi.number(),
+    email: Joi.string().email(),
 });
 
-const invoiceSchema = Joi.object<Invoice>({
-    invoiceNo: Joi.string().required().messages({
-        'string.base': '"invoiceNo" should be a type of text',
-        'any.required': '"invoiceNo" is a required field',
-    }),
-    invoiceDate: Joi.date().required().messages({
-        'date.base': '"invoiceDate" should be a valid date',
-        'any.required': '"invoiceDate" is a required field',
-    }),
-    invoiceBy: personSchema.required().messages({
-        'any.required': '"invoiceBy" is a required field',
-    }),
-    invoiceTo: personSchema.required().messages({
-        'any.required': '"invoiceTo" is a required field',
-    }),
+const InvoiceToSchema = Joi.object({
+    name: Joi.string().required(),
+    address: Joi.string().required(),
+    city: Joi.string().required(),
+    state: Joi.string().required(),
+    postalCode: Joi.number().required(),
+    phone: Joi.number().optional(),
+    email: Joi.string().email().optional().allow(''),
+    GSTIN: Joi.string().optional().allow(''),
+    PAN: Joi.string().optional().allow(''),
+});
 
-    invoiceDetails: Joi.array()
-        .items(
-            Joi.alternatives()
-                .try(TransportInvoiceDetailsSchema, ProductInvoiceDetailsSchema)
-                .messages({
-                    'alternatives.types': '"invoiceDetails" must contain either only Transport or only Product details',
-                })
-        )
+const InvoiceDetailsSchema = Joi.object({
+    invoicePrefix: Joi.string().required(),
+    invoiceNo: Joi.number().required(),
+    invoiceDate: Joi.date().required(),
+    dueDate: Joi.date().required(),
+    GSTIN: Joi.string().allow('').optional(),
+    PAN: Joi.string().allow('').optional(),
+    HSN: Joi.number().optional(),
+    stateCode: Joi.number().optional(),
+});
+
+const BankDetailsSchema = Joi.object({
+    bankName: Joi.string().allow(''),
+    accountName: Joi.string().allow(''),
+    accountNumber: Joi.number(),
+    ifscCode: Joi.string().allow(''),
+    branch: Joi.string().allow(''),
+});
+
+const AdditionlInfoSchema = Joi.object({
+    thankyouNote: Joi.string().default(""),
+    isBankDetails: Joi.boolean().required(),
+    isTransportInvoice: Joi.boolean().required(),
+    paymentStatus: Joi.string()
+        .valid("Paid", "Processing", "Due")
+        .required(),
+    paymentMethod: Joi.string()
+        .valid("Cash", "UPI", "BankTransfer", "CardPayment")
+        .required(),
+});
+
+const InvoiceSummarySchema = Joi.object({
+    totalPrice: Joi.number().required(),
+    cgst: Joi.number().required(),
+    sgst: Joi.number().required(),
+    invoiceAmount: Joi.number().required(),
+});
+
+// Joi schema for the main Invoice schema
+const InvoiceSchema = Joi.object({
+    invoiceHeading: InvoiceHeadingSchema.required(),
+    invoiceFrom: InvoiceFromSchema.required(),
+    invoiceTo: InvoiceToSchema.required(),
+    invoiceDetails: InvoiceDetailsSchema.required(),
+    invoiceProducts: Joi.array()
+        .items(Joi.alternatives().try(InvoiceProductsTransportSchema, InvoiceProductsSchema))
         .required()
         .custom((value, helpers) => {
-            const isTransport = value.every((item: TransportInvoiceDetails) => 'vehicleNo' in item);
-            const isProduct = value.every((item: ProductInvoiceDetails) => 'sku' in item);
-
-            if (!(isTransport || isProduct)) {
-                return helpers.error('any.invalid', {
-                    message: 'invoiceDetails should contain either only Transport or Product details, not both.',
+            // Validate that all items in the array are of one type
+            const isTransport = value.every((item: InvoiceProductsTransport) => "vehicleNo" in item);
+            const isProduct = value.every((item: InvoiceProducts) => "description" in item);
+            if (!isTransport && !isProduct) {
+                return helpers.error("invoiceProducts.mixedType", {
+                    message: "invoiceProducts should contain either only Transport or only Product details."
                 });
             }
             return value;
-        })
-        .messages({
-            'array.base': '"invoiceDetails" should be an array',
-            'any.required': '"invoiceDetails" is a required field',
         }),
-
-    paymentStatus: Joi.string().valid("PROCESSING", "PAID", "DUE").required(),
-    paymentMethod: Joi.string().valid("NEFT", "RTGS", "CASH","UPI","DEBIT/CREDIT CARD").required(),
-    invoiceAmount: Joi.number().required().messages({
-        'number.base': '"totalAmount" should be a number',
-        'any.required': '"totalAmount" is a required field',
-    }),
-    CGST: Joi.number().optional().messages({
-        'number.base': '"CGST" should be a number',
-    }),
-    SGST: Joi.number().optional().messages({
-        'number.base': '"SGST" should be a number',
-    }),
-    customers: Joi.string().required().messages({
-        'string.base': '"customers" should be a type of text',
-        'any.required': '"customers" is a required field',
-    }),
+    bankDetails: BankDetailsSchema.required(),
+    additionalInfo: AdditionlInfoSchema.required(),
+    invoiceSummary: InvoiceSummarySchema.required(),
+    customers: Joi.string().optional().allow(""),
 }).required();
 
-export { invoiceSchema };
+
+export { InvoiceSchema };

@@ -4,10 +4,11 @@ import { deleteCustomers } from "@/api/customers"
 import { ActionsDropDownRow } from "@/components/table-def/ActionDropDownMenu"
 import { removeCustomer } from "@/store/slices/customersSlice"
 import { RootState } from "@/store/store"
-import { Customers } from "@/types/definetions"
+import { Customers } from "@/types/model.definetions"
 import { ColumnDef, Row } from "@tanstack/react-table"
 import axios from "axios"
 import { ChevronsUpDown } from "lucide-react"
+import { useRouter } from "next/navigation"
 import { useDispatch, useSelector } from "react-redux"
 
 export const Customerscolumns: ColumnDef<Customers>[] = [
@@ -82,19 +83,24 @@ const ActionsCell = ({ row }: { row: Row<Customers> }) => {
     const model = row.original;
     const businessId = useSelector((state: RootState) => state.authContext.activeBusiness._id);
     const dispatch = useDispatch()
-    const deleteCustomer = async (id: string) : Promise<boolean> => {
+    const deleteCustomer = async (id: string): Promise<boolean> => {
         try {
-            const response : boolean = await deleteCustomers(id, businessId);
-            if(response) dispatch(removeCustomer(id))
+            const response: boolean = await deleteCustomers(id, businessId);
+            if (response) dispatch(removeCustomer(id))
             return response;
         } catch (error) {
-            if(axios.isAxiosError(error)) return Promise.resolve(false);
+            if (axios.isAxiosError(error)) return Promise.resolve(false);
             return Promise.resolve(false);
         }
+    }
+    const router = useRouter()
+    const handleUpdate = (id: string) => {
+        router.push(`customers?customersId=${id}`)
     }
     return (
         <ActionsDropDownRow
             deleteFunction={deleteCustomer}
+            handleUpdate={handleUpdate}
             id={model._id}
             itemName={model.name}
             name="Customers"

@@ -11,7 +11,7 @@ import { Businesscolumns } from "./business-column"
 
 export default function BusinessTable() {
     const businessList = useSelector((state: RootState) => state.authContext.user?.business);
-    if(!businessList) return <div>Loading...</div>
+    if (!businessList) return <div>Loading...</div>
     return (
         <div className="flex flex-col sm:py-4">
             <div className="grid flex-1 items-start gap-4 px-0 sm:px-6 sm:py-0 md:gap-8">
@@ -35,9 +35,9 @@ export default function BusinessTable() {
                         </div>
                     </div>
                     <TableComponent columns={Businesscolumns} data={businessList} heading="Business Details" headingInfo="Manage You Business"
-                        smHiddenCells={["GSTIN", "catagory", "HSN"]}
-                        isSearchInputRequired={false}
-                        searchInputValue=""
+                        smHiddenCells={["catagory", "phone", "invoicePrefixes"]}
+                        isSearchInputRequired="name"
+                        searchPlaceHolderText="Search by Business Name"
                         key={businessList.length}
                         isSelectAvailable={false} />
                 </Tabs>

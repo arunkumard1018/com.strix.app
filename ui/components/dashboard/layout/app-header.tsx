@@ -4,8 +4,7 @@ import {
     Breadcrumb,
     BreadcrumbItem,
     BreadcrumbList,
-    BreadcrumbPage,
-    BreadcrumbSeparator
+    BreadcrumbPage
 } from "@/components/ui/breadcrumb"
 import { Separator } from "@/components/ui/separator"
 import {
@@ -13,6 +12,7 @@ import {
     useSidebar
 } from "@/components/ui/sidebar"
 import { cn } from "@/lib/utils"
+import { ChevronRight } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useState } from "react"
@@ -63,7 +63,8 @@ function NavHeader() {
                                                 <Link href={href} className="capitalize">
                                                     {capitalize(segment)}
                                                 </Link>
-                                                <BreadcrumbSeparator className="hidden md:block" />
+                                                {/* <BreadcrumbSeparator className="hidden md:block" /> */}
+                                                <ChevronRight size={15}/>
                                             </>
                                         )}
                                     </BreadcrumbItem>

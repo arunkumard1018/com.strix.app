@@ -30,6 +30,7 @@ import {
   Users
 } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
+import { toast } from "sonner";
 // import statuc
 
 // This is sample data.
@@ -115,8 +116,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     try {
       await logoff();
       await logoutUser();
-    } catch (error) {
-      console.log("Error While Logging Out",(error as Error).message)
+    } catch {
+      toast.error("Error While Logging Out");
     } finally {
       dispatch(clearUser());
       window.location.href = "/auth/login";
@@ -133,7 +134,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavFeatures projects={data.features} />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={authContext.user} logout={doLogout}  />
+        <NavUser user={authContext.user} logout={doLogout} />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

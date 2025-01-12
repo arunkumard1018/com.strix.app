@@ -1,6 +1,6 @@
 import { ApiResponse } from "@/types/api-responses";
 import { axiosClient } from "./axiosClient"
-import { Customers } from "@/types/definetions";
+import { Customers } from "@/types/model.definetions";
 import { CustomersFormData } from "@/components/dashboard/customers/customers-form";
 
 

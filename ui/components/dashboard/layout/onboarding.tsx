@@ -1,5 +1,6 @@
 "use client"
 import { createBusiness } from '@/api/business';
+import { ThemeProvider } from '@/components/themes/theme-provider';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { addBusiness, Business, setActiveBusiness } from '@/store/slices/userSlice';
 import { ApiResponse } from '@/types/api-responses';
@@ -7,46 +8,27 @@ import { AxiosError } from 'axios';
 import { AlertCircle } from 'lucide-react';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { BusinessForm, BusinessFormData } from '../business/business-form';
-import { ThemeProvider } from '@/components/themes/theme-provider';
-
-
+import { OnboardingForm, OnBoardingFormData } from './onboarding-form';
 const initialValues = {
     name: "",
-    catagory: "",
-    GSTIN: "",
-    hsn: "",
+    catagory: "",   
     phone: "",
     invoicePrefix: "",
-    stateCode: "",
-    street: "",
     city: "",
-    state: "",
-    postalCode: "",
-    logo: "/img/strix-black.png"
+    logo: "/img/business-logo.png"
 };
 function OnboardingPage() {
     const [isError, setIsError] = useState(false)
     const [errorMessage, setErrorMessage] = useState("Error While Adding Business")
     const dispatch = useDispatch()
-    const handleBusinessFormData = async (values: BusinessFormData) => {
+    const handleOnBoardingFormData = async (values: OnBoardingFormData) => {
         try {
             const response: ApiResponse<Business> = await createBusiness(values);
             if (response.result) {
-                const business: Business = {
-                    _id: response.result._id,
-                    name: response.result.name,
-                    catagory: response.result.catagory,
-                    logo: response.result.logo,
-                    GSTIN: response.result.GSTIN,
-                    HSN: response.result.HSN,
-                    invoicePrefix: response.result.invoicePrefix,
-                }
-                dispatch(addBusiness(business))
-                dispatch(setActiveBusiness(business))
+                dispatch(addBusiness(response.result))
+                dispatch(setActiveBusiness(response.result))
             }
         } catch (error) {
-            /** Business Form Errors to Be Implemented  */
             if (error instanceof AxiosError) {
                 setErrorMessage(error.response?.data.error)
             }
@@ -66,9 +48,8 @@ function OnboardingPage() {
                         </Alert>
                     </div>}
                     <div className=" w-[370px] md:w-[390px] shadow-xl border border-gray-800  space-y-4 py-5">
-                        {/* Business Details Form */}
                         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem forcedTheme='dark' disableTransitionOnChange>
-                            <BusinessForm handleBusinessFormData={handleBusinessFormData} initialValues={initialValues} className='items-center' />
+                            <OnboardingForm handleOnBoardingFormData={handleOnBoardingFormData} initialValues={initialValues} className='items-center' />
                         </ThemeProvider>
                     </div>
 
