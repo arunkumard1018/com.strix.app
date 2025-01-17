@@ -13,6 +13,7 @@ import { AlertCircle } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { toast } from "sonner";
 
 
 function Page() {
@@ -73,9 +74,11 @@ function Page() {
                         }
                     }))
                 }
+                toast.success(`Business ${response.result.name} Updated SuccessFully`)
                 router.push("/dashboard/business")
             }
         } catch (error) {
+            toast.success(`Error While Updating Business ${business?.name}`)
             if (error instanceof AxiosError) {
                 setErrorMessage(error.response?.data.error)
             }

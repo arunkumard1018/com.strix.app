@@ -43,7 +43,7 @@ function HeroBoxReveal({ className }: { className?: string }) {
                     </p>
                 </div>
                 <BoxReveal boxColor={"#f36458"} duration={0.5}>
-                    <Button className="mt-[1.6rem] bg-[#f36458]">Explore Demo</Button>
+                    <Button className="mt-[1.6rem] bg-[#f36458] rounded-none">Explore Demo</Button>
                 </BoxReveal>
             </div>
         </div>

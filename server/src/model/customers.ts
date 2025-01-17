@@ -1,11 +1,11 @@
 import mongoose, { InferSchemaType } from "mongoose";
 
 const customersSchema = new mongoose.Schema({
-    name: { type: String },
+    name: { type: String, required: true },
     email: { type: String },
     phone: { type: Number },
     GSTIN: { type: String },
-    PAN : {type:String},
+    PAN: { type: String },
     address: {
         street: { type: String },
         city: { type: String },

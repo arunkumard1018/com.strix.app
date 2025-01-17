@@ -82,7 +82,7 @@ function InvoiceForm({ initialValues, type, id }: { initialValues: InvoiceFormDa
             }
         } catch (error) {
             if (error instanceof AxiosError) {
-                setIsError(error.response?.data.message);
+                setIsError(error.response?.data.error);
             } else {
                 setIsError(`Failed to ${type === "UPDATE" ? "update" : "create"} invoice`);
             }

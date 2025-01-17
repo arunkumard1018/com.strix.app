@@ -34,8 +34,8 @@ export default function CustomersTable() {
             } catch {
             }
         };
-        if (CustomersList.length === 0) loadCustomers(businessId);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        loadCustomers(businessId);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [businessId]);
 
     if (!CustomersList) return <div className="text-center mt-10">Loading...</div>

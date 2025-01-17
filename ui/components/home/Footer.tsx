@@ -10,16 +10,16 @@ function Footer({ className }: { className?: string }) {
         <footer className={cn("md:w-[80vw] md:mx-auto", className)}>
             <div className="grid md:grid-cols-2 gap-4 py-10 md:py-20">
                 <div className=''>
-                    <h2 className="text-4xl  font-bold">Strix Invoice</h2>
+                    <h2 className="text-4xl md:text-6xl  font-bold">Strix Invoice</h2>
                     <p className="mt-2">{HERO_PAGE_CONTENT.footer.description}</p>
                     <div className="flex mt-4 space-x-1 items-center">
                         <div><Image src="/icons/play-store.png" alt="" className="w" width={25} height={25} /></div>
                         <div>Download on Play Store</div>
                     </div>
                     <div className='flex py-4 space-x-4'>
-                        <Link href="#"><div className='relative size-5'><Image src="/svg/twitter.svg" alt="" className="w" fill /></div></Link>
-                        <Link href="#"><div className='relative size-5'><Image src="/svg/facebook.svg" alt="" className="w" fill /></div></Link>
-                        <Link href="#"><div className='relative size-5'><Image src="/svg/insta.svg" alt="" className="w" fill /></div></Link>
+                        <Link href="#"><div className='relative size-5'><Image src="/svg/twitter.svg" alt="" className="w invert" fill /></div></Link>
+                        <Link href="#"><div className='relative size-5'><Image src="/svg/facebook.svg" alt="" className="w invert" fill /></div></Link>
+                        <Link href="#"><div className='relative size-5'><Image src="/svg/insta.svg" alt="" className="w invert" fill /></div></Link>
                     </div>
                 </div>
 

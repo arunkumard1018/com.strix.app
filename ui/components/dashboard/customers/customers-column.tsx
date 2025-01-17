@@ -28,40 +28,6 @@ export const Customerscolumns: ColumnDef<Customers>[] = [
             <div className="font-medium text-left">{row.getValue("name")}</div>
         </div>,
     },
-
-    {
-        id: "email",
-        accessorKey: "email",
-        header: "Email",
-        cell: ({ row }) => (
-            <div className="capitalize table-cell">{row.getValue("email")}</div>
-        ),
-    },
-
-    {
-        id: "GSTIN",
-        accessorKey: "GSTIN",
-        header: "GSTIN",
-        cell: ({ row }) => (
-            <div className="capitalize table-cell">{row.getValue("GSTIN")}</div>
-        ),
-    },
-    {
-        id: "PAN",
-        accessorKey: "PAN",
-        header: "PAN",
-        cell: ({ row }) => (
-            <div className="capitalize table-cell">{row.getValue("PAN")}</div>
-        ),
-    },
-    {
-        id: "phone",
-        accessorKey: "phone",
-        header: "Phone",
-        cell: ({ row }) => (
-            <div className="capitalize table-cell">{row.getValue("phone")}</div>
-        ),
-    },
     {
         id: "address.city",
         accessorKey: "address.city", // Accessing the nested city inside the address
@@ -72,6 +38,45 @@ export const Customerscolumns: ColumnDef<Customers>[] = [
             </div>
         ),
     },
+
+    {
+        id: "GSTIN",
+        accessorKey: "GSTIN",
+        header: "GSTIN",
+        cell: ({ row }) => {
+            const gstin = row.getValue("GSTIN") as string | null;
+            return <div className="capitalize table-cell">{gstin?.trim() || "NA"}</div>;
+        },
+    },
+
+    {
+        id: "PAN",
+        accessorKey: "PAN",
+        header: "PAN",
+        cell: ({ row }) => {
+            const PAN = row.getValue("PAN") as string | null;
+            return <div className="capitalize table-cell">{PAN?.trim() || "NA"}</div>;
+        },
+    },
+    {
+        id: "email",
+        accessorKey: "email",
+        header: "Email",
+        cell: ({ row }) => {
+            const email = row.getValue("email") as string | null;
+            return <div className="capitalize table-cell">{email?.trim() || "-"}</div>;
+        },
+    },
+    {
+        id: "phone",
+        accessorKey: "phone",
+        header: "Phone",
+        cell: ({ row }) =>{
+            const phone = row.getValue("phone") as string | null;
+            return <div className="capitalize table-cell">{phone || "-"}</div>;
+        },
+    },
+
     {
         id: "actions",
         enableHiding: false,

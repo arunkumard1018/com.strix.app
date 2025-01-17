@@ -1,7 +1,7 @@
 import { ApiResponse } from "@/types/api-responses";
 import { axiosClient } from "./axiosClient"
 import { Customers } from "@/types/model.definetions";
-import { CustomersFormData } from "@/components/dashboard/customers/customers-form";
+import { CustomersFormData } from "@/components/dashboard/customers/sheet";
 
 
 const getCustomersList = async (businessId: string) => {

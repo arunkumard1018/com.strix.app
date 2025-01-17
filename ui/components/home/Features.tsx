@@ -6,7 +6,6 @@ import { useState } from 'react'
 
 function Features() {
     const [currentFeature, setcurrentFeature] = useState<string>("studio")
-
     function changeFeature(name: string) {
         setcurrentFeature(name);
     }
