@@ -127,7 +127,7 @@ const InvoiceDataForm = ({ formik, isError, isSubmitting, status }: InvoiceDataF
                     <div className="">
                         <p className="text-sm px-4 mt-4 text-blue-500">Note: Some fields are optional. Leave them blank if not applicable.</p>
                         {/* Error Summary */}
-                        {isError && <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4 text-xs" role="alert">
+                        {isError && <div className=" border border-red-500 text-red-700  p-4 m-4 mb-4 text-xs px-4" role="alert">
                             <p className="font-bold">Error:</p>
                             <p>{isError}</p>
                         </div>}

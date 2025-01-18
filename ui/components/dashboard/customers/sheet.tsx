@@ -11,8 +11,6 @@ import {
     SheetHeader,
     SheetTitle,
 } from "@/components/ui/sheet";
-import { ToastAction } from "@/components/ui/toast";
-import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import { appendCustomer, updateCustomer } from "@/store/slices/customersSlice";
 import { RootState } from "@/store/store";
@@ -23,6 +21,7 @@ import { X } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { toast } from "sonner";
 import * as Yup from "yup";
 
 export interface CustomersFormData {
@@ -38,10 +37,10 @@ export interface CustomersFormData {
 }
 const CustomersFormSchema = Yup.object().shape({
     name: Yup.string().required("Name Required"),
-    email: Yup.string().optional(),
+    email: Yup.string().email().optional(),
     GSTIN: Yup.string().optional(),
     PAN: Yup.string().optional(),
-    phone: Yup.number().integer("Phone Must Be Number").required("Phone Required"),
+    phone: Yup.number().integer("Phone Must Be Number").optional(),
     street: Yup.string().required("Street Required"),
     city: Yup.string().required("City Required"),
     state: Yup.string().required("State Required"),
@@ -81,7 +80,6 @@ export function CustomersSheet({
     const customerId = searchParams.get("customersId");
     const createCustomer = Boolean(searchParams.get("createCustomer"));
     const dispatch = useDispatch();
-    const { toast } = useToast()
 
     useEffect(() => {
         const loadCustomersData = async () => {
@@ -97,7 +95,7 @@ export function CustomersSheet({
                             email: customer.email,
                             GSTIN: customer.GSTIN,
                             PAN: customer.PAN,
-                            phone: String(customer.phone),
+                            phone: customer.phone ? String(customer.phone) : "",
                             street: customer.address.street,
                             city: customer.address.city,
                             state: customer.address.state,
@@ -106,8 +104,9 @@ export function CustomersSheet({
                         setIsSheetOpen(true)
                     }
                 }
-                // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            } catch (_error: unknown) {
+            } catch {
+                toast.error("Unable To Update Customer");
+                setIsSheetOpen(false)
             } finally {
                 // setLoading(false);
             }
@@ -115,8 +114,6 @@ export function CustomersSheet({
         if (createCustomer) {
             setInitialValues(initialDetails)
             setIsSheetOpen(true);
-        } else if (customerId === initialValues._id) {
-            setIsSheetOpen(true)
         } else {
             loadCustomersData()
         }
@@ -134,33 +131,17 @@ export function CustomersSheet({
                 const response: ApiResponse<Customers> = await createCustomers(values, activeBusinessId);
                 if (response.result) dispatch(appendCustomer(response.result));
                 handleClose()
-                toast({
-                    variant: "success",
-                    title: "Customer Created Successfully!",
-                    description: `Customer ${response.result?.name} created.`,
-                    action: <ToastAction altText="Ok" >close</ToastAction>,
-                })
+                toast.success(`Customer ${response.result?.name} Created Successfully!`)
             } else {
                 const response: ApiResponse<Customers> = await updateCustomers(values, initialValues._id, activeBusinessId);
                 if (response.result) {
                     dispatch(updateCustomer(response.result));
                 }
                 handleClose()
-                toast({
-                    variant: "success",
-                    title: "Customer Updated Successfully!",
-                    description: `Customer ${response.result?.name} Updated.`,
-                    action: <ToastAction altText="Ok" >close</ToastAction>,
-                })
-
+                toast.success(`Customer ${response.result?.name} Updated Successfully!`)
             }
-        } catch (error) {
-            toast({
-                variant: "destructive",
-                title: "Error While Creating Customer!",
-                description: `Customer ${(error as Error).message} created.`,
-                action: <ToastAction altText="Ok" >close</ToastAction>,
-            })
+        } catch {
+            toast.error(`Error While ${createCustomer ? "Creating" : "Updating"} Customer!`)
         }
     }
 

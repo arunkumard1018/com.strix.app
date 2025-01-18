@@ -8,7 +8,7 @@ import {
 
 function FAQ() {
     return (
-        <div className='md:flex gap-10 space-y-6'>
+        <div className='md:flex gap-10 space-y-6 w-full'>
             <div className='md:w-1/3 space-y-3 mt-6'>
                 <div className='font-medium text-red-400'>GOT QUESTIONS?</div>
                 <div className='text-4xl font-bold'>Frequently Asked Questions</div>
@@ -50,8 +50,8 @@ export function AccordionFAQ() {
     return (
         <Accordion type="single" collapsible className="w-full space-y-2">
             {faqItems.map((item) => (
-                <AccordionItem key={item.value} value={item.value} className='border px-4 rounded-md'>
-                    <AccordionTrigger>{item.question}</AccordionTrigger>
+                <AccordionItem key={item.value} value={item.value} className='border px-4 rounded-none'>
+                    <AccordionTrigger className='hover:no-underline'>{item.question}</AccordionTrigger>
                     <AccordionContent>{item.answer}</AccordionContent>
                 </AccordionItem>
             ))}

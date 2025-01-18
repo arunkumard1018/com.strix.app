@@ -39,6 +39,7 @@ const PdfTemplate = ({ invoiceData, qrCode }: { invoiceData: Invoice, qrCode: st
             <View style={styles.section}>
                 <View style={styles.flexRowBtw}>
                     <View>
+                        {/* Invoice From */}
                         <Text style={[styles.text, { fontSize: 10 }]}>From:</Text>
                         <Text style={[styles.textSm]}>{invoiceData.invoiceFrom.name}</Text>
                         <Text style={styles.textSm}>{invoiceData.invoiceFrom.address}</Text>
@@ -48,6 +49,10 @@ const PdfTemplate = ({ invoiceData, qrCode }: { invoiceData: Invoice, qrCode: st
                         <Text style={styles.textSm}>
                             {invoiceData.invoiceFrom.phone && `Phone: ${invoiceData.invoiceFrom.phone}`}
                         </Text>
+                        <Text style={styles.textSm}>
+                            {invoiceData.invoiceFrom.email && `email: ${invoiceData.invoiceFrom.email}`}
+                        </Text>
+                        {/* Invoice To */}
                         <Text style={[styles.text, { fontSize: 10, marginTop: 10 }]}>To:</Text>
                         <Text style={[styles.textSm]}>{invoiceData.invoiceTo.name}</Text>
                         <Text style={styles.textSm}>{invoiceData.invoiceTo.address}</Text>
@@ -56,6 +61,9 @@ const PdfTemplate = ({ invoiceData, qrCode }: { invoiceData: Invoice, qrCode: st
                         </Text>
                         <Text style={styles.textSm}>
                             {invoiceData.invoiceTo.phone && `Phone: ${invoiceData.invoiceTo.phone}`}
+                        </Text>
+                        <Text style={styles.textSm}>
+                            {invoiceData.invoiceTo.email && `email: ${invoiceData.invoiceTo.email}`}
                         </Text>
                     </View>
                     {/* InvoiceDetails */}

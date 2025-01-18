@@ -36,10 +36,16 @@ const InvoiceSecondaryHeaderForm: React.FC<InvoiceSecondaryHeaderFormProps> = ({
                     className="text-sm w-auto" name="invoiceFrom.postalCode" placeholder="PostalCode"
                     component={CustomInput}
                 />
-                <Field
-                    className="text-sm w-auto" name="invoiceFrom.phone" placeholder="Mobie No"
-                    component={CustomInput}
-                />
+                <div className="flex gap-1">
+                    <Field
+                        className="text-sm w-1/2" name="invoiceFrom.phone" placeholder="Mobie No"
+                        component={CustomInput}
+                    />
+                    <Field
+                        className="text-sm w-1/2" name="invoiceFrom.email" placeholder="Email"
+                        component={CustomInput}
+                    />
+                </div>
             </div>
             {/* Invoice To */}
             <div className="ml-2 mt-7 font-bold text-sm">To</div>
@@ -84,10 +90,16 @@ const InvoiceSecondaryHeaderForm: React.FC<InvoiceSecondaryHeaderFormProps> = ({
                     className="text-sm w-auto" name="invoiceTo.postalCode" placeholder="PostalCode"
                     component={CustomInput}
                 />
-                <Field
-                    className="text-sm w-auto" name="invoiceTo.phone" placeholder="Mobile No"
-                    component={CustomInput}
-                />
+                <div className="flex gap-1">
+                    <Field
+                        className="text-sm w-1/2" name="invoiceTo.phone" placeholder="Mobile No"
+                        component={CustomInput}
+                    />
+                    <Field
+                        className="text-sm w-1/2" name="invoiceTo.email" placeholder="Email"
+                        component={CustomInput}
+                    />
+                </div>
                 <Field
                     className="text-sm w-auto" name="invoiceTo.GSTIN" placeholder="GSTIN"
                     component={CustomInput}

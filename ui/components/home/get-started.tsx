@@ -1,38 +1,8 @@
-import React from 'react'
-import { Button } from '../ui/button'
-import { Card, CardContent, CardFooter, CardHeader } from '../ui/card'
-import Image from 'next/image'
 import { cn } from '@/lib/utils';
-
-// function GetStarted() {
-//     return (
-//         <div className='flex-col items-center justify-center'>
-//             <div className='flex items-center justify-center uppercase'><Button variant="outline" className='rounded-none text-red-500 border-red-500 hover:text-green-500'>How it Works</Button></div>
-//             <div className='text-center font-bold text-2xl py-4'>Get Started in 3 steps</div>
-//             <div className='grid auto-rows-min gap-8 md:grid-cols-3 mx-4 my-5'>
-//                 <Card className=' md:mt-12 shadow-sm rounded-sm bg-red-50'>
-//                     <CardHeader className="img flex items-center mt-8 ">
-//                         <div className='relative w-[250px] h-[180px] rounded-sm shadow-md'><Image src="/img/GS-1.jpg" alt='' fill className='rounded-sm'/></div>
-//                     </CardHeader>
-//                     <CardContent className='flex gap-2 items-center'>
-//                         <p className='px-2 py-1 bg-red-400 border rounded-full text-sm shadow-xl'>01</p>
-//                         <p className='text-2xl font-bold'>SignUp & Customize</p>
-//                     </CardContent>
-//                     <CardFooter>
-//                         <p className='text-sm text-gray-600'>Create Your account in minutes and tailor the platform to fit your unique business needs with our easy to use customization tools.</p>
-//                     </CardFooter>
-//                 </Card>
-
-//                 <div className='border md:mb-12'>
-//                     Grid-2
-//                 </div>
-//                 <div className='border md:mt-12'>
-//                     Grid-3
-//                 </div>
-//             </div>
-//         </div>
-//     )
-// }
+import Image from 'next/image';
+import React from 'react';
+import { Button } from '../ui/button';
+import { Card, CardContent, CardFooter, CardHeader } from '../ui/card';
 
 type CardProps = {
     step: string;
@@ -63,7 +33,7 @@ function GetStarted() {
     return (
         <div className="flex-col items-center justify-center">
             <div className="flex items-center justify-center uppercase">
-                <Button variant="outline" className="rounded-none text-red-500 border-red-500 hover:text-green-500">
+                <Button variant="outline" className="rounded-none  border-red-500 ">
                     How it Works
                 </Button>
             </div>
