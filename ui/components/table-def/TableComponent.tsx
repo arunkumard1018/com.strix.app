@@ -155,6 +155,7 @@ export function TableComponent<TData, TValue>(
                         <div className="flex items-center justify-end space-x-2 py-4">
                             <div className="space-x-2 flex">
                                 <Button
+                                    className="rounded-none"
                                     variant="outline"
                                     size="sm"
                                     onClick={() => table.previousPage()}
@@ -162,6 +163,7 @@ export function TableComponent<TData, TValue>(
                                     Previous
                                 </Button>
                                 <Button
+                                    className="rounded-none"
                                     variant="outline"
                                     size="sm"
                                     onClick={() => table.nextPage()}

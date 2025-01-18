@@ -33,16 +33,18 @@ export function ConfirmationDialog({
 }: ConfirmationDialogProps) {
     return (
         <AlertDialog open={open} onOpenChange={onOpenChange}>
-            <AlertDialogContent>
+            <AlertDialogContent className="sm:rounded-none">
                 <AlertDialogHeader>
                     <AlertDialogTitle>{title}</AlertDialogTitle>
                     <AlertDialogDescription>{description}</AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                    <AlertDialogCancel onClick={onCancel ? onCancel : () => onOpenChange(false)}>
+                    <AlertDialogCancel
+                        className="rounded-none"
+                        onClick={onCancel ? onCancel : () => onOpenChange(false)}>
                         {cancelText}
                     </AlertDialogCancel>
-                    <AlertDialogAction onClick={onConfirm}>
+                    <AlertDialogAction  className="rounded-none" onClick={onConfirm}>
                         {confirmText}
                     </AlertDialogAction>
                 </AlertDialogFooter>

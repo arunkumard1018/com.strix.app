@@ -109,6 +109,7 @@ export function Invoice({ invoiceData }: { invoiceData: InvoiceType }) {
             {/* Addresses */}
             <div className="flex flex-col sm:flex-row justify-between mb-8 gap-6">
                 <div className="space-y-4 w-full sm:w-auto">
+                    {/* Invoice From */}
                     <div className="">
                         <p className="text-xs sm:text-sm font-medium">From:</p>
                         <p className="text-xs sm:text-sm">{invoiceData.invoiceFrom.name}</p>
@@ -123,6 +124,7 @@ export function Invoice({ invoiceData }: { invoiceData: InvoiceType }) {
                             <p className="text-xs sm:text-sm">Email: {invoiceData.invoiceFrom.email}</p>
                         )}
                     </div>
+                    {/* Invoice To */}
                     <div className="">
                         <p className="text-xs sm:text-sm font-medium">To:</p>
                         <p className="text-xs sm:text-sm">{invoiceData.invoiceTo.name}</p>
@@ -130,6 +132,12 @@ export function Invoice({ invoiceData }: { invoiceData: InvoiceType }) {
                         <p className="text-xs sm:text-sm">
                             {invoiceData.invoiceTo.city}, {invoiceData.invoiceTo.state}, {invoiceData.invoiceTo.postalCode}
                         </p>
+                        {invoiceData.invoiceTo.phone && (
+                            <p className="text-xs sm:text-sm">GSTIN: {invoiceData.invoiceTo.GSTIN}</p>
+                        )}
+                        {invoiceData.invoiceTo.phone && (
+                            <p className="text-xs sm:text-sm">PAN: {invoiceData.invoiceTo.PAN}</p>
+                        )}
                         {invoiceData.invoiceTo.phone && (
                             <p className="text-xs sm:text-sm">Phone: {invoiceData.invoiceTo.phone}</p>
                         )}
