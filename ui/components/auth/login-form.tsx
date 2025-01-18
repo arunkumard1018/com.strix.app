@@ -20,8 +20,8 @@ const SignInSchema = Yup.object().shape({
     email: Yup.string().email().required("Email is required"),
     password: Yup.string()
         .required("Enter a Password")
-        // V1-Fix
-        // .min(8, "Password is too short - should be 8 chars minimum"), 
+    // V1-Fix
+    // .min(8, "Password is too short - should be 8 chars minimum"), 
 });
 
 const initialValues = {
@@ -105,8 +105,7 @@ const UserLoginForm = ({ doLogin }: { doLogin: (email: string, password: string)
                     const { email, password } = values;
                     const status = await doLogin(email, password);
                     if (!status) setLoading(false);
-                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                } catch (error: unknown) {
+                } catch {
                     setLoading(false)
                 }
             }}

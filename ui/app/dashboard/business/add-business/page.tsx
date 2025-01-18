@@ -9,6 +9,7 @@ import { AlertCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
+import { toast } from "sonner";
 
 
 const initialValues = {
@@ -38,10 +39,12 @@ function Page() {
             phone: response.result.phone,
             city: response.result.city,
         }
+        toast.success(`Business ${response.result.name} Created SuccessFully`)
         dispatch(addBusiness(business));
         router.push("/dashboard/business");
     }
     } catch (error) {
+      toast.error(`Error While Creating Business`)
       if (error instanceof AxiosError) {
         setErrorMessage(error.response?.data.error)
       }

@@ -26,9 +26,9 @@ function NavBar() {
           <div className='items-center space-x-4 hidden lg:flex'>
             <div className='hover:bg-gray-200 hover:bg-opacity-80 rounded-full p-1  '><Image src={"/svg/search.svg"} alt='' width={25} height={25} /></div>
             <Link href={"/auth/login"} className='py-1 px-3 hover:bg-gray-200 hover:bg-opacity-80 rounded-sm font-medium'>Log in</Link>
-            <Button className='rounded-sm border-red-300 md:hidden xl:block' variant={'outline'}>Contact Us</Button>
+            <Button className='rounded-none border-red-300 md:hidden xl:block' variant={'outline'}>Contact Us</Button>
           </div>
-          <Link href="/auth/register"><Button className='rounded-sm '>Get Started</Button></Link>
+          <Link href="/auth/register"><Button className='rounded-none'>Get Started</Button></Link>
           
           <DrawerDemo/>
         </div>
