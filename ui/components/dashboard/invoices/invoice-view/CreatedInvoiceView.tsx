@@ -70,7 +70,7 @@ export function CreatedInvoiceView({ invoice, onCreateNew }: CreatedInvoiceViewP
                     <h2 className="text-xl font-semibold mb-1 text-green-500">{`Invoice ${type === "UPDATE" ? "Updated" : "Created"} Successfully`}</h2>
                 </div>
 
-                <div className="absolute top-4 right-4 flex gap-2">
+                <div className="absolute top-[620px] md:top-4 right-4 flex gap-2">
                     <button
                         onClick={onCreateNew}
                         className="rounded-full border border-muted-foreground  p-3 shadow-2xl
