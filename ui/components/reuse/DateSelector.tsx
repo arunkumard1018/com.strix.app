@@ -16,10 +16,10 @@ import {
 interface DatePickerProps {
     value?: Date;
     onChange?: (date: Date) => void;
-    className?:string;
+    className?: string;
 }
 
-export function DatePicker({ value, onChange,className }: DatePickerProps) {
+export function DatePicker({ value, onChange, className }: DatePickerProps) {
     const [date, setDate] = React.useState<Date | undefined>(value || new Date());
     const [isPickerOpen, setIsPickerOpen] = React.useState(false)
     const togglePicker = () => {
@@ -29,7 +29,9 @@ export function DatePicker({ value, onChange,className }: DatePickerProps) {
         if (selectedDate) {
             setDate(selectedDate);
             if (onChange) {
-                onChange(selectedDate);
+                const istDate = new Date(selectedDate.getTime() + (5.5 * 60 * 60 * 1000)); // Adding 5.5 hours
+                console.log("Date Selected  : ", istDate)
+                onChange(istDate);
             }
         }
     };
@@ -41,7 +43,7 @@ export function DatePicker({ value, onChange,className }: DatePickerProps) {
                     variant={"calander"}
                     className={cn(
                         "w-full justify-start items-center text-left font-normal rounded-none",
-                        !date && "text-muted-foreground",className
+                        !date && "text-muted-foreground", className
                     )}
                 >
                     {date ? format(date, "dd-MM-yyyy") : <span>Select Date</span>}
@@ -54,6 +56,7 @@ export function DatePicker({ value, onChange,className }: DatePickerProps) {
                     onDayClick={togglePicker}
                     onSelect={handleDateChange}
                     initialFocus
+
                 />
             </PopoverContent>
         </Popover>
