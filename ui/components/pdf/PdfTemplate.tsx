@@ -47,7 +47,7 @@ const PdfTemplate = ({ invoiceData, qrCode }: { invoiceData: Invoice, qrCode: st
                             {invoiceData.invoiceFrom.city}, {invoiceData.invoiceFrom.state},{invoiceData.invoiceFrom.postalCode}
                         </Text>
                         <Text style={styles.textSm}>
-                            {invoiceData.invoiceFrom.phone && `Phone: ${invoiceData.invoiceFrom.phone}`}
+                            {(invoiceData.invoiceFrom.phone && invoiceData.invoiceFrom.phone !== 0) && `Phone: ${invoiceData.invoiceFrom.phone}`}
                         </Text>
                         <Text style={styles.textSm}>
                             {invoiceData.invoiceFrom.email && `email: ${invoiceData.invoiceFrom.email}`}
@@ -60,7 +60,7 @@ const PdfTemplate = ({ invoiceData, qrCode }: { invoiceData: Invoice, qrCode: st
                             {invoiceData.invoiceTo.city}, {invoiceData.invoiceTo.state},{invoiceData.invoiceTo.postalCode}
                         </Text>
                         <Text style={styles.textSm}>
-                            {invoiceData.invoiceTo.phone && `Phone: ${invoiceData.invoiceTo.phone}`}
+                            {(invoiceData.invoiceTo.phone && invoiceData.invoiceTo.phone !== 0) && `Phone: ${invoiceData.invoiceTo.phone}`}
                         </Text>
                         <Text style={styles.textSm}>
                             {invoiceData.invoiceTo.email && `email: ${invoiceData.invoiceTo.email}`}
@@ -102,7 +102,7 @@ const PdfTemplate = ({ invoiceData, qrCode }: { invoiceData: Invoice, qrCode: st
                     <Text style={{ fontSize: 9, marginBottom: 2 }}>{invoiceData.bankDetails.ifscCode && `IFSC Code: ${invoiceData.bankDetails.ifscCode}`}</Text>
                     <Text style={{ fontSize: 9, marginBottom: 2 }}>{invoiceData.bankDetails.branch && `Branch: ${invoiceData.bankDetails.branch}`}</Text>
                 </View>}
-                <View style={{ alignItems: invoiceData.additionalInfo.isBankDetails  ? "flex-end" : "flex-start", justifyContent: "flex-end" }}>
+                <View style={{ alignItems: invoiceData.additionalInfo.isBankDetails ? "flex-end" : "flex-start", justifyContent: "flex-end" }}>
                     <Image src={qrCode} style={styles.qrCode} />
                     <Text style={{ fontSize: 9, marginTop: 4, }}>{invoiceData.additionalInfo.thankyouNote && `Thank you for youre Business!`}</Text>
                 </View>
