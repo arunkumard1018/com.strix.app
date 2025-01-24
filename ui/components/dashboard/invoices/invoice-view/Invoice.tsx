@@ -132,13 +132,13 @@ export function Invoice({ invoiceData }: { invoiceData: InvoiceType }) {
                         <p className="text-xs sm:text-sm">
                             {invoiceData.invoiceTo.city}, {invoiceData.invoiceTo.state}, {invoiceData.invoiceTo.postalCode}
                         </p>
-                        {invoiceData.invoiceTo.phone && (
+                        {invoiceData.invoiceTo.GSTIN && (
                             <p className="text-xs sm:text-sm">GSTIN: {invoiceData.invoiceTo.GSTIN}</p>
                         )}
-                        {invoiceData.invoiceTo.phone && (
+                        {invoiceData.invoiceTo.PAN && (
                             <p className="text-xs sm:text-sm">PAN: {invoiceData.invoiceTo.PAN}</p>
                         )}
-                        {invoiceData.invoiceTo.phone && (
+                        {(invoiceData.invoiceTo.phone && invoiceData.invoiceTo.phone !== 0) && (
                             <p className="text-xs sm:text-sm">Phone: {invoiceData.invoiceTo.phone}</p>
                         )}
                         {invoiceData.invoiceTo.email && (
